@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if the authenticated user is an admin
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // User profiles - only the owner can read/write their own profile
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow create: if request.auth != null && request.auth.uid == userId && request.resource.data.isAdmin == false;
+      allow update: if request.auth != null && request.auth.uid == userId && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin']);
+    }
+
+    // Carts - only the owner can read/write their own cart
+    match /carts/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Wishlists - only the owner can read/write their own wishlist
+    match /wishlists/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Orders - users can create/read their own orders, owners can update status (payments), admins have full access
+    match /orders/{orderId} {
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid && 
+        (request.resource.data.status == 'pending' || request.resource.data.status == 'processing');
+      allow read: if request.auth != null && (
+        request.auth.uid == resource.data.userId || 
+        isAdmin()
+      );
+      allow update: if request.auth != null && (
+        (request.auth.uid == resource.data.userId && 
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['userId', 'items', 'subtotal', 'discount', 'finalTotal'])) ||
+        isAdmin()
+      );
+    }
+
+    // Products - anyone can read, only admins can write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Coupons - anyone can read, only admins can write
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+  }
+}
