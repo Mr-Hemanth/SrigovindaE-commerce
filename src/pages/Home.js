@@ -77,7 +77,7 @@ function Home() {
       <section className="py-12 md:py-20 bg-gradient-to-b from-[#f7f2ed] to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center font-serif">Featured Pieces</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
             {featuredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
