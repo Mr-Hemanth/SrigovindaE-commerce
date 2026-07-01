@@ -8,6 +8,18 @@ import { collection, getDocs } from 'firebase/firestore';
 
 function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('recently_viewed');
+      if (stored) {
+        setRecentlyViewed(JSON.parse(stored).filter(p => p.isActive !== false));
+      }
+    } catch (err) {
+      console.warn('Failed to load recently viewed:', err);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -92,6 +104,20 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recently Viewed Grid Section */}
+      {recentlyViewed.length > 0 && (
+        <section className="py-12 md:py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center font-serif">Recently Viewed</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10 animate-fade-in">
+              {recentlyViewed.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Social / Info Block */}
       <section className="py-10 md:py-16 bg-gradient-to-r from-[#f0f4f8] to-[#eef3f7]">

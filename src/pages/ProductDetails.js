@@ -57,6 +57,31 @@ function ProductDetails() {
     fetchProduct();
   }, [id]);
 
+  // Log viewed product to localStorage for "Recently Viewed" section
+  useEffect(() => {
+    if (!product) return;
+    try {
+      const stored = localStorage.getItem('recently_viewed');
+      let list = stored ? JSON.parse(stored) : [];
+      
+      list = list.filter(item => item.id !== product.id);
+      list.unshift({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        category: product.category || '',
+        price: product.price,
+        discountedPrice: product.discountedPrice || '',
+        description: product.description || '',
+        isActive: product.isActive !== false
+      });
+      list = list.slice(0, 4);
+      localStorage.setItem('recently_viewed', JSON.stringify(list));
+    } catch (err) {
+      console.warn('Recently viewed storage error:', err);
+    }
+  }, [product]);
+
   // Load reviews dynamically
   useEffect(() => {
     if (!product) return;
