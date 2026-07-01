@@ -68,10 +68,10 @@ function AdminCoupons() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[#8b5a2b] font-serif">Coupons</h1>
+        <h1 className="text-3xl font-bold text-[#0f2a4a] font-serif">Coupons</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-6 py-3 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+          className="bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-6 py-3 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
         >
           + Create Coupon
         </button>
@@ -84,20 +84,20 @@ function AdminCoupons() {
 
       <div className="bg-white rounded-2xl elegant-shadow overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-[#fdf6e9] to-[#f7f2ed]">
+          <thead className="bg-gradient-to-r from-[#f0f5fa] to-[#f7f2ed]">
             <tr>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Coupon Code</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Discount</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Expires On</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Status</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Actions</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Coupon Code</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Discount</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Expires On</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Status</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {coupons.map((coupon) => (
-              <tr key={coupon.id} className="hover:bg-[#fdf6e9] transition-colors">
+              <tr key={coupon.id} className="hover:bg-[#f0f5fa] transition-colors">
                 <td className="px-8 py-5">
-                  <span className="font-mono font-bold text-[#8b5a2b] text-lg">{coupon.code}</span>
+                  <span className="font-mono font-bold text-[#0f2a4a] text-lg">{coupon.code}</span>
                 </td>
                 <td className="px-8 py-5 text-gray-800 font-semibold text-lg">{coupon.discountPercentage}% OFF</td>
                 <td className="px-8 py-5 text-gray-600">
@@ -135,7 +135,7 @@ function AdminCoupons() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl elegant-shadow max-w-md w-full">
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-[#8b5a2b] mb-8 font-serif">Create New Coupon</h2>
+              <h2 className="text-2xl font-bold text-[#0f2a4a] mb-8 font-serif">Create New Coupon</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">Coupon Code</label>
@@ -145,7 +145,7 @@ function AdminCoupons() {
                     value={form.code}
                     onChange={(e) => setForm({ ...form, code: e.target.value })}
                     placeholder="e.g., INSTA10, DIWALI20"
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300 text-base uppercase"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300 text-base uppercase"
                   />
                 </div>
 
@@ -159,7 +159,7 @@ function AdminCoupons() {
                     value={form.discountPercentage}
                     onChange={(e) => setForm({ ...form, discountPercentage: e.target.value })}
                     placeholder="10"
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300 text-base"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300 text-base"
                   />
                 </div>
 
@@ -170,7 +170,7 @@ function AdminCoupons() {
                     required
                     value={form.expiryDate}
                     onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300 text-base"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300 text-base"
                   />
                 </div>
 
@@ -181,14 +181,14 @@ function AdminCoupons() {
                       setShowModal(false);
                       setForm({ code: '', discountPercentage: '', expiryDate: '' });
                     }}
-                    className="flex-1 border-2 border-[#8b5a2b] text-[#8b5a2b] py-3 rounded-xl hover:bg-[#fdf6e9] transition-all duration-300 font-semibold text-base"
+                    className="flex-1 border-2 border-[#0f2a4a] text-[#0f2a4a] py-3 rounded-xl hover:bg-[#f0f5fa] transition-all duration-300 font-semibold text-base"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-3 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50"
+                    className="flex-1 bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-3 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50"
                   >
                     {loading ? 'Creating...' : 'Create Coupon'}
                   </button>

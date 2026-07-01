@@ -25,7 +25,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdf6e9] to-[#f7f2ed] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f5fa] to-[#f7f2ed] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl elegant-shadow">
         <div className="text-center">
           <div className="mb-6">
@@ -51,7 +51,7 @@ function Login() {
                 name="email"
                 type="email"
                 required
-                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300 text-base"
+                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300 text-base"
                 placeholder="your-email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -64,7 +64,7 @@ function Login() {
                 name="password"
                 type="password"
                 required
-                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300 text-base"
+                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300 text-base"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -76,7 +76,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="w-full bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -85,7 +85,7 @@ function Login() {
           <div className="text-center pt-4 border-t border-gray-100">
             <p className="text-gray-600 text-lg">
               Don't have an account? 
-              <Link to="/signup" className="text-[#8b5a2b] font-semibold hover:text-[#a07254] transition-colors duration-300 ml-1">
+              <Link to="/signup" className="text-[#0f2a4a] font-semibold hover:text-[#1b4965] transition-colors duration-300 ml-1">
                 Create Account
               </Link>
             </p>

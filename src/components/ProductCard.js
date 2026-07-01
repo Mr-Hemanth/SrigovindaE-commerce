@@ -31,7 +31,7 @@ function ProductCard({ product }) {
   const discountPercentage = hasDiscount ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) : 0;
 
   return (
-    <div className="bg-white rounded-3xl elegant-shadow overflow-hidden hover:scale-[1.02] transition-all duration-300 ease-out border border-gray-50/50 hover:border-[#8b5a2b]/20 relative group animate-fade-in flex flex-col justify-between h-full">
+    <div className="bg-white rounded-3xl elegant-shadow overflow-hidden hover:scale-[1.02] transition-all duration-300 ease-out border border-gray-50/50 hover:border-[#0f2a4a]/20 relative group animate-fade-in flex flex-col justify-between h-full">
       <div className="relative cursor-pointer overflow-hidden" onClick={() => navigate(`/product/${product.id}`)}>
         <img 
           src={product.image} 
@@ -41,7 +41,7 @@ function ProductCard({ product }) {
         
         {/* Discount Badge Ribbon */}
         {hasDiscount && (
-          <span className="absolute top-3 left-3 bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#5a3d1d] font-black text-[8px] md:text-[9px] tracking-wider uppercase px-2 py-0.5 md:px-2.5 md:py-1 rounded-full shadow-md z-10 border border-[#c49d2f]/20">
+          <span className="absolute top-3 left-3 bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#0b1a30] font-black text-[8px] md:text-[9px] tracking-wider uppercase px-2 py-0.5 md:px-2.5 md:py-1 rounded-full shadow-md z-10 border border-[#c49d2f]/20">
             SAVE {discountPercentage}%
           </span>
         )}
@@ -67,10 +67,10 @@ function ProductCard({ product }) {
       
       <div className="p-4 md:p-6 flex flex-col justify-between flex-grow">
         <div>
-          <span className="text-[9px] md:text-[10px] font-bold text-[#8b5a2b] uppercase tracking-widest">{product.category.replace('-', ' ')}</span>
+          <span className="text-[9px] md:text-[10px] font-bold text-[#0f2a4a] uppercase tracking-widest">{product.category.replace('-', ' ')}</span>
           <h3 
             onClick={() => navigate(`/product/${product.id}`)}
-            className="mt-1.5 text-sm md:text-lg font-bold text-gray-800 font-serif cursor-pointer hover:text-[#8b5a2b] transition-colors line-clamp-1 leading-snug"
+            className="mt-1.5 text-sm md:text-lg font-bold text-gray-800 font-serif cursor-pointer hover:text-[#0f2a4a] transition-colors line-clamp-1 leading-snug"
           >
             {product.name}
           </h3>
@@ -81,17 +81,17 @@ function ProductCard({ product }) {
           <div className="flex items-baseline gap-1">
             {hasDiscount ? (
               <>
-                <span className="text-base md:text-xl font-black text-[#8b5a2b]">₹{Number(product.discountedPrice).toFixed(0)}</span>
+                <span className="text-base md:text-xl font-black text-[#0f2a4a]">₹{Number(product.discountedPrice).toFixed(0)}</span>
                 <span className="text-gray-400 line-through text-[10px] md:text-[11px] font-medium">₹{Number(product.price).toFixed(0)}</span>
               </>
             ) : (
-              <span className="text-base md:text-xl font-black text-[#8b5a2b]">₹{Number(product.price).toFixed(0)}</span>
+              <span className="text-base md:text-xl font-black text-[#0f2a4a]">₹{Number(product.price).toFixed(0)}</span>
             )}
           </div>
           
           <button
             onClick={handleAddToCart}
-            className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-3 py-2 md:px-4 md:py-2.5 rounded-lg md:rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-[10px] md:text-xs shadow-md hover:shadow-lg"
+            className="bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-3 py-2 md:px-4 md:py-2.5 rounded-lg md:rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold text-[10px] md:text-xs shadow-md hover:shadow-lg"
           >
             Add to Cart
           </button>

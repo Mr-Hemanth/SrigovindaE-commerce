@@ -183,7 +183,7 @@ function ProductDetails() {
   if (loading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8b5a2b]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0f2a4a]"></div>
       </div>
     );
   }
@@ -196,7 +196,7 @@ function ProductDetails() {
         <p className="text-gray-500 mb-8 text-sm">The jewellery piece you are looking for does not exist, is disabled, or has been removed from our catalog.</p>
         <Link
           to="/products"
-          className="bg-[#8b5a2b] hover:bg-[#a07254] text-white px-6 py-3 rounded-xl font-semibold shadow-md transition-all"
+          className="bg-[#0f2a4a] hover:bg-[#1b4965] text-white px-6 py-3 rounded-xl font-semibold shadow-md transition-all"
         >
           Back to Shop Catalog
         </Link>
@@ -213,13 +213,13 @@ function ProductDetails() {
       <div className="mb-8 animate-fade-in">
         <Link 
           to="/products"
-          className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-[#8b5a2b] transition-colors gap-2"
+          className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-[#0f2a4a] transition-colors gap-2"
         >
           ← Back to Shop Catalog
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl elegant-shadow p-6 md:p-10 border border-gray-50 mb-16 animate-fade-in">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl elegant-shadow p-6 md:p-10 border border-gray-55 mb-16 animate-fade-in">
         
         {/* Left Column: Big Product Image */}
         <div className="relative overflow-hidden rounded-2xl group">
@@ -249,7 +249,7 @@ function ProductDetails() {
         <div className="flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <span className="bg-[#fdf6e9] text-[#8b5a2b] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-[#8b5a2b]/10">
+              <span className="bg-[#f0f5fa] text-[#0f2a4a] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-[#0f2a4a]/10">
                 {product.category?.replace('-', ' ')}
               </span>
               {product.subcategory && (
@@ -279,11 +279,11 @@ function ProductDetails() {
             <div className="flex items-baseline gap-4 pt-2">
               {product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0 ? (
                 <>
-                  <span className="text-3xl font-black text-[#8b5a2b]">₹{product.discountedPrice}</span>
+                  <span className="text-3xl font-black text-[#0f2a4a]">₹{product.discountedPrice}</span>
                   <span className="text-gray-400 line-through text-lg">₹{product.price}</span>
                 </>
               ) : (
-                <span className="text-3xl font-black text-[#8b5a2b]">₹{product.price}</span>
+                <span className="text-3xl font-black text-[#0f2a4a]">₹{product.price}</span>
               )}
               <span className={`px-3 py-1 rounded-full text-xxs font-bold uppercase tracking-wider ${
                 (product.stock || 10) > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
@@ -326,7 +326,7 @@ function ProductDetails() {
             <button
               onClick={handleAddToCart}
               disabled={addingState || (product.stock || 0) <= 0}
-              className="w-full bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl disabled:opacity-40"
+              className="w-full bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl disabled:opacity-40"
             >
               {addingState ? 'Adding Item...' : `Add to Cart • ₹${(
                 (product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0
@@ -369,7 +369,7 @@ function ProductDetails() {
           
           {reviewsLoading ? (
             <div className="text-center py-10">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#8b5a2b] mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0f2a4a] mx-auto"></div>
             </div>
           ) : reviews.length === 0 ? (
             <div className="text-center py-12 border-2 border-dashed border-gray-150 rounded-2xl text-gray-400">
@@ -431,14 +431,14 @@ function ProductDetails() {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Describe your experience with this jewelry item..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-[#8b5a2b] leading-relaxed"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-[#0f2a4a] leading-relaxed"
                     required
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#8b5a2b] hover:bg-[#a07254] text-white py-3 rounded-xl font-semibold text-xs shadow-md transition-all duration-300"
+                  className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-3 rounded-xl font-semibold text-xs shadow-md transition-all duration-300"
                 >
                   Submit Review
                 </button>
@@ -448,7 +448,7 @@ function ProductDetails() {
                 <p className="mb-3 font-medium">Log in to review this product</p>
                 <Link 
                   to="/login"
-                  className="inline-block bg-[#8b5a2b] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm"
+                  className="inline-block bg-[#0f2a4a] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm"
                 >
                   Log In
                 </Link>

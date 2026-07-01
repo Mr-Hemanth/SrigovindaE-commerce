@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-[#5a3d1d] to-[#8b5a2b] text-[#fdf6e9] pt-16 pb-8 border-t-4 border-[#d4af37]">
+    <footer className="bg-gradient-to-r from-[#0b1a30] to-[#0f2a4a] text-[#f0f5fa] pt-16 pb-8 border-t-4 border-[#d4af37]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           
           {/* Column 1: Store Intro */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold font-serif tracking-wide">Srigovinda collections</h3>
-            <p className="text-xs text-[#fdf6e9]/80 leading-relaxed">
+            <p className="text-xs text-[#f0f5fa]/80 leading-relaxed">
               Exquisite handcrafted jewellery featuring German Silver, One Gram Gold, and Panchaloha pieces designed with timeless details and premium quality.
             </p>
             <div className="pt-2 text-xs font-semibold text-[#d4af37]">
-              📸 <a href="https://www.instagram.com/srigovindagermansilver" target="_blank" rel="noopener noreferrer" className="hover:underline">Check Instagram for coupon codes!</a>
+              📸 <a href="https://www.instagram.com/srigovindacollections" target="_blank" rel="noopener noreferrer" className="hover:underline">Check Instagram for coupon codes!</a>
             </div>
           </div>
 
@@ -78,7 +78,7 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-[#fdf6e9]/10 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#fdf6e9]/70 gap-4">
+        <div className="border-t border-[#f0f5fa]/10 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#f0f5fa]/70 gap-4">
           <p>© 2026 Srigovinda collections. All Rights Reserved.</p>
           <div className="flex items-center gap-6 select-none font-bold tracking-widest text-[#d4af37]">
             <span>🔒 SECURED PAYMENTS</span>

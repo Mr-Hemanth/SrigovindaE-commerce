@@ -32,7 +32,7 @@ function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-12 md:py-28">
+      <section className="bg-gradient-to-r from-[#0b1a30] to-[#0f2a4a] text-white py-12 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h1 className="text-3xl md:text-6xl font-bold font-serif leading-tight">Srigovinda collections</h1>
           <p className="text-sm md:text-2xl opacity-90 max-w-2xl mx-auto leading-relaxed">
@@ -41,7 +41,7 @@ function Home() {
           <div className="pt-4">
             <Link 
               to="/products" 
-              className="bg-white text-[#8b5a2b] px-6 py-3 md:px-10 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-[#fdf6e9] transition-all duration-300 shadow-xl hover:shadow-2xl inline-block"
+              className="bg-white text-[#0f2a4a] px-6 py-3 md:px-10 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-[#f0f4f8] transition-all duration-300 shadow-xl hover:shadow-2xl inline-block"
             >
               Explore Our Collection
             </Link>
@@ -85,7 +85,7 @@ function Home() {
           <div className="text-center mt-10 md:mt-16">
             <Link 
               to="/products" 
-              className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-3.5 md:px-10 md:py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-sm md:text-lg shadow-md hover:shadow-xl"
+              className="inline-block bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-8 py-3.5 md:px-10 md:py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold text-sm md:text-lg shadow-md hover:shadow-xl"
             >
               View All Products
             </Link>
@@ -94,7 +94,7 @@ function Home() {
       </section>
 
       {/* Social / Info Block */}
-      <section className="py-10 md:py-16 bg-gradient-to-r from-[#fdf6e9] to-[#f7f2ed]">
+      <section className="py-10 md:py-16 bg-gradient-to-r from-[#f0f4f8] to-[#eef3f7]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <h3 className="text-xl md:text-3xl font-bold text-gray-800 font-serif">Follow us on Instagram for Coupons! 📸</h3>
           <p className="text-gray-600 text-xs md:text-base max-w-xl mx-auto leading-relaxed">

@@ -50,7 +50,7 @@ function AdminOrders() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-[#8b5a2b] font-serif">Orders</h1>
+      <h1 className="text-3xl font-bold text-[#0f2a4a] font-serif">Orders</h1>
 
       <div className="bg-white rounded-3xl elegant-shadow overflow-hidden">
         {orders.length === 0 ? (
@@ -80,7 +80,7 @@ function AdminOrders() {
                         Address: <span className="font-medium">{order.shippingAddress}</span>
                       </p>
                     )}
-                    <p className="text-lg font-bold text-[#8b5a2b] mt-3">
+                    <p className="text-lg font-bold text-[#0f2a4a] mt-3">
                       Total: ₹{(order.finalTotal || order.total).toFixed(2)}
                     </p>
                   </div>
@@ -89,7 +89,7 @@ function AdminOrders() {
                     <select
                       value={order.status}
                       onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                      className="px-5 py-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="px-5 py-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     >
                       <option value="pending">Pending</option>
                       <option value="processing">Processing</option>
@@ -107,7 +107,7 @@ function AdminOrders() {
                 <div className="mt-6 pt-6 border-t border-gray-100">
                   <div className="flex flex-wrap gap-5">
                     {order.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-4 bg-[#fdf6e9] px-5 py-4 rounded-2xl">
+                      <div key={idx} className="flex items-center gap-4 bg-[#f0f5fa] px-5 py-4 rounded-2xl">
                         <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-xl elegant-shadow" />
                         <div>
                           <p className="text-base font-semibold text-gray-800">{item.name}</p>

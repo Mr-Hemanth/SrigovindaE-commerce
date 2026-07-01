@@ -230,7 +230,7 @@ function Profile() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-[#8b5a2b] mb-8 font-serif">My Account</h1>
+      <h1 className="text-4xl font-bold text-[#0f2a4a] mb-8 font-serif">My Account</h1>
       
       {message && (
         <div className={`mb-6 px-6 py-4 rounded-xl flex items-center gap-3 ${
@@ -273,7 +273,7 @@ function Profile() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#0f2a4a]"
                   placeholder="Your full name"
                   required
                 />
@@ -286,7 +286,7 @@ function Profile() {
                   maxLength={10}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#0f2a4a]"
                   placeholder="Primary 10-digit phone"
                 />
               </div>
@@ -298,7 +298,7 @@ function Profile() {
                     type="date"
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#0f2a4a]"
                   />
                 </div>
 
@@ -307,7 +307,7 @@ function Profile() {
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#0f2a4a]"
                   >
                     <option value="Prefer not to say">Prefer not to say</option>
                     <option value="Male">Male</option>
@@ -324,14 +324,14 @@ function Profile() {
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Write a little about yourself..."
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:border-[#0f2a4a]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-3 rounded-xl font-bold text-sm shadow-md hover:shadow-lg hover:from-[#a07254] hover:to-[#8b5a2b] transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-3 rounded-xl font-bold text-sm shadow-md hover:shadow-lg hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Save Profile Details'}
               </button>
@@ -351,7 +351,7 @@ function Profile() {
                 type="button"
                 onClick={handleOpenAdd}
                 disabled={addresses.length >= 4}
-                className="bg-[#8b5a2b] hover:bg-[#a07254] text-white px-5 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                className="bg-[#0f2a4a] hover:bg-[#1b4965] text-white px-5 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
               >
                 + Add Address
               </button>
@@ -370,7 +370,7 @@ function Profile() {
                     key={addr.id} 
                     className={`border-2 rounded-2xl p-6 relative flex flex-col justify-between transition-all duration-300 ${
                       addr.isDefault 
-                        ? 'border-[#8b5a2b] bg-[#fdf6e9]/20 shadow-md' 
+                        ? 'border-[#0f2a4a] bg-[#f0f5fa]/20 shadow-md' 
                         : 'border-gray-100 hover:border-gray-200 bg-white'
                     }`}
                   >
@@ -406,7 +406,7 @@ function Profile() {
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(addr)}
-                          className="text-[#8b5a2b] hover:text-[#a07254] font-bold text-xs hover:underline"
+                          className="text-[#0f2a4a] hover:text-[#1b4965] font-bold text-xs hover:underline"
                         >
                           Edit
                         </button>
@@ -423,7 +423,7 @@ function Profile() {
                         <button
                           type="button"
                           onClick={() => handleSetDefault(addr.id)}
-                          className="text-xs text-gray-500 hover:text-[#8b5a2b] font-semibold hover:underline"
+                          className="text-xs text-gray-500 hover:text-[#0f2a4a] font-semibold hover:underline"
                         >
                           Set Default
                         </button>
@@ -444,7 +444,7 @@ function Profile() {
           <div className="bg-white rounded-3xl elegant-shadow w-full max-w-lg overflow-hidden border border-gray-100">
             
             {/* Modal Header */}
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-[#8b5a2b] text-white">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-[#0f2a4a] text-white">
               <h3 className="text-xl font-bold font-serif">
                 {editingAddressId ? '✏️ Edit Address' : '📍 Add New Address'}
               </h3>
@@ -465,7 +465,7 @@ function Profile() {
                   <select
                     value={form.label}
                     onChange={(e) => setForm({ ...form, label: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                   >
                     <option value="Home">Home</option>
                     <option value="Work">Work</option>
@@ -481,7 +481,7 @@ function Profile() {
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                     placeholder="10-digit number"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -494,7 +494,7 @@ function Profile() {
                   value={form.area}
                   onChange={(e) => setForm({ ...form, area: e.target.value })}
                   placeholder="Flat No, Wing, Street address"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                   required
                 />
               </div>
@@ -506,7 +506,7 @@ function Profile() {
                   value={form.landmark}
                   onChange={(e) => setForm({ ...form, landmark: e.target.value })}
                   placeholder="e.g. Near City Mall"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                 />
               </div>
 
@@ -518,7 +518,7 @@ function Profile() {
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
                     placeholder="City"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -530,7 +530,7 @@ function Profile() {
                     value={form.state}
                     onChange={(e) => setForm({ ...form, state: e.target.value })}
                     placeholder="State"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -543,7 +543,7 @@ function Profile() {
                     value={form.pincode}
                     onChange={(e) => setForm({ ...form, pincode: e.target.value.replace(/\D/g, '') })}
                     placeholder="6 digits"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b] font-mono"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a] font-mono"
                     required
                   />
                 </div>
@@ -561,7 +561,7 @@ function Profile() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-3 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all font-semibold text-sm shadow-md"
+                  className="flex-1 bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-3 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all font-semibold text-sm shadow-md"
                 >
                   {loading ? 'Saving...' : 'Save Address'}
                 </button>

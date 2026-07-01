@@ -306,7 +306,7 @@ function Checkout() {
           shipping_address: shippingAddressText
         },
         theme: {
-          color: '#8b5a2b'
+          color: '#0f2a4a'
         }
       };
 
@@ -330,7 +330,7 @@ function Checkout() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 animate-fade-in">
-      <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-6 font-serif">Checkout</h1>
+      <h1 className="text-2xl md:text-4xl font-bold text-[#0f2a4a] mb-6 font-serif">Checkout</h1>
       
       {validationError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold flex items-center gap-3 animate-fade-in">
@@ -357,7 +357,7 @@ function Checkout() {
                   setAddressForm({ label: 'Home', area: '', landmark: '', city: '', state: '', pincode: '', phone: '' });
                   setShowAddressModal(true);
                 }}
-                className="text-xs font-bold text-[#8b5a2b] border border-[#8b5a2b] px-4 py-2 rounded-xl hover:bg-[#8b5a2b] hover:text-white transition-all duration-300 shadow-sm"
+                className="text-xs font-bold text-[#0f2a4a] border border-[#0f2a4a] px-4 py-2 rounded-xl hover:bg-[#0f2a4a] hover:text-white transition-all duration-300 shadow-sm"
               >
                 + Add New Address
               </button>
@@ -377,12 +377,12 @@ function Checkout() {
                     onClick={() => setSelectedAddressId(addr.id)}
                     className={`border-2 rounded-2xl p-5 cursor-pointer relative transition-all duration-300 ${
                       selectedAddressId === addr.id
-                        ? 'border-[#8b5a2b] bg-[#fdf6e9]/20 shadow-sm'
+                        ? 'border-[#0f2a4a] bg-[#f0f5fa]/20 shadow-sm'
                         : 'border-gray-100 hover:border-gray-200 bg-white'
                     }`}
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-bold text-[#8b5a2b] uppercase tracking-wider">
+                      <span className="text-xs font-bold text-[#0f2a4a] uppercase tracking-wider">
                         {addr.label}
                       </span>
                       {addr.isDefault && (
@@ -407,33 +407,33 @@ function Checkout() {
             <div className="space-y-4">
               
               {/* Razorpay Online */}
-              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
+              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-[#0f2a4a] bg-[#f0f5fa]/40' : 'border-gray-100 hover:border-[#1b4965]'}`}>
                 <input
                   type="radio"
                   name="payment"
                   value="online"
                   checked={paymentMethod === 'online'}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-5 h-5 text-[#8b5a2b] focus:ring-[#8b5a2b]"
+                  className="w-5 h-5 text-[#0f2a4a] focus:ring-[#0f2a4a]"
                 />
                 <div>
                   <span className="font-bold text-gray-800 text-sm md:text-lg flex items-center gap-2">
                     Secure Online Payment 
-                    <span className="bg-[#d4af37]/20 text-[#8b5a2b] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#8b5a2b]/10">RAZORPAY</span>
+                    <span className="bg-[#d4af37]/20 text-[#0f2a4a] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#0f2a4a]/10">RAZORPAY</span>
                   </span>
                   <p className="text-xs text-gray-400 mt-0.5">Pay securely using Credit/Debit Cards, Netbanking, or UPI Apps (PhonePe, GPay, Paytm)</p>
                 </div>
               </label>
 
               {/* COD */}
-              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
+              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-[#0f2a4a] bg-[#f0f5fa]/40' : 'border-gray-100 hover:border-[#1b4965]'}`}>
                 <input
                   type="radio"
                   name="payment"
                   value="cod"
                   checked={paymentMethod === 'cod'}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-5 h-5 text-[#8b5a2b] focus:ring-[#8b5a2b]"
+                  className="w-5 h-5 text-[#0f2a4a] focus:ring-[#0f2a4a]"
                 />
                 <div>
                   <span className="font-bold text-gray-800 text-sm md:text-lg">Cash on Delivery (COD)</span>
@@ -442,17 +442,17 @@ function Checkout() {
               </label>
 
               {paymentMethod === 'cod' && (
-                <div className="mt-6 p-6 bg-[#fdf6e9]/50 border border-dashed border-[#8b5a2b]/30 rounded-2xl animate-fade-in">
+                <div className="mt-6 p-6 bg-[#f0f5fa]/50 border border-dashed border-[#0f2a4a]/30 rounded-2xl animate-fade-in">
                   <h3 className="text-sm font-bold text-gray-800 mb-2 font-serif">Security Verification</h3>
                   <p className="text-xs text-gray-500 mb-4">Please input the security code shown below to confirm your COD checkout order.</p>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="select-none tracking-widest bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-5 py-2.5 rounded-xl font-mono text-lg font-bold italic line-through shadow-md">
+                    <div className="select-none tracking-widest bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-5 py-2.5 rounded-xl font-mono text-lg font-bold italic line-through shadow-md">
                       {captchaCode}
                     </div>
                     <button 
                       type="button"
                       onClick={generateCaptcha}
-                      className="text-xs font-bold text-[#8b5a2b] hover:text-[#a07254] underline hover:no-underline"
+                      className="text-xs font-bold text-[#0f2a4a] hover:text-[#1b4965] underline hover:no-underline"
                     >
                       Refresh
                     </button>
@@ -462,7 +462,7 @@ function Checkout() {
                     maxLength={4}
                     value={enteredCaptcha}
                     onChange={(e) => setEnteredCaptcha(e.target.value.replace(/\D/g, ''))}
-                    className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] text-base"
+                    className="w-full px-5 py-3.5 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] text-base"
                     placeholder="Enter security code"
                   />
                 </div>
@@ -485,7 +485,7 @@ function Checkout() {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   placeholder="Check Instagram for coupon codes"
-                  className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#8b5a2b]"
+                  className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#0f2a4a]"
                 />
                 <button
                   type="submit"
@@ -520,9 +520,9 @@ function Checkout() {
                             setCouponError(result.message);
                           }
                         }}
-                        className="bg-[#fdf6e9] border border-[#d4af37]/30 hover:border-[#8b5a2b] hover:bg-[#fcf1db] px-3 py-1.5 rounded-xl text-[10px] font-bold text-[#8b5a2b] transition-all duration-300 flex items-center gap-1.5 shadow-sm"
+                        className="bg-[#f0f5fa] border border-[#d4af37]/30 hover:border-[#0f2a4a] hover:bg-[#e1ecf7] px-3 py-1.5 rounded-xl text-[10px] font-bold text-[#0f2a4a] transition-all duration-300 flex items-center gap-1.5 shadow-sm"
                       >
-                        🎟️ {c.code} <span className="text-[9px] bg-[#d4af37]/20 px-1 py-0.5 rounded font-black text-[#8b5a2b]">{c.discountPercentage}% OFF</span>
+                        🎟️ {c.code} <span className="text-[9px] bg-[#d4af37]/20 px-1 py-0.5 rounded font-black text-[#0f2a4a]">{c.discountPercentage}% OFF</span>
                       </button>
                     ))}
                   </div>
@@ -558,7 +558,7 @@ function Checkout() {
                   <span>-₹{(total * (discount / 100)).toFixed(0)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-base font-bold text-[#8b5a2b] pt-1">
+              <div className="flex justify-between text-base font-bold text-[#0f2a4a] pt-1">
                 <span>Grand Total</span>
                 <span className="text-xl">₹{finalTotal.toFixed(0)}</span>
               </div>
@@ -567,7 +567,7 @@ function Checkout() {
             <button
               onClick={handlePlaceOrder}
               disabled={loading}
-              className="w-full bg-[#8b5a2b] hover:bg-[#a07254] text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm"
+              className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm"
             >
               {loading ? 'Processing Order...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Proceed to Payment'}
             </button>
@@ -580,7 +580,7 @@ function Checkout() {
       {showAddressModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl elegant-shadow w-full max-w-lg overflow-hidden border border-gray-100 animate-fade-in">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-[#8b5a2b] text-white">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-[#0f2a4a] text-white">
               <h3 className="text-xl font-bold font-serif">📍 Add New Shipping Address</h3>
               <button 
                 onClick={() => setShowAddressModal(false)}
@@ -603,7 +603,7 @@ function Checkout() {
                   <select
                     value={addressForm.label}
                     onChange={(e) => setAddressForm({ ...addressForm, label: e.target.value })}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                   >
                     <option value="Home">Home</option>
                     <option value="Work">Work</option>
@@ -619,7 +619,7 @@ function Checkout() {
                     value={addressForm.phone}
                     onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value.replace(/\D/g, '') })}
                     placeholder="10-digit number"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -632,7 +632,7 @@ function Checkout() {
                   value={addressForm.area}
                   onChange={(e) => setAddressForm({ ...addressForm, area: e.target.value })}
                   placeholder="Flat No, Wing, Street address"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                   required
                 />
               </div>
@@ -644,7 +644,7 @@ function Checkout() {
                   value={addressForm.landmark}
                   onChange={(e) => setAddressForm({ ...addressForm, landmark: e.target.value })}
                   placeholder="e.g. Near City Mall"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                 />
               </div>
 
@@ -656,7 +656,7 @@ function Checkout() {
                     value={addressForm.city}
                     onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
                     placeholder="City"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -668,7 +668,7 @@ function Checkout() {
                     value={addressForm.state}
                     onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
                     placeholder="State"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b]"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a]"
                     required
                   />
                 </div>
@@ -681,7 +681,7 @@ function Checkout() {
                     value={addressForm.pincode}
                     onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value.replace(/\D/g, '') })}
                     placeholder="6 digits"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#8b5a2b] font-mono"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#0f2a4a] font-mono"
                     required
                   />
                 </div>
@@ -697,7 +697,7 @@ function Checkout() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-3 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all font-semibold text-sm shadow-md"
+                  className="flex-1 bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-3 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all font-semibold text-sm shadow-md"
                 >
                   Save Address
                 </button>

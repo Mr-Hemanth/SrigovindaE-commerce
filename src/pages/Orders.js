@@ -105,12 +105,12 @@ function Orders() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 border-b border-gray-100 pb-6">
         <div>
-          <h1 className="text-4xl font-bold text-[#8b5a2b] font-serif">Order History</h1>
+          <h1 className="text-4xl font-bold text-[#0f2a4a] font-serif">Order History</h1>
           <p className="text-sm text-gray-500 mt-1">Review all your previous orders, invoices, and shipment tracking.</p>
         </div>
         <Link 
           to="/products"
-          className="bg-[#8b5a2b] hover:bg-[#a07254] text-white px-5 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 text-sm"
+          className="bg-[#0f2a4a] hover:bg-[#1b4965] text-white px-5 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 text-sm"
         >
           Continue Shopping
         </Link>
@@ -118,7 +118,7 @@ function Orders() {
 
       {loading ? (
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8b5a2b] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0f2a4a] mx-auto mb-4"></div>
           <p className="text-gray-500 font-medium">Fetching your order history securely...</p>
         </div>
       ) : orders.length === 0 ? (
@@ -128,7 +128,7 @@ function Orders() {
           <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">You haven't placed any orders yet. Explore our handcrafted jewellery collections and check out your first order!</p>
           <Link
             to="/products"
-            className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-bold shadow-md hover:shadow-lg"
+            className="inline-block bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-8 py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-bold shadow-md hover:shadow-lg"
           >
             Browse Products
           </Link>
@@ -145,7 +145,7 @@ function Orders() {
               <div 
                 key={order.id} 
                 className={`bg-white rounded-3xl border transition-all duration-300 elegant-shadow ${
-                  isExpanded ? 'border-[#8b5a2b]/30' : 'border-gray-100 hover:border-gray-200'
+                  isExpanded ? 'border-[#0f2a4a]/30' : 'border-gray-100 hover:border-gray-200'
                 }`}
               >
                 {/* Order Summary Header */}
@@ -170,7 +170,7 @@ function Orders() {
                   <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-8 border-t md:border-t-0 border-gray-50 pt-4 md:pt-0">
                     <div className="text-left md:text-right">
                       <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Total Amount</p>
-                      <p className="text-2xl font-black text-[#8b5a2b] font-serif">₹{(order.finalTotal || order.total).toFixed(0)}</p>
+                      <p className="text-2xl font-black text-[#0f2a4a] font-serif">₹{(order.finalTotal || order.total).toFixed(0)}</p>
                     </div>
                     <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors">
                       <svg 
@@ -253,7 +253,7 @@ function Orders() {
                             </div>
                           )}
 
-                          <div className="flex justify-between text-base font-bold text-[#8b5a2b] pt-1">
+                          <div className="flex justify-between text-base font-bold text-[#0f2a4a] pt-1">
                             <span>Grand Total</span>
                             <span>₹{(order.finalTotal || order.total).toFixed(0)}</span>
                           </div>
@@ -268,7 +268,7 @@ function Orders() {
                             <span className="text-gray-400 font-semibold block mb-0.5">Payment Status</span>
                             <span className={`px-2 py-0.5 rounded-full font-bold uppercase text-[9px] ${
                               order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' :
-                              order.paymentStatus === 'COD' ? 'bg-[#d4af37]/20 text-[#8b5a2b]' :
+                              order.paymentStatus === 'COD' ? 'bg-[#d4af37]/20 text-[#0f2a4a]' :
                               order.paymentStatus === 'Cancelled' ? 'bg-red-100 text-red-800' :
                               'bg-yellow-100 text-yellow-800'
                             }`}>

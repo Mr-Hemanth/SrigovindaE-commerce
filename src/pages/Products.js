@@ -19,44 +19,54 @@ function Products() {
         const querySnapshot = await getDocs(collection(db, 'products'));
         if (querySnapshot.empty) {
           setProducts(sampleProducts);
-          setFilteredProducts(sampleProducts);
         } else {
-          const productsData = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setProducts(productsData);
-          setFilteredProducts(productsData);
+          setProducts(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         }
       } catch (err) {
-        console.warn('Firestore products fetch offline. Falling back to local sample products:', err);
+        console.warn('Firebase query failed. Loading local items:', err);
         setProducts(sampleProducts);
-        setFilteredProducts(sampleProducts);
       }
     };
     fetchProducts();
   }, []);
 
   const applyFilters = useCallback(() => {
-    let result = products.filter(product => product.isActive !== false);
+    let temp = [...products];
 
+    // Filter by Category
     if (selectedCategory !== 'all') {
-      result = result.filter(product => product.category === selectedCategory);
+      temp = temp.filter(p => p.category === selectedCategory);
     }
 
+    // Filter by Subcategory
     if (selectedSubcategory !== 'all') {
-      result = result.filter(product => product.subcategory === selectedSubcategory);
+      temp = temp.filter(p => p.subcategory === selectedSubcategory);
     }
 
-    result = result.filter(product => product.price <= priceRange);
+    // Filter by Price Range
+    temp = temp.filter(p => {
+      const activePrice = p.discountedPrice !== undefined && p.discountedPrice !== null && p.discountedPrice !== '' && Number(p.discountedPrice) > 0
+        ? Number(p.discountedPrice)
+        : Number(p.price);
+      return activePrice <= priceRange;
+    });
 
+    // Sort products
     if (sortBy === 'price-low') {
-      result.sort((a, b) => a.price - b.price);
+      temp.sort((a, b) => {
+        const pA = a.discountedPrice !== undefined && a.discountedPrice !== null && a.discountedPrice !== '' && Number(a.discountedPrice) > 0 ? Number(a.discountedPrice) : Number(a.price);
+        const pB = b.discountedPrice !== undefined && b.discountedPrice !== null && b.discountedPrice !== '' && Number(b.discountedPrice) > 0 ? Number(b.discountedPrice) : Number(b.price);
+        return pA - pB;
+      });
     } else if (sortBy === 'price-high') {
-      result.sort((a, b) => b.price - a.price);
+      temp.sort((a, b) => {
+        const pA = a.discountedPrice !== undefined && a.discountedPrice !== null && a.discountedPrice !== '' && Number(a.discountedPrice) > 0 ? Number(a.discountedPrice) : Number(a.price);
+        const pB = b.discountedPrice !== undefined && b.discountedPrice !== null && b.discountedPrice !== '' && Number(b.discountedPrice) > 0 ? Number(b.discountedPrice) : Number(b.price);
+        return pB - pA;
+      });
     }
 
-    setFilteredProducts(result);
+    setFilteredProducts(temp.filter(p => p.isActive !== false));
   }, [products, selectedCategory, selectedSubcategory, priceRange, sortBy]);
 
   useEffect(() => {
@@ -68,14 +78,14 @@ function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-      <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-2 font-serif">Srigovinda collections</h1>
+      <h1 className="text-2xl md:text-4xl font-bold text-[#0f2a4a] mb-2 font-serif">Srigovinda collections</h1>
       <p className="text-gray-600 text-xs md:text-lg mb-6">Explore our exquisite jewellery collection in German Silver, One Gram Gold, and Panchaloha</p>
       
       {/* Filters Toggle Button for Mobile */}
       <button
         type="button"
         onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-        className="lg:hidden w-full flex items-center justify-between bg-white px-5 py-4 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-[#8b5a2b] mb-6 transition-all hover:bg-[#fdf6e9]/20"
+        className="lg:hidden w-full flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-[#0f2a4a] mb-6 transition-all hover:bg-[#f0f5fa]"
       >
         <span className="flex items-center gap-2">🔍 {showFiltersMobile ? 'Hide Filters' : 'Show Filters'}</span>
         <span>{showFiltersMobile ? '▲' : '▼'}</span>
@@ -83,13 +93,26 @@ function Products() {
 
       <div className="flex flex-col lg:flex-row gap-10">
         <div className={`lg:w-72 flex-shrink-0 ${showFiltersMobile ? 'block animate-fade-in' : 'hidden lg:block'}`}>
-          <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 sticky top-28 border border-gray-50/50">
-            <h3 className="text-xl font-bold mb-8 text-[#8b5a2b] font-serif">Filters</h3>
+          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-6 sticky top-28 border border-gray-100 space-y-6">
             
-            <div className="mb-8">
-              <h4 className="font-semibold mb-4 text-gray-800 text-base">Category</h4>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-[#fdf6e9] transition-colors">
+            {/* Header */}
+            <div className="flex justify-between items-center border-b pb-3">
+              <h3 className="text-lg font-bold text-[#0f2a4a] font-serif">Filters</h3>
+              {showFiltersMobile && (
+                <button 
+                  onClick={() => setShowFiltersMobile(false)}
+                  className="text-xs font-semibold text-gray-400 hover:text-red-500"
+                >
+                  Close ✕
+                </button>
+              )}
+            </div>
+            
+            {/* Categories */}
+            <div>
+              <h4 className="font-bold mb-2.5 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Category</h4>
+              <div className="grid grid-cols-2 gap-1.5 lg:flex lg:flex-col lg:space-y-1">
+                <label className="flex items-center gap-2 cursor-pointer p-1.5 lg:p-2 rounded-xl hover:bg-[#f0f5fa] transition-colors border border-gray-100/50 lg:border-none">
                   <input
                     type="radio"
                     name="category"
@@ -99,12 +122,12 @@ function Products() {
                       setSelectedCategory(e.target.value);
                       setSelectedSubcategory('all');
                     }}
-                    className="w-5 h-5 text-[#8b5a2b]"
+                    className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
                   />
-                  <span className="text-gray-700 font-medium">All Categories</span>
+                  <span className="text-gray-700 font-medium text-xs lg:text-sm">All Categories</span>
                 </label>
                 {categories.map(cat => (
-                  <label key={cat.id} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-[#fdf6e9] transition-colors">
+                  <label key={cat.id} className="flex items-center gap-2 cursor-pointer p-1.5 lg:p-2 rounded-xl hover:bg-[#f0f5fa] transition-colors border border-gray-100/50 lg:border-none">
                     <input
                       type="radio"
                       name="category"
@@ -114,74 +137,79 @@ function Products() {
                         setSelectedCategory(e.target.value);
                         setSelectedSubcategory('all');
                       }}
-                      className="w-5 h-5 text-[#8b5a2b]"
+                      className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
                     />
-                    <span className="text-gray-700 font-medium">{cat.name}</span>
+                    <span className="text-gray-700 font-medium text-xs lg:text-sm truncate">{cat.name}</span>
                   </label>
                 ))}
               </div>
             </div>
 
+            {/* Subcategories */}
             {selectedCategory !== 'all' && availableSubcategories.length > 0 && (
-              <div className="mb-8">
-                <h4 className="font-semibold mb-4 text-gray-800 text-base">Subcategory</h4>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-[#fdf6e9] transition-colors">
+              <div>
+                <h4 className="font-bold mb-2.5 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Subcategory</h4>
+                <div className="grid grid-cols-2 gap-1.5 lg:flex lg:flex-col lg:space-y-1">
+                  <label className="flex items-center gap-2 cursor-pointer p-1.5 lg:p-2 rounded-xl hover:bg-[#f0f5fa] transition-colors border border-gray-100/50 lg:border-none">
                     <input
                       type="radio"
                       name="subcategory"
                       value="all"
                       checked={selectedSubcategory === 'all'}
                       onChange={(e) => setSelectedSubcategory(e.target.value)}
-                      className="w-5 h-5 text-[#8b5a2b]"
+                      className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
                     />
-                    <span className="text-gray-700 font-medium">All</span>
+                    <span className="text-gray-700 font-medium text-xs lg:text-sm">All</span>
                   </label>
                   {availableSubcategories.map(sub => (
-                    <label key={sub} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-[#fdf6e9] transition-colors">
+                    <label key={sub} className="flex items-center gap-2 cursor-pointer p-1.5 lg:p-2 rounded-xl hover:bg-[#f0f5fa] transition-colors border border-gray-100/50 lg:border-none">
                       <input
                         type="radio"
                         name="subcategory"
                         value={sub}
                         checked={selectedSubcategory === sub}
                         onChange={(e) => setSelectedSubcategory(e.target.value)}
-                        className="w-5 h-5 text-[#8b5a2b]"
+                        className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
                       />
-                      <span className="text-gray-700 font-medium">{sub}</span>
+                      <span className="text-gray-700 font-medium text-xs lg:text-sm truncate">{sub}</span>
                     </label>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="mb-8">
-              <h4 className="font-semibold mb-4 text-gray-800 text-base">Price: ₹{priceRange}</h4>
+            {/* Price Slider */}
+            <div>
+              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Price: ₹{priceRange}</h4>
               <input
                 type="range"
                 min="100"
                 max="20000"
                 value={priceRange}
                 onChange={(e) => setPriceRange(Number(e.target.value))}
-                className="w-full accent-[#8b5a2b]"
+                className="w-full accent-[#0f2a4a]"
               />
             </div>
 
+            {/* Sort */}
             <div>
-              <h4 className="font-semibold mb-4 text-gray-800 text-base">Sort By</h4>
+              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Sort By</h4>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/5 bg-white text-gray-700"
               >
                 <option value="default">Default</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
               </select>
             </div>
+
           </div>
         </div>
 
-        <div className="flex-1">
+        {/* Product Cards Grid */}
+        <div className="flex-grow">
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
             {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
@@ -189,10 +217,23 @@ function Products() {
           </div>
           {filteredProducts.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-2xl text-gray-600 font-medium">No products found matching your criteria</p>
+              <span className="text-5xl block mb-4">🔍</span>
+              <p className="text-lg text-gray-500 font-medium font-serif">No products found matching filters.</p>
+              <button
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedSubcategory('all');
+                  setPriceRange(20000);
+                  setSortBy('default');
+                }}
+                className="mt-4 text-xs font-bold text-[#0f2a4a] hover:underline"
+              >
+                Clear all filters
+              </button>
             </div>
           )}
         </div>
+
       </div>
     </div>
   );

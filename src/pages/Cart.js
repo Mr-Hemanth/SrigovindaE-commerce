@@ -54,15 +54,15 @@ function Cart() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-16">
-      <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-6 md:mb-10 font-serif">Your Shopping Cart</h1>
+      <h1 className="text-2xl md:text-4xl font-bold text-[#0f2a4a] mb-6 md:mb-10 font-serif">Your Shopping Cart</h1>
       
       {cart.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow border border-gray-100">
-          <svg className="w-24 h-24 mx-auto text-[#8b5a2b] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-24 h-24 mx-auto text-[#0f2a4a] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
           </svg>
           <p className="text-xl text-gray-600 mb-6 font-medium">Your cart is empty</p>
-          <Link to="/products" className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-3.5 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-base shadow-md">
+          <Link to="/products" className="inline-block bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-8 py-3.5 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold text-base shadow-md">
             Continue Shopping
           </Link>
         </div>
@@ -90,11 +90,11 @@ function Cart() {
                     <div className="mt-1 flex items-baseline gap-2">
                       {item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0 ? (
                         <>
-                          <span className="text-[#8b5a2b] font-bold text-sm md:text-base">₹{item.discountedPrice}</span>
+                          <span className="text-[#0f2a4a] font-bold text-sm md:text-base">₹{item.discountedPrice}</span>
                           <span className="text-gray-400 line-through text-[10px] md:text-xs">₹{item.price}</span>
                         </>
                       ) : (
-                        <span className="text-[#8b5a2b] font-bold text-sm md:text-base">₹{item.price}</span>
+                        <span className="text-[#0f2a4a] font-bold text-sm md:text-base">₹{item.price}</span>
                       )}
                     </div>
                   </div>
@@ -103,14 +103,14 @@ function Cart() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all text-sm font-semibold"
+                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#f0f5fa] hover:border-[#0f2a4a] transition-all text-sm font-semibold"
                     >
                       -
                     </button>
                     <span className="w-6 text-center font-bold text-sm md:text-base font-mono">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all text-sm font-semibold"
+                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#f0f5fa] hover:border-[#0f2a4a] transition-all text-sm font-semibold"
                     >
                       +
                     </button>
@@ -118,7 +118,7 @@ function Cart() {
 
                   {/* Price */}
                   <div className="text-left md:text-right min-w-[80px]">
-                    <p className="text-sm md:text-lg font-black text-[#8b5a2b]">
+                    <p className="text-sm md:text-lg font-black text-[#0f2a4a]">
                       ₹{(
                         (item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0
                           ? Number(item.discountedPrice)
@@ -145,7 +145,7 @@ function Cart() {
           {/* Right Summary Panel */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 border border-gray-50 sticky top-28 space-y-6">
-              <h2 className="text-xl md:text-2xl font-bold text-[#8b5a2b] font-serif border-b border-gray-50 pb-4">Order Summary</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-[#0f2a4a] font-serif border-b border-gray-50 pb-4">Order Summary</h2>
 
               <div className="space-y-4">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Have a coupon?</label>
@@ -155,7 +155,7 @@ function Cart() {
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     placeholder="Check Instagram for coupon codes"
-                    className="flex-1 border-2 border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#8b5a2b]"
+                    className="flex-1 border-2 border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#0f2a4a]"
                   />
                   <button
                     onClick={handleApplyCoupon}
@@ -190,9 +190,9 @@ function Cart() {
                             }
                             setTimeout(() => setCouponMessage(''), 3000);
                           }}
-                          className="bg-[#fdf6e9] border border-[#d4af37]/30 hover:border-[#8b5a2b] hover:bg-[#fcf1db] px-3 py-1.5 rounded-xl text-[10px] font-bold text-[#8b5a2b] transition-all duration-300 flex items-center gap-1.5 shadow-sm"
+                          className="bg-[#f0f5fa] border border-[#d4af37]/30 hover:border-[#0f2a4a] hover:bg-[#e1ecf7] px-3 py-1.5 rounded-xl text-[10px] font-bold text-[#0f2a4a] transition-all duration-300 flex items-center gap-1.5 shadow-sm"
                         >
-                          🎟️ {c.code} <span className="text-[9px] bg-[#d4af37]/20 px-1 py-0.5 rounded font-black text-[#8b5a2b]">{c.discountPercentage}% OFF</span>
+                          🎟️ {c.code} <span className="text-[9px] bg-[#d4af37]/20 px-1 py-0.5 rounded font-black text-[#0f2a4a]">{c.discountPercentage}% OFF</span>
                         </button>
                       ))}
                     </div>
@@ -218,7 +218,7 @@ function Cart() {
                     <span>-₹{discountAmount.toFixed(0)}</span>
                   </div>
                 )}
-                <div className="border-t pt-4 flex justify-between text-lg md:text-xl font-black text-[#8b5a2b]">
+                <div className="border-t pt-4 flex justify-between text-lg md:text-xl font-black text-[#0f2a4a]">
                   <span>Total</span>
                   <span>₹{total.toFixed(0)}</span>
                 </div>
@@ -226,12 +226,12 @@ function Cart() {
 
               <button
                 onClick={() => navigate('/checkout')}
-                className="w-full bg-[#8b5a2b] hover:bg-[#a07254] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold shadow-md hover:shadow-lg text-center block text-sm"
+                className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold shadow-md hover:shadow-lg text-center block text-sm"
               >
                 Proceed to Checkout
               </button>
 
-              <Link to="/products" className="block text-center text-[#8b5a2b] hover:text-[#a07254] text-xs font-bold transition-colors">
+              <Link to="/products" className="block text-center text-[#0f2a4a] hover:text-[#1b4965] text-xs font-bold transition-colors">
                 Continue Shopping
               </Link>
             </div>

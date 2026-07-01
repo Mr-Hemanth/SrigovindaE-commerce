@@ -16,11 +16,11 @@ function OrderSuccess() {
   };
 
   return (
-    <div className="min-h-screen py-16 px-4 bg-gradient-to-br from-[#fdf6e9] to-[#f7f2ed] flex items-center justify-center">
+    <div className="min-h-screen py-16 px-4 bg-gradient-to-br from-[#f0f5fa] to-[#f7f2ed] flex items-center justify-center">
       <div className="max-w-2xl w-full bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100">
         
         {/* Success Header banner */}
-        <div className="bg-[#8b5a2b] text-white p-8 text-center relative">
+        <div className="bg-[#0f2a4a] text-white p-8 text-center relative">
           <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-white/10 mb-4 animate-pulse">
             <svg className="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -71,7 +71,7 @@ function OrderSuccess() {
               </div>
 
               {/* Total details */}
-              <div className="bg-[#fdf6e9]/40 border border-[#8b5a2b]/10 rounded-2xl p-6">
+              <div className="bg-[#f0f5fa]/40 border border-[#0f2a4a]/10 rounded-2xl p-6">
                 <div className="flex justify-between items-center mb-2 text-sm">
                   <span className="text-gray-500 font-medium">Payment Mode</span>
                   <span className="font-semibold text-gray-800">{getPaymentMethodLabel(paymentMethod)}</span>
@@ -86,9 +86,9 @@ function OrderSuccess() {
                     {paymentStatus || 'Pending'}
                   </span>
                 </div>
-                <div className="border-t border-[#8b5a2b]/10 pt-4 flex justify-between items-center">
+                <div className="border-t border-[#0f2a4a]/10 pt-4 flex justify-between items-center">
                   <span className="text-base font-bold text-gray-800">Total Price</span>
-                  <span className="text-2xl font-extrabold text-[#8b5a2b]">₹{finalTotal?.toFixed(2)}</span>
+                  <span className="text-2xl font-extrabold text-[#0f2a4a]">₹{finalTotal?.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -114,13 +114,13 @@ function OrderSuccess() {
           <div className="space-y-4 pt-4 border-t border-gray-100">
             <Link 
               to="/" 
-              className="block w-full text-center bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-4 px-6 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"
+              className="block w-full text-center bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 px-6 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"
             >
               Continue Shopping
             </Link>
             <Link 
               to="/profile" 
-              className="block w-full text-center border-2 border-[#8b5a2b] text-[#8b5a2b] py-4 px-6 rounded-xl hover:bg-[#fdf6e9] transition-all duration-300 font-semibold text-lg"
+              className="block w-full text-center border-2 border-[#0f2a4a] text-[#0f2a4a] py-4 px-6 rounded-xl hover:bg-[#f0f5fa] transition-all duration-300 font-semibold text-lg"
             >
               View My Orders
             </Link>

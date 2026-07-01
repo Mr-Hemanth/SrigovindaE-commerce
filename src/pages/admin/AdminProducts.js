@@ -113,14 +113,14 @@ function AdminProducts() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[#8b5a2b] font-serif">Products</h1>
+        <h1 className="text-3xl font-bold text-[#0f2a4a] font-serif">Products</h1>
         <button
           onClick={() => {
             setEditingProduct(null);
             setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', stock: '', isActive: true });
             setShowModal(true);
           }}
-          className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-3 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+          className="bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-8 py-3 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
         >
           + Add Product
         </button>
@@ -128,19 +128,19 @@ function AdminProducts() {
 
       <div className="bg-white rounded-3xl elegant-shadow overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-[#fdf6e9] to-[#f7f2ed]">
+          <thead className="bg-gradient-to-r from-[#f0f5fa] to-[#f7f2ed]">
             <tr>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Product</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Category</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Price</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Stock</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Status</th>
-              <th className="px-8 py-5 text-left text-sm font-semibold text-[#8b5a2b] uppercase tracking-wide">Actions</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Product</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Category</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Price</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Stock</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Status</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-[#0f2a4a] uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-[#fdf6e9] transition-colors">
+              <tr key={product.id} className="hover:bg-[#f0f5fa] transition-colors">
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-5">
                     <img src={product.image} alt={product.name} className="w-20 h-20 object-cover rounded-2xl elegant-shadow" />
@@ -154,7 +154,7 @@ function AdminProducts() {
                 <td className="px-8 py-5 text-gray-800 font-bold">
                   {product.discountedPrice ? (
                     <div className="flex flex-col">
-                      <span className="text-[#8b5a2b] text-lg">₹{product.discountedPrice}</span>
+                      <span className="text-[#0f2a4a] text-lg">₹{product.discountedPrice}</span>
                       <span className="text-xs text-gray-400 line-through">₹{product.price}</span>
                     </div>
                   ) : (
@@ -179,7 +179,7 @@ function AdminProducts() {
                   <div className="flex gap-3 text-sm">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-[#8b5a2b] hover:text-[#a07254] font-semibold transition-colors"
+                      className="text-[#0f2a4a] hover:text-[#1b4965] font-semibold transition-colors"
                     >
                       Edit
                     </button>
@@ -201,7 +201,7 @@ function AdminProducts() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl elegant-shadow max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-10">
-              <h2 className="text-2xl font-bold text-[#8b5a2b] mb-8 font-serif">
+              <h2 className="text-2xl font-bold text-[#0f2a4a] mb-8 font-serif">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -212,7 +212,7 @@ function AdminProducts() {
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                   />
                 </div>
 
@@ -223,7 +223,7 @@ function AdminProducts() {
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     rows={4}
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                   />
                 </div>
 
@@ -234,7 +234,7 @@ function AdminProducts() {
                       required
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value, subcategory: '' })}
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     >
                       <option value="">Select Category</option>
                       {categories.map(cat => (
@@ -248,7 +248,7 @@ function AdminProducts() {
                       required
                       value={form.subcategory}
                       onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     >
                       <option value="">Select Subcategory</option>
                       {form.category && categories.find(c => c.id === form.category)?.subcategories.map(sub => (
@@ -266,7 +266,7 @@ function AdminProducts() {
                       required
                       value={form.price}
                       onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ function AdminProducts() {
                       value={form.discountedPrice}
                       onChange={(e) => setForm({ ...form, discountedPrice: e.target.value })}
                       placeholder="Optional price"
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     />
                   </div>
                   <div>
@@ -286,7 +286,7 @@ function AdminProducts() {
                       required
                       value={form.stock}
                       onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -298,18 +298,18 @@ function AdminProducts() {
                     required
                     value={form.image}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#8b5a2b] focus:ring-4 focus:ring-[#8b5a2b]/10 transition-all duration-300"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     placeholder="https://..."
                   />
                 </div>
 
-                <div className="flex items-center gap-3 bg-[#fdf6e9]/40 border border-[#8b5a2b]/15 p-5 rounded-2xl">
+                <div className="flex items-center gap-3 bg-[#f0f5fa]/40 border border-[#0f2a4a]/15 p-5 rounded-2xl">
                   <input
                     type="checkbox"
                     id="isActive"
                     checked={form.isActive}
                     onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                    className="w-5 h-5 text-[#8b5a2b] focus:ring-[#8b5a2b] border-gray-300 rounded"
+                    className="w-5 h-5 text-[#0f2a4a] focus:ring-[#0f2a4a] border-gray-300 rounded"
                   />
                   <label htmlFor="isActive" className="text-sm font-semibold text-gray-700 cursor-pointer select-none">
                     Enable Product (Show this product in store catalogs)
@@ -324,14 +324,14 @@ function AdminProducts() {
                       setEditingProduct(null);
                       setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', stock: '', isActive: true });
                     }}
-                    className="flex-1 border-2 border-[#8b5a2b] text-[#8b5a2b] py-4 rounded-xl hover:bg-[#fdf6e9] transition-all duration-300 font-semibold"
+                    className="flex-1 border-2 border-[#0f2a4a] text-[#0f2a4a] py-4 rounded-xl hover:bg-[#f0f5fa] transition-all duration-300 font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold shadow-lg disabled:opacity-50"
+                    className="flex-1 bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-semibold shadow-lg disabled:opacity-50"
                   >
                     {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
                   </button>
