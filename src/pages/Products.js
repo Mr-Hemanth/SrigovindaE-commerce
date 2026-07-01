@@ -12,6 +12,7 @@ function Products() {
   const [sortBy, setSortBy] = useState('default');
   const [priceRange, setPriceRange] = useState(10000);
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,6 +33,15 @@ function Products() {
 
   const applyFilters = useCallback(() => {
     let temp = [...products];
+
+    // Filter by Search Query
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase();
+      temp = temp.filter(p => 
+        p.name.toLowerCase().includes(q) ||
+        (p.description && p.description.toLowerCase().includes(q))
+      );
+    }
 
     // Filter by Category
     if (selectedCategory !== 'all') {
@@ -67,7 +77,7 @@ function Products() {
     }
 
     setFilteredProducts(temp.filter(p => p.isActive !== false));
-  }, [products, selectedCategory, selectedSubcategory, priceRange, sortBy]);
+  }, [products, selectedCategory, selectedSubcategory, priceRange, sortBy, searchQuery]);
 
   useEffect(() => {
     applyFilters();
@@ -81,6 +91,20 @@ function Products() {
       <h1 className="text-2xl md:text-4xl font-bold text-[#0f2a4a] mb-2 font-serif">Srigovinda collections</h1>
       <p className="text-gray-600 text-xs md:text-lg mb-6">Explore our exquisite jewellery collection in German Silver, One Gram Gold, and Panchaloha</p>
       
+      {/* Search Input Bar */}
+      <div className="mb-6 relative">
+        <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+          🔍
+        </span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search for jewellery items (e.g. necklace, ring, earrings)..."
+          className="w-full pl-10 pr-4 py-3 md:py-3.5 border border-gray-200 rounded-2xl text-xs md:text-sm focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/5 bg-white elegant-shadow"
+        />
+      </div>
+
       {/* Filters Toggle Button for Mobile */}
       <button
         type="button"

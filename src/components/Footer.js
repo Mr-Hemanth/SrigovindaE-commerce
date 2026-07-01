@@ -13,6 +13,11 @@ function Footer() {
             <p className="text-xs text-[#fdf6e9]/80 leading-relaxed max-w-sm">
               Exquisite handcrafted jewellery featuring German Silver, One Gram Gold, and Panchaloha pieces designed with timeless details and premium quality.
             </p>
+            <div className="text-[11px] text-[#fdf6e9]/80 space-y-1 pt-1 font-medium">
+              <p>📍 Devangula Street, Amalapuram, AP, India</p>
+              <p>📞 +91 9177696666</p>
+              <p>✉️ srigovindagermansilver@gmail.com</p>
+            </div>
             <div className="pt-1 text-xs font-semibold text-[#d4af37]">
               📸 <a href="https://www.instagram.com/srigovindacollections" target="_blank" rel="noopener noreferrer" className="hover:underline">Check Instagram for coupon codes!</a>
             </div>
@@ -80,10 +85,8 @@ function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-[#fdf6e9]/10 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[#fdf6e9]/70 gap-4">
           <p>© 2026 Srigovinda collections. All Rights Reserved.</p>
-          <div className="flex items-center gap-6 select-none font-bold tracking-widest text-[#d4af37]">
-            <span>🔒 SECURED PAYMENTS</span>
-            <span>🟣 PHONEPE</span>
-            <span>📱 UPI</span>
+          <div className="flex items-center gap-4 select-none font-bold tracking-widest text-[#d4af37]">
+            <span>🔒 SECURED SSL PAYMENTS</span>
           </div>
         </div>
 
