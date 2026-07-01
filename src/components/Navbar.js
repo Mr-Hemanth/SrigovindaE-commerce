@@ -24,9 +24,10 @@ function Navbar() {
   const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <nav className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] shadow-xl sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] shadow-xl sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
+          
           {/* Logo Title */}
           <Link to="/" className="text-xl md:text-2xl font-bold text-[#fdf6e9] font-serif tracking-wide select-none">
             🙏 Srigovinda collections
@@ -95,55 +96,112 @@ function Navbar() {
               </>
             )}
 
-            {/* Toggle Dropdown Button */}
+            {/* Toggle Button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen(true)}
               className="text-[#fdf6e9] hover:text-white focus:outline-none"
-              aria-label="Toggle navigation menu"
+              aria-label="Open navigation menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-                )}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile menu dropdown panel */}
-        {isOpen && (
-          <div className="lg:hidden block border-t border-[#fdf6e9]/10 pb-5 pt-3 space-y-3 animate-fade-in">
-            <Link to="/" onClick={() => setIsOpen(false)} className="block text-[#fdf6e9] hover:text-white font-medium py-1.5 text-sm">Home</Link>
-            <Link to="/products" onClick={() => setIsOpen(false)} className="block text-[#fdf6e9] hover:text-white font-medium py-1.5 text-sm">Products</Link>
-            
-            {currentUser ? (
-              <>
-                <Link to="/orders" onClick={() => setIsOpen(false)} className="block text-[#fdf6e9] hover:text-white font-medium py-1.5 text-sm">Orders</Link>
-                <Link to="/profile" onClick={() => setIsOpen(false)} className="block text-[#fdf6e9] hover:text-white font-medium py-1.5 text-sm">Profile</Link>
-                <div className="pt-2 flex flex-wrap gap-3 items-center">
-                  {isAdmin && (
-                    <Link to="/admin" onClick={() => setIsOpen(false)} className="bg-[#d4af37] text-[#5a3d1d] px-4 py-2 rounded-xl font-bold text-xs shadow-md">
-                      Admin Panel
-                    </Link>
-                  )}
-                  <button 
-                    onClick={handleLogout} 
-                    className="bg-[#c0392b] text-white px-4 py-2 rounded-xl hover:bg-[#a93226] font-bold text-xs shadow-md"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="flex gap-4 pt-2">
-                <Link to="/login" onClick={() => setIsOpen(false)} className="text-[#fdf6e9] hover:text-white font-medium text-sm flex items-center">Login</Link>
-                <Link to="/signup" onClick={() => setIsOpen(false)} className="bg-[#d4af37] text-[#5a3d1d] px-5 py-2 rounded-xl font-bold text-xs shadow-md">Sign Up</Link>
+      {/* Backdrop overlay for mobile drawer */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Mobile Slide-Over Navigation Drawer */}
+      <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-gradient-to-b from-[#5a3d1d] to-[#8b5a2b] text-[#fdf6e9] shadow-2xl z-50 transform transition-transform duration-300 ease-out flex flex-col justify-between border-l border-[#d4af37]/20 ${
+        isOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        
+        {/* Drawer Header */}
+        <div className="p-6 border-b border-[#fdf6e9]/10">
+          <div className="flex justify-between items-center mb-4">
+            <span className="font-serif font-bold text-lg text-[#d4af37]">Store Menu</span>
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="text-white/80 hover:text-white text-2xl font-semibold leading-none focus:outline-none"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* User profile block */}
+          {currentUser && (
+            <div className="bg-black/10 p-3.5 rounded-xl border border-white/5 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-[#d4af37]/20 flex items-center justify-center font-bold text-[#d4af37] border border-[#d4af37]/20">
+                {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'C'}
               </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold truncate">{currentUser.name || 'Valued Customer'}</p>
+                <p className="text-[10px] text-white/60 truncate">{currentUser.email}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Drawer Navigation Links */}
+        <div className="flex-grow overflow-y-auto px-6 py-4 space-y-4">
+          <Link to="/" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">🏠 Home Page</Link>
+          <Link to="/products" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">🛍️ Shop Products</Link>
+          
+          {currentUser ? (
+            <>
+              <Link to="/orders" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">📦 Order Tracking</Link>
+              <Link to="/profile" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">👤 My Account Profile</Link>
+              <Link to="/wishlist" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">❤️ Wishlist ({wishlist.length})</Link>
+              <Link to="/cart" onClick={() => setIsOpen(false)} className="block text-sm font-semibold hover:text-[#d4af37] py-2 transition-colors border-b border-white/5">🛒 Shopping Cart ({totalCartItems})</Link>
+            </>
+          ) : (
+            <div className="space-y-3 pt-4">
+              <Link 
+                to="/login" 
+                onClick={() => setIsOpen(false)} 
+                className="block text-center border border-[#d4af37]/50 text-[#fdf6e9] py-3 rounded-xl font-bold text-xs"
+              >
+                Log In
+              </Link>
+              <Link 
+                to="/signup" 
+                onClick={() => setIsOpen(false)} 
+                className="block text-center bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#5a3d1d] py-3 rounded-xl font-bold text-xs"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Drawer Footer Actions */}
+        {currentUser && (
+          <div className="p-6 border-t border-[#fdf6e9]/10 bg-black/5 space-y-3">
+            {isAdmin && (
+              <Link 
+                to="/admin" 
+                onClick={() => setIsOpen(false)} 
+                className="block text-center bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#5a3d1d] py-3 rounded-xl font-bold text-xs shadow-md"
+              >
+                🛠️ Admin Dashboard
+              </Link>
             )}
+            <button
+              onClick={handleLogout}
+              className="w-full bg-[#c0392b] text-white py-3 rounded-xl hover:bg-[#a93226] font-bold text-xs shadow-md transition-colors"
+            >
+              Log Out
+            </button>
           </div>
         )}
+
       </div>
     </nav>
   );

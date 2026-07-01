@@ -36,12 +36,12 @@ function ProductCard({ product }) {
         <img 
           src={product.image} 
           alt={product.name} 
-          className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" 
+          className="w-full h-48 md:h-64 object-cover transition-transform duration-500 group-hover:scale-105" 
         />
         
         {/* Discount Badge Ribbon */}
         {hasDiscount && (
-          <span className="absolute top-4 left-4 bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#5a3d1d] font-black text-[9px] tracking-wider uppercase px-2.5 py-1 rounded-full shadow-md z-10 border border-[#c49d2f]/20">
+          <span className="absolute top-3 left-3 bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#5a3d1d] font-black text-[8px] md:text-[9px] tracking-wider uppercase px-2 py-0.5 md:px-2.5 md:py-1 rounded-full shadow-md z-10 border border-[#c49d2f]/20">
             SAVE {discountPercentage}%
           </span>
         )}
@@ -51,47 +51,47 @@ function ProductCard({ product }) {
             e.stopPropagation();
             handleWishlistClick();
           }}
-          className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-2.5 rounded-full shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+          className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
         >
           {isInWishlist(product.id) ? (
-            <svg className="w-5 h-5 text-[#e74c3c]" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-[#e74c3c]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           ) : (
-            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           )}
         </button>
       </div>
       
-      <div className="p-6 flex flex-col justify-between flex-grow">
+      <div className="p-4 md:p-6 flex flex-col justify-between flex-grow">
         <div>
-          <span className="text-[10px] font-bold text-[#8b5a2b] uppercase tracking-widest">{product.category.replace('-', ' ')}</span>
+          <span className="text-[9px] md:text-[10px] font-bold text-[#8b5a2b] uppercase tracking-widest">{product.category.replace('-', ' ')}</span>
           <h3 
             onClick={() => navigate(`/product/${product.id}`)}
-            className="mt-2 text-lg font-bold text-gray-800 font-serif cursor-pointer hover:text-[#8b5a2b] transition-colors line-clamp-1 leading-snug"
+            className="mt-1.5 text-sm md:text-lg font-bold text-gray-800 font-serif cursor-pointer hover:text-[#8b5a2b] transition-colors line-clamp-1 leading-snug"
           >
             {product.name}
           </h3>
-          <p className="mt-2 text-gray-500 text-xxs leading-relaxed line-clamp-2">{product.description}</p>
+          <p className="mt-1.5 text-gray-500 text-[10px] md:text-xs leading-relaxed line-clamp-2">{product.description}</p>
         </div>
 
-        <div className="mt-5 flex items-center justify-between pt-4 border-t border-gray-50">
-          <div className="flex items-baseline gap-1.5">
+        <div className="mt-4 flex items-center justify-between pt-3.5 border-t border-gray-50">
+          <div className="flex items-baseline gap-1">
             {hasDiscount ? (
               <>
-                <span className="text-xl font-black text-[#8b5a2b]">₹{Number(product.discountedPrice).toFixed(0)}</span>
-                <span className="text-gray-400 line-through text-[11px] font-medium">₹{Number(product.price).toFixed(0)}</span>
+                <span className="text-base md:text-xl font-black text-[#8b5a2b]">₹{Number(product.discountedPrice).toFixed(0)}</span>
+                <span className="text-gray-400 line-through text-[10px] md:text-[11px] font-medium">₹{Number(product.price).toFixed(0)}</span>
               </>
             ) : (
-              <span className="text-xl font-black text-[#8b5a2b]">₹{Number(product.price).toFixed(0)}</span>
+              <span className="text-base md:text-xl font-black text-[#8b5a2b]">₹{Number(product.price).toFixed(0)}</span>
             )}
           </div>
           
           <button
             onClick={handleAddToCart}
-            className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-4 py-2.5 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-xs shadow-md hover:shadow-lg"
+            className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-3 py-2 md:px-4 md:py-2.5 rounded-lg md:rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-[10px] md:text-xs shadow-md hover:shadow-lg"
           >
             Add to Cart
           </button>

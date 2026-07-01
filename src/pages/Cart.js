@@ -53,78 +53,102 @@ function Cart() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h1 className="text-4xl font-bold text-[#8b5a2b] mb-10 font-serif">Your Shopping Cart</h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+      <h1 className="text-3xl md:text-4xl font-bold text-[#8b5a2b] mb-8 md:mb-10 font-serif">Your Shopping Cart</h1>
+      
       {cart.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow border border-gray-100">
-          <svg className="w-32 h-32 mx-auto text-[#8b5a2b] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-24 h-24 mx-auto text-[#8b5a2b] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
           </svg>
-          <p className="text-2xl text-gray-600 mb-6 font-medium">Your cart is empty</p>
-          <Link to="/products" className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-lg shadow-md">
+          <p className="text-xl text-gray-600 mb-6 font-medium">Your cart is empty</p>
+          <Link to="/products" className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-3.5 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-base shadow-md">
             Continue Shopping
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-6 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
+          
+          {/* Cart Items List */}
+          <div className="lg:col-span-2 space-y-4 md:space-y-6 animate-fade-in">
             {cart.map(item => (
-              <div key={item.id} className="bg-white rounded-3xl elegant-shadow p-8 flex flex-col md:flex-row items-center gap-6 border border-gray-50/50 hover:scale-[1.01] transition-transform duration-300">
-                <img src={item.image} alt={item.name} className="w-32 h-32 object-cover rounded-2xl elegant-shadow border border-gray-100" />
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-xl font-bold text-gray-800 font-serif leading-snug">{item.name}</h3>
-                  <div className="mt-2 flex items-baseline justify-center md:justify-start gap-2">
-                    {item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0 ? (
-                      <>
-                        <span className="text-[#8b5a2b] font-bold text-lg">₹{item.discountedPrice}</span>
-                        <span className="text-gray-400 line-through text-xs">₹{item.price}</span>
-                      </>
-                    ) : (
-                      <span className="text-[#8b5a2b] font-bold text-lg">₹{item.price}</span>
-                    )}
+              <div 
+                key={item.id} 
+                className="bg-white rounded-3xl elegant-shadow p-4 md:p-6 flex flex-row items-center gap-4 md:gap-6 border border-gray-50/50 hover:scale-[1.01] transition-all duration-300 relative"
+              >
+                {/* Image */}
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl elegant-shadow border border-gray-100 flex-shrink-0" 
+                />
+                
+                {/* Content Details */}
+                <div className="flex-1 min-w-0 pr-6 md:pr-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
+                  <div>
+                    <h3 className="text-sm md:text-lg font-bold text-gray-800 font-serif leading-snug truncate">{item.name}</h3>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      {item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0 ? (
+                        <>
+                          <span className="text-[#8b5a2b] font-bold text-sm md:text-base">₹{item.discountedPrice}</span>
+                          <span className="text-gray-400 line-through text-[10px] md:text-xs">₹{item.price}</span>
+                        </>
+                      ) : (
+                        <span className="text-[#8b5a2b] font-bold text-sm md:text-base">₹{item.price}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Quantity selectors */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all text-sm font-semibold"
+                    >
+                      -
+                    </button>
+                    <span className="w-6 text-center font-bold text-sm md:text-base font-mono">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all text-sm font-semibold"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Price */}
+                  <div className="text-left md:text-right min-w-[80px]">
+                    <p className="text-sm md:text-lg font-black text-[#8b5a2b]">
+                      ₹{(
+                        (item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0
+                          ? Number(item.discountedPrice)
+                          : Number(item.price)) * item.quantity
+                      ).toFixed(0)}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="w-10 h-10 flex items-center justify-center border-2 border-gray-200 rounded-xl hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all duration-300 text-lg font-semibold"
-                  >
-                    -
-                  </button>
-                  <span className="w-8 text-center font-bold text-lg font-mono">{item.quantity}</span>
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="w-10 h-10 flex items-center justify-center border-2 border-gray-200 rounded-xl hover:bg-[#fdf6e9] hover:border-[#8b5a2b] transition-all duration-300 text-lg font-semibold"
-                  >
-                    +
-                  </button>
-                </div>
-                <div className="text-center md:text-right min-w-[100px]">
-                  <p className="text-xl font-black text-[#8b5a2b]">
-                    ₹{(
-                      (item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0
-                        ? Number(item.discountedPrice)
-                        : Number(item.price)) * item.quantity
-                    ).toFixed(0)}
-                  </p>
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500 hover:text-red-700 text-xs mt-2 font-bold hover:underline transition-all"
-                  >
-                    Remove
-                  </button>
-                </div>
+
+                {/* Absolute trash removal button */}
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
+                  aria-label="Remove item"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </div>
             ))}
           </div>
 
+          {/* Right Summary Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-50 sticky top-28 space-y-6">
-              <h2 className="text-2xl font-bold text-[#8b5a2b] font-serif border-b border-gray-50 pb-4">Order Summary</h2>
+            <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 border border-gray-50 sticky top-28 space-y-6">
+              <h2 className="text-xl md:text-2xl font-bold text-[#8b5a2b] font-serif border-b border-gray-50 pb-4">Order Summary</h2>
 
-              {/* Coupon inputs */}
               <div className="space-y-4">
-                <label className="block text-sm font-bold text-gray-500 uppercase tracking-wider">Have a coupon?</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Have a coupon?</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -146,7 +170,7 @@ function Cart() {
                   </p>
                 )}
 
-                {/* Clickable Ticket badges list */}
+                {/* Available Coupon Ticket decks */}
                 {availableCoupons.length > 0 && !coupon && (
                   <div className="pt-2">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Available Coupons (Click to apply)</p>
@@ -183,7 +207,7 @@ function Cart() {
                 )}
               </div>
 
-              <div className="space-y-4 border-b border-gray-50 pb-6 text-sm text-gray-600">
+              <div className="space-y-4 border-t pt-6 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-semibold text-gray-800">₹{subtotal.toFixed(0)}</span>
@@ -194,7 +218,7 @@ function Cart() {
                     <span>-₹{discountAmount.toFixed(0)}</span>
                   </div>
                 )}
-                <div className="border-t pt-4 flex justify-between text-xl font-black text-[#8b5a2b]">
+                <div className="border-t pt-4 flex justify-between text-lg md:text-xl font-black text-[#8b5a2b]">
                   <span>Total</span>
                   <span>₹{total.toFixed(0)}</span>
                 </div>
@@ -212,6 +236,7 @@ function Cart() {
               </Link>
             </div>
           </div>
+
         </div>
       )}
     </div>

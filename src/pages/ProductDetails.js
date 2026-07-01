@@ -226,7 +226,7 @@ function ProductDetails() {
           <img 
             src={product.image} 
             alt={product.name} 
-            className="w-full h-[500px] object-cover rounded-2xl elegant-shadow border border-gray-100 transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-80 sm:h-[400px] md:h-[500px] object-cover rounded-2xl elegant-shadow border border-gray-100 transition-transform duration-500 group-hover:scale-105"
           />
           
           <button
