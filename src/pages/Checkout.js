@@ -252,7 +252,7 @@ function Checkout() {
       }
 
       const options = {
-        key: 'rzp_test_srigovinda_sandbox',
+        key: 'rzp_live_T86lT01h6x3r4y',
         amount: Math.round(finalTotal * 100), // Currency in paisa
         currency: 'INR',
         name: 'Srigovinda collections',
