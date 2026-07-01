@@ -11,6 +11,7 @@ function Products() {
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [sortBy, setSortBy] = useState('default');
   const [priceRange, setPriceRange] = useState(10000);
+  const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -70,9 +71,19 @@ function Products() {
       <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-2 font-serif">Srigovinda collections</h1>
       <p className="text-gray-600 text-xs md:text-lg mb-6">Explore our exquisite jewellery collection in German Silver, One Gram Gold, and Panchaloha</p>
       
+      {/* Filters Toggle Button for Mobile */}
+      <button
+        type="button"
+        onClick={() => setShowFiltersMobile(!showFiltersMobile)}
+        className="lg:hidden w-full flex items-center justify-between bg-white px-5 py-4 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-[#8b5a2b] mb-6 transition-all hover:bg-[#fdf6e9]/20"
+      >
+        <span className="flex items-center gap-2">🔍 {showFiltersMobile ? 'Hide Filters' : 'Show Filters'}</span>
+        <span>{showFiltersMobile ? '▲' : '▼'}</span>
+      </button>
+
       <div className="flex flex-col lg:flex-row gap-10">
-        <div className="lg:w-72 flex-shrink-0">
-          <div className="bg-white rounded-3xl elegant-shadow p-8 sticky top-28">
+        <div className={`lg:w-72 flex-shrink-0 ${showFiltersMobile ? 'block animate-fade-in' : 'hidden lg:block'}`}>
+          <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 sticky top-28 border border-gray-50/50">
             <h3 className="text-xl font-bold mb-8 text-[#8b5a2b] font-serif">Filters</h3>
             
             <div className="mb-8">
