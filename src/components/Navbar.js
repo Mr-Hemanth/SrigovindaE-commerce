@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import { db } from '../firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 function Navbar() {
   const { currentUser, isAdmin, logout } = useAuth();
@@ -10,6 +12,46 @@ function Navbar() {
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Promo and Countdown banner states
+  const [promo, setPromo] = useState(null);
+  const [timeLeft, setTimeLeft] = useState('');
+
+  // Listen to live database configuration changes
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'settings', 'promo'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setPromo(data);
+      }
+    }, (err) => {
+      console.warn('Promo fetching offline settings:', err);
+    });
+    return () => unsub();
+  }, []);
+
+  // Update countdown clock difference
+  useEffect(() => {
+    if (!promo || !promo.enabled || !promo.endDate) return;
+
+    const timer = setInterval(() => {
+      const difference = +new Date(promo.endDate) - +new Date();
+      if (difference <= 0) {
+        setTimeLeft('ENDED');
+        clearInterval(timer);
+      } else {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / 1000 / 60) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+
+        const pad = (num) => String(num).padStart(2, '0');
+        setTimeLeft(`${days > 0 ? `${days}d ` : ''}${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [promo]);
 
   const handleLogout = async () => {
     try {
@@ -24,7 +66,28 @@ function Navbar() {
   const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <nav className="bg-gradient-to-r from-[#0b1a30] to-[#0f2a4a] shadow-xl sticky top-0 z-40">
+    <>
+      {/* Top Countdown Banner */}
+      {promo && promo.enabled && timeLeft !== 'ENDED' && (
+        <div className="bg-[#d4af37] text-[#0b1a30] text-center py-2 px-4 text-xs font-bold flex flex-col sm:flex-row justify-center items-center gap-2 select-none border-b border-[#0f2a4a]/10 relative z-50 animate-fade-in shadow-md">
+          <div className="flex items-center gap-1.5 justify-center">
+            <span className="animate-pulse">✨</span>
+            <span>{promo.text}</span>
+          </div>
+          <div className="flex items-center gap-2.5 justify-center">
+            <span className="bg-[#0b1a30] text-white px-2 py-0.5 rounded font-mono text-[10px] md:text-xs">
+              Ends in: {timeLeft || '00:00:00'}
+            </span>
+            {promo.couponCode && (
+              <span className="bg-[#0f2a4a]/10 px-2 py-0.5 rounded text-[10px]">
+                🎫 {promo.couponCode}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      <nav className="bg-gradient-to-r from-[#0b1a30] to-[#0f2a4a] shadow-xl sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
@@ -207,7 +270,8 @@ function Navbar() {
 
       </div>
     </nav>
-  );
+  </>
+);
 }
 
 export default Navbar;

@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { db } from '../../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 
 function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, coupons: 0 });
   const { isAdmin } = useAuth();
   const location = useLocation();
+
+  const [promoSettings, setPromoSettings] = useState({
+    enabled: false,
+    text: 'Festive Flash Sale! Get 10% OFF on all items.',
+    endDate: '',
+    couponCode: 'FESTIVE10'
+  });
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoMessage, setPromoMessage] = useState('');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -36,6 +45,41 @@ function AdminDashboard() {
     
     if (isAdmin) fetchStats();
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    const fetchPromo = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'settings', 'promo'));
+        if (docSnap.exists()) {
+          setPromoSettings(docSnap.data());
+        }
+      } catch (err) {
+        console.warn('Offline promo fetch:', err);
+      }
+    };
+    fetchPromo();
+  }, [isAdmin]);
+
+  const handleSavePromo = async (e) => {
+    e.preventDefault();
+    setPromoLoading(true);
+    setPromoMessage('');
+    try {
+      await setDoc(doc(db, 'settings', 'promo'), {
+        enabled: promoSettings.enabled || false,
+        text: (promoSettings.text || '').trim(),
+        endDate: promoSettings.endDate || '',
+        couponCode: (promoSettings.couponCode || '').trim()
+      });
+      setPromoMessage('Promo Countdown Banner settings updated successfully!');
+      setTimeout(() => setPromoMessage(''), 3000);
+    } catch (err) {
+      console.error('Error saving promo settings:', err);
+      setPromoMessage('Failed to save settings. Please try again.');
+    }
+    setPromoLoading(false);
+  };
 
   if (!isAdmin) {
     return (
@@ -160,6 +204,77 @@ function AdminDashboard() {
           <div className="bg-white rounded-2xl elegant-shadow p-10">
             <h2 className="text-2xl font-bold text-[#0f2a4a] mb-4 font-serif">Welcome to Admin Dashboard</h2>
             <p className="text-gray-600 text-lg">Manage your jewellery store efficiently. Add products, track orders, and create coupon codes for your Instagram followers!</p>
+          </div>
+
+          <div className="bg-white rounded-2xl elegant-shadow p-8 mt-8 border border-gray-100">
+            <h2 className="text-xl md:text-2xl font-bold text-[#0f2a4a] mb-6 font-serif flex items-center gap-2">
+              ⏱️ Festive Flash Sale Banner Control
+            </h2>
+
+            {promoMessage && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-xs font-semibold">
+                {promoMessage}
+              </div>
+            )}
+
+            <form onSubmit={handleSavePromo} className="space-y-6">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="promoEnabled"
+                  checked={promoSettings.enabled || false}
+                  onChange={(e) => setPromoSettings({ ...promoSettings, enabled: e.target.checked })}
+                  className="w-5 h-5 text-[#0f2a4a] border-gray-300 rounded focus:ring-[#0f2a4a]"
+                />
+                <label htmlFor="promoEnabled" className="text-xs md:text-sm font-bold text-gray-700 uppercase tracking-wider cursor-pointer select-none">
+                  Enable Promotional Countdown Banner
+                </label>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Banner Announcement Text</label>
+                  <input
+                    type="text"
+                    value={promoSettings.text || ''}
+                    onChange={(e) => setPromoSettings({ ...promoSettings, text: e.target.value })}
+                    placeholder="e.g. Festive Flash Sale! Get 10% OFF"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-[#0f2a4a]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Countdown End Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    value={promoSettings.endDate || ''}
+                    onChange={(e) => setPromoSettings({ ...promoSettings, endDate: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-[#0f2a4a]"
+                    required={promoSettings.enabled}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Promo Code Hint (Instagram coupons)</label>
+                <input
+                  type="text"
+                  value={promoSettings.couponCode || ''}
+                  onChange={(e) => setPromoSettings({ ...promoSettings, couponCode: e.target.value })}
+                  placeholder="e.g. follow @srigovindacollections for coupons!"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-[#0f2a4a] max-w-md"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={promoLoading}
+                className="bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-6 py-3.5 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all font-semibold text-xs md:text-sm shadow-md hover:shadow-lg disabled:opacity-50"
+              >
+                {promoLoading ? 'Saving Settings...' : 'Save Promo Banner Settings'}
+              </button>
+            </form>
           </div>
         </main>
       </div>

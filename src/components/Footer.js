@@ -15,7 +15,7 @@ function Footer() {
             </p>
             <div className="text-[11px] text-[#fdf6e9]/80 space-y-1 pt-1 font-medium">
               <p>📍 Devangula Street, Amalapuram, AP, India</p>
-              <p>📞 +91 9177696666</p>
+              <p>📞 +91 9533866777</p>
               <p>✉️ srigovindagermansilver@gmail.com</p>
             </div>
             <div className="pt-1 text-xs font-semibold text-[#d4af37]">

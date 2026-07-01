@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
-import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Helper to dynamically load the Razorpay Checkout script
 const loadRazorpayScript = () => {
@@ -33,7 +33,6 @@ function Checkout() {
 
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
-  const [availableCoupons, setAvailableCoupons] = useState([]);
 
   // COD Captcha Security
   const [captchaCode, setCaptchaCode] = useState('');
@@ -103,26 +102,6 @@ function Checkout() {
     };
     
     fetchData();
-  }, [currentUser]);
-
-  // Load available coupons
-  useEffect(() => {
-    if (!currentUser) return;
-    const fetchCoupons = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'coupons'));
-        const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const now = new Date();
-        const active = list.filter(c => {
-          const exp = c.expiryDate.toDate ? c.expiryDate.toDate() : new Date(c.expiryDate);
-          return now <= exp;
-        });
-        setAvailableCoupons(active);
-      } catch (err) {
-        console.warn('Could not load active coupons for checkout:', err);
-      }
-    };
-    fetchCoupons();
   }, [currentUser]);
 
   if (!currentUser) return null;
@@ -501,33 +480,6 @@ function Checkout() {
                 </p>
               )}
 
-              {/* Clickable coupons tickets deck */}
-              {availableCoupons.length > 0 && discount === 0 && (
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Available Coupons (Click to apply)</p>
-                  <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-1">
-                    {availableCoupons.map(c => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={async () => {
-                          setCouponCode(c.code);
-                          const result = await applyCoupon(c.code);
-                          if (result.success) {
-                            setCouponError(result.message);
-                            setCouponCode('');
-                          } else {
-                            setCouponError(result.message);
-                          }
-                        }}
-                        className="bg-[#f0f5fa] border border-[#d4af37]/30 hover:border-[#0f2a4a] hover:bg-[#e1ecf7] px-3 py-1.5 rounded-xl text-[10px] font-bold text-[#0f2a4a] transition-all duration-300 flex items-center gap-1.5 shadow-sm"
-                      >
-                        🎟️ {c.code} <span className="text-[9px] bg-[#d4af37]/20 px-1 py-0.5 rounded font-black text-[#0f2a4a]">{c.discountPercentage}% OFF</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Shopping cart products items breakdown */}

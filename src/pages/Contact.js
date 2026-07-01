@@ -49,7 +49,7 @@ function Contact() {
             <span className="text-3xl">📞</span>
             <div>
               <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide mb-1">Call / WhatsApp</h4>
-              <p className="text-[#0f2a4a] font-semibold text-base">+91 91776 96666</p>
+              <p className="text-[#0f2a4a] font-semibold text-base">+91 95338 66777</p>
               <p className="text-xs text-gray-400 mt-1">Mon - Sat: 10:00 AM - 7:00 PM</p>
             </div>
           </div>
