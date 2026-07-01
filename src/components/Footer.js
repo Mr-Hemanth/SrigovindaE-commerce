@@ -9,7 +9,7 @@ function Footer() {
           
           {/* Column 1: Store Intro */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold font-serif tracking-wide">🙏 Srigovinda collections</h3>
+            <h3 className="text-2xl font-bold font-serif tracking-wide">Srigovinda collections</h3>
             <p className="text-xs text-[#fdf6e9]/80 leading-relaxed">
               Exquisite handcrafted jewellery featuring German Silver, One Gram Gold, and Panchaloha pieces designed with timeless details and premium quality.
             </p>

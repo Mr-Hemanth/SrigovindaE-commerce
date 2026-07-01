@@ -257,7 +257,7 @@ function Checkout() {
         currency: 'INR',
         name: 'Srigovinda collections',
         description: `Secure checkout for Order #${orderId.slice(-8).toUpperCase()}`,
-        image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100&auto=format&fit=crop',
+        image: 'https://srigovinda-collections.vercel.app/logo.jpg',
         handler: async function (response) {
           try {
             const orderData = {

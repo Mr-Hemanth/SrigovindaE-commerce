@@ -33,7 +33,7 @@ function Home() {
     <div>
       <section className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-6xl font-bold mb-6 font-serif">🙏 Srigovinda collections</h1>
+          <h1 className="text-6xl font-bold mb-6 font-serif">Srigovinda collections</h1>
           <p className="text-2xl mb-10 opacity-95 max-w-3xl mx-auto">Exquisite German Silver, One Gram Gold & Panchaloha Jewellery Handcrafted with Love</p>
           <Link to="/products" className="bg-white text-[#8b5a2b] px-10 py-4 rounded-full font-bold text-lg hover:bg-[#fdf6e9] transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1">
             Explore Our Collection

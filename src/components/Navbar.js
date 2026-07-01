@@ -29,8 +29,11 @@ function Navbar() {
         <div className="flex justify-between items-center h-20">
           
           {/* Logo Title */}
-          <Link to="/" className="text-xl md:text-2xl font-bold text-[#fdf6e9] font-serif tracking-wide select-none">
-            🙏 Srigovinda collections
+          <Link to="/" className="flex items-center gap-3 select-none">
+            <img src="/logo.jpg" alt="Srigovinda Collections" className="w-10 h-10 rounded-full border border-[#d4af37]/40 object-cover elegant-shadow" />
+            <span className="text-lg md:text-2xl font-bold text-[#fdf6e9] font-serif tracking-wide">
+              Srigovinda collections
+            </span>
           </Link>
           
           {/* Desktop Nav Items */}
