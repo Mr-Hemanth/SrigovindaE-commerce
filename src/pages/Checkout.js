@@ -329,8 +329,8 @@ function Checkout() {
   const finalTotal = total * (1 - (discount / 100));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-[#8b5a2b] mb-8 font-serif animate-fade-in">Checkout</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 animate-fade-in">
+      <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-6 font-serif">Checkout</h1>
       
       {validationError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold flex items-center gap-3 animate-fade-in">
@@ -347,9 +347,9 @@ function Checkout() {
         <div className="lg:col-span-2 space-y-8 animate-fade-in">
           
           {/* Address Management */}
-          <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-100">
+          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 font-serif">Shipping Address</h2>
+              <h2 className="text-lg md:text-2xl font-bold text-gray-800 font-serif">Shipping Address</h2>
               <button
                 type="button"
                 onClick={() => {
@@ -402,12 +402,12 @@ function Checkout() {
           </div>
 
           {/* Payment Methods */}
-          <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 font-serif">Payment Method</h2>
+          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100">
+            <h2 className="text-lg md:text-2xl font-bold mb-6 text-gray-800 font-serif">Payment Method</h2>
             <div className="space-y-4">
               
               {/* Razorpay Online */}
-              <label className={`flex items-center gap-4 p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
+              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
                 <input
                   type="radio"
                   name="payment"
@@ -417,7 +417,7 @@ function Checkout() {
                   className="w-5 h-5 text-[#8b5a2b] focus:ring-[#8b5a2b]"
                 />
                 <div>
-                  <span className="font-bold text-gray-800 text-lg flex items-center gap-2">
+                  <span className="font-bold text-gray-800 text-sm md:text-lg flex items-center gap-2">
                     Secure Online Payment 
                     <span className="bg-[#d4af37]/20 text-[#8b5a2b] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#8b5a2b]/10">RAZORPAY</span>
                   </span>
@@ -426,7 +426,7 @@ function Checkout() {
               </label>
 
               {/* COD */}
-              <label className={`flex items-center gap-4 p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
+              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-[#8b5a2b] bg-[#fdf6e9]/40' : 'border-gray-100 hover:border-[#a07254]'}`}>
                 <input
                   type="radio"
                   name="payment"
@@ -436,7 +436,7 @@ function Checkout() {
                   className="w-5 h-5 text-[#8b5a2b] focus:ring-[#8b5a2b]"
                 />
                 <div>
-                  <span className="font-bold text-gray-800 text-lg">Cash on Delivery (COD)</span>
+                  <span className="font-bold text-gray-800 text-sm md:text-lg">Cash on Delivery (COD)</span>
                   <p className="text-xs text-gray-400 mt-0.5">Pay cash on delivery (Requires safety captcha code)</p>
                 </div>
               </label>

@@ -53,8 +53,8 @@ function Cart() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-      <h1 className="text-3xl md:text-4xl font-bold text-[#8b5a2b] mb-8 md:mb-10 font-serif">Your Shopping Cart</h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-16">
+      <h1 className="text-2xl md:text-4xl font-bold text-[#8b5a2b] mb-6 md:mb-10 font-serif">Your Shopping Cart</h1>
       
       {cart.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow border border-gray-100">

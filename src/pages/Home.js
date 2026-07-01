@@ -31,59 +31,75 @@ function Home() {
 
   return (
     <div>
-      <section className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-6xl font-bold mb-6 font-serif">Srigovinda collections</h1>
-          <p className="text-2xl mb-10 opacity-95 max-w-3xl mx-auto">Exquisite German Silver, One Gram Gold & Panchaloha Jewellery Handcrafted with Love</p>
-          <Link to="/products" className="bg-white text-[#8b5a2b] px-10 py-4 rounded-full font-bold text-lg hover:bg-[#fdf6e9] transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1">
-            Explore Our Collection
-          </Link>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white py-12 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          <h1 className="text-3xl md:text-6xl font-bold font-serif leading-tight">Srigovinda collections</h1>
+          <p className="text-sm md:text-2xl opacity-90 max-w-2xl mx-auto leading-relaxed">
+            Exquisite German Silver, One Gram Gold & Panchaloha Jewellery Handcrafted with Love
+          </p>
+          <div className="pt-4">
+            <Link 
+              to="/products" 
+              className="bg-white text-[#8b5a2b] px-6 py-3 md:px-10 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-[#fdf6e9] transition-all duration-300 shadow-xl hover:shadow-2xl inline-block"
+            >
+              Explore Our Collection
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="py-20">
+      {/* Shop by Category Grid */}
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center text-gray-800 mb-12 font-serif">Shop by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12 font-serif">Shop by Category</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
             {categories.map(category => (
               <Link
                 key={category.id}
                 to={`/products?category=${category.id}`}
-                className="bg-white rounded-2xl elegant-shadow p-10 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-3"
+                className="bg-white rounded-3xl elegant-shadow p-6 md:p-10 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 border border-gray-50/50"
               >
-                <div className="text-5xl mb-5">
+                <div className="text-4xl md:text-5xl mb-4 md:mb-5">
                   {category.id === 'german-silver' && '⚜️'}
                   {category.id === 'one-gram-gold' && '✨'}
                   {category.id === 'panchaloha' && '🪔'}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-3 font-serif">{category.name}</h3>
-                <p className="text-gray-600 text-lg">Discover {category.subcategories.length} beautiful subcategories</p>
+                <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 font-serif">{category.name}</h3>
+                <p className="text-gray-500 text-xs md:text-sm">Discover {category.subcategories.length} beautiful subcategories</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-b from-[#f7f2ed] to-white">
+      {/* Featured Pieces Grid */}
+      <section className="py-12 md:py-20 bg-gradient-to-b from-[#f7f2ed] to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-800 mb-12 text-center font-serif">Featured Pieces</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center font-serif">Featured Pieces</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
             {featuredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-          <div className="text-center mt-16">
-            <Link to="/products" className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-10 py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl">
+          <div className="text-center mt-10 md:mt-16">
+            <Link 
+              to="/products" 
+              className="inline-block bg-gradient-to-r from-[#8b5a2b] to-[#a07254] text-white px-8 py-3.5 md:px-10 md:py-4 rounded-xl hover:from-[#a07254] hover:to-[#8b5a2b] transition-all duration-300 font-semibold text-sm md:text-lg shadow-md hover:shadow-xl"
+            >
               View All Products
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-gradient-to-r from-[#fdf6e9] to-[#f7f2ed]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-3xl font-bold text-gray-800 mb-5 font-serif">Follow us on Instagram for Exclusive Coupons! 📸</h3>
-          <p className="text-gray-700 text-lg mb-8 max-w-2xl mx-auto">Get amazing discount codes by following our Instagram page. Apply them at checkout for instant savings on your favourite pieces!</p>
+      {/* Social / Info Block */}
+      <section className="py-10 md:py-16 bg-gradient-to-r from-[#fdf6e9] to-[#f7f2ed]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <h3 className="text-xl md:text-3xl font-bold text-gray-800 font-serif">Follow us on Instagram for Coupons! 📸</h3>
+          <p className="text-gray-600 text-xs md:text-base max-w-xl mx-auto leading-relaxed">
+            Get amazing discount codes by following our Instagram page. Apply them at checkout for instant savings on your favourite pieces!
+          </p>
         </div>
       </section>
     </div>
