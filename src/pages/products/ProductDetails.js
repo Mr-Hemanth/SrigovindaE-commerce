@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../contexts/CartContext';
-import { useWishlist } from '../contexts/WishlistContext';
-import { useAuth } from '../contexts/AuthContext';
-import { useNotification } from '../contexts/NotificationContext';
-import { db } from '../firebase';
+import { useCart } from '../../contexts/CartContext';
+import { useWishlist } from '../../contexts/WishlistContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNotification } from '../../contexts/NotificationContext';
+import { db } from '../../firebase';
 import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
-import { sampleJewelleryProducts } from '../data/products';
-import ProductCard from '../components/ProductCard';
+import { sampleJewelleryProducts } from '../../data/products';
+import ProductCard from '../../components/ProductCard';
 
 function ProductDetails() {
   const { id } = useParams();

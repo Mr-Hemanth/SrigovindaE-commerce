@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useWishlist } from '../contexts/WishlistContext';
-import { useAuth } from '../contexts/AuthContext';
-import ProductCard from '../components/ProductCard';
+import { useWishlist } from '../../contexts/WishlistContext';
+import { useAuth } from '../../contexts/AuthContext';
+import ProductCard from '../../components/ProductCard';
 
 function Wishlist() {
   const { wishlist } = useWishlist();

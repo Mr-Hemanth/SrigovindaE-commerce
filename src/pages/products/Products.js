@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { sampleJewelleryProducts as sampleProducts, categories } from '../data/products';
-import ProductCard from '../components/ProductCard';
-import { db } from '../firebase';
+import { sampleJewelleryProducts as sampleProducts, categories } from '../../data/products';
+import ProductCard from '../../components/ProductCard';
+import { db } from '../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 function Products() {
