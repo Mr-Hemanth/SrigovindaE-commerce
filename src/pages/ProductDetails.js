@@ -5,7 +5,7 @@ import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
-import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { sampleJewelleryProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 
@@ -26,8 +26,6 @@ function ProductDetails() {
   // Reviews State
   const [reviews, setReviews] = useState([]);
   const [avgRating, setAvgRating] = useState('0.0');
-  const [newRating, setNewRating] = useState(5);
-  const [newComment, setNewComment] = useState('');
   const [reviewsLoading, setReviewsLoading] = useState(true);
 
   // Image & Related State
@@ -204,42 +202,7 @@ function ProductDetails() {
     }, 500);
   };
 
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    if (!currentUser) {
-      navigate('/login');
-      return;
-    }
-
-    if (!newComment.trim()) return;
-
-    try {
-      const reviewPayload = {
-        productId: product.id,
-        author: currentUser.name || currentUser.displayName || 'Customer',
-        rating: Number(newRating),
-        comment: newComment.trim(),
-        createdAt: new Date()
-      };
-
-      await addDoc(collection(db, 'reviews'), reviewPayload);
-
-      const updatedList = [
-        { id: `rev_${Date.now()}`, ...reviewPayload },
-        ...reviews
-      ];
-      setReviews(updatedList);
-      const sum = updatedList.reduce((acc, r) => acc + r.rating, 0);
-      setAvgRating((sum / updatedList.length).toFixed(1));
-
-      setNewComment('');
-      setNewRating(5);
-      showNotification('Your review has been submitted successfully! Thank you.', 'success');
-    } catch (err) {
-      console.error('Error submitting review:', err);
-      showNotification('Could not submit review. Please try again.', 'error');
-    }
-  };
+  // Review submission is handled separately after purchase.
 
   const incrementQty = () => {
     if (quantity < (product.stock || 10)) {
@@ -387,9 +350,9 @@ function ProductDetails() {
                 <span className="text-3xl font-black text-[#0f2a4a]">₹{product.price}</span>
               )}
               <span className={`px-3 py-1 rounded-full text-xxs font-bold uppercase tracking-wider ${
-                (product.stock || 10) > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                (product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
               }`}>
-                {(product.stock || 10) > 0 ? `In Stock (${product.stock} left)` : 'Out of Stock'}
+                {(product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? 'In Stock' : 'Out of Stock'}
               </span>
             </div>
 
@@ -484,103 +447,42 @@ function ProductDetails() {
 
       </div>
 
-      {/* Reviews & Submit Form Split block */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Reviews block */}
+      <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-50">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 font-serif">Customer Reviews ({reviews.length})</h2>
         
-        {/* Customer Reviews List */}
-        <div className="lg:col-span-2 bg-white rounded-3xl elegant-shadow p-8 border border-gray-50">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 font-serif">Customer Reviews ({reviews.length})</h2>
-          
-          {reviewsLoading ? (
-            <div className="text-center py-10">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0f2a4a] mx-auto"></div>
-            </div>
-          ) : reviews.length === 0 ? (
-            <div className="text-center py-12 border-2 border-dashed border-gray-150 rounded-2xl text-gray-400">
-              <span className="text-4xl block mb-2">⭐</span>
-              <p className="text-sm font-medium">No reviews yet for this jewelry piece.</p>
-              <p className="text-xs mt-1">Be the first to share your purchase experience!</p>
-            </div>
-          ) : (
-            <div className="space-y-6 divide-y divide-gray-100 max-h-[500px] overflow-y-auto pr-2">
-              {reviews.map((rev) => {
-                const date = rev.createdAt?.toDate ? rev.createdAt.toDate() : new Date(rev.createdAt);
-                return (
-                  <div key={rev.id} className="pt-6 first:pt-0 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-gray-800 text-sm">{rev.author}</span>
-                      <span className="text-xxs text-gray-400 font-mono">
-                        {date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                    <div className="flex text-yellow-400 text-xs tracking-wider">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>{i < rev.rating ? '★' : '☆'}</span>
-                      ))}
-                    </div>
-                    <p className="text-gray-600 text-xs leading-relaxed break-words">{rev.comment}</p>
+        {reviewsLoading ? (
+          <div className="text-center py-10">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0f2a4a] mx-auto"></div>
+          </div>
+        ) : reviews.length === 0 ? (
+          <div className="text-center py-12 border-2 border-dashed border-gray-150 rounded-2xl text-gray-400">
+            <span className="text-4xl block mb-2">⭐</span>
+            <p className="text-sm font-medium">No reviews yet for this jewelry piece.</p>
+          </div>
+        ) : (
+          <div className="space-y-6 divide-y divide-gray-100 max-h-[500px] overflow-y-auto pr-2">
+            {reviews.map((rev) => {
+              const date = rev.createdAt?.toDate ? rev.createdAt.toDate() : new Date(rev.createdAt);
+              return (
+                <div key={rev.id} className="pt-6 first:pt-0 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-gray-800 text-sm">{rev.author}</span>
+                    <span className="text-xxs text-gray-400 font-mono">
+                      {date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Submit Review Form Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-50 sticky top-28">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 font-serif">Leave a Review</h3>
-            {currentUser ? (
-              <form onSubmit={handleReviewSubmit} className="space-y-4">
-                {/* Rating selection stars row */}
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rating</label>
-                  <div className="flex gap-1.5 text-2xl text-yellow-400 cursor-pointer">
+                  <div className="flex text-yellow-400 text-xs tracking-wider">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span 
-                        key={i} 
-                        onClick={() => setNewRating(i + 1)}
-                        className="transition-transform hover:scale-110"
-                      >
-                        {i < newRating ? '★' : '☆'}
-                      </span>
+                      <span key={i}>{i < rev.rating ? '★' : '☆'}</span>
                     ))}
                   </div>
+                  <p className="text-gray-600 text-xs leading-relaxed break-words">{rev.comment}</p>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Review Comment</label>
-                  <textarea
-                    rows={4}
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Describe your experience with this jewelry item..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-[#0f2a4a] leading-relaxed"
-                    required
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-3 rounded-xl font-semibold text-xs shadow-md transition-all duration-300"
-                >
-                  Submit Review
-                </button>
-              </form>
-            ) : (
-              <div className="text-center py-6 text-sm text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                <p className="mb-3 font-medium">Log in to review this product</p>
-                <Link 
-                  to="/login"
-                  className="inline-block bg-[#0f2a4a] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm"
-                >
-                  Log In
-                </Link>
-              </div>
-            )}
+              );
+            })}
           </div>
-        </div>
-
+        )}
       </div>
 
       {/* Related / Similar Products Section */}
