@@ -68,6 +68,9 @@ function Checkout() {
   useEffect(() => {
     if (!currentUser) {
       navigate('/login');
+    } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
+      alert('⚠️ Complete Profile Details:\n\nPlease complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.');
+      navigate('/profile');
     }
   }, [currentUser, navigate]);
 

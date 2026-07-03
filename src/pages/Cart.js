@@ -229,7 +229,16 @@ function Cart() {
               </div>
 
               <button
-                onClick={() => navigate('/checkout')}
+                onClick={() => {
+                  if (!currentUser) {
+                    navigate('/login');
+                  } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
+                    alert('⚠️ Complete Profile Details:\n\nPlease complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.');
+                    navigate('/profile');
+                  } else {
+                    navigate('/checkout');
+                  }
+                }}
                 className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold shadow-md hover:shadow-lg text-center block text-sm"
               >
                 Proceed to Checkout

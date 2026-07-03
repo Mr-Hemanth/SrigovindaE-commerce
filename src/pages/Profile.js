@@ -84,7 +84,8 @@ function Profile() {
     setValidationError('');
 
     if (!name.trim()) return setValidationError('Name cannot be empty.');
-    if (phone.trim() && !/^\d{10}$/.test(phone.trim())) {
+    if (!phone.trim()) return setValidationError('Primary contact phone number is required.');
+    if (!/^\d{10}$/.test(phone.trim())) {
       return setValidationError('Primary contact phone number must be exactly 10 digits.');
     }
 

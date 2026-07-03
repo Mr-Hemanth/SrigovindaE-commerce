@@ -72,6 +72,14 @@ function AdminOrders() {
                     <p className="text-base text-gray-600 mb-2">
                       Customer: <span className="font-semibold text-gray-800">{order.userName}</span> ({order.userEmail})
                     </p>
+                    {order.phone && (
+                      <p className="text-base text-gray-600 mb-2">
+                        Phone Number: <span className="font-semibold text-[#0f2a4a]">{order.phone}</span>
+                      </p>
+                    )}
+                    <p className="text-base text-gray-600 mb-2">
+                      Payment Details: <span className="font-medium text-gray-800 uppercase">{order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : order.paymentMethod}</span> ({order.paymentStatus})
+                    </p>
                     <p className="text-base text-gray-600 mb-2">
                       Date: {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : new Date(order.createdAt).toLocaleString()}
                     </p>
