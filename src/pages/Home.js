@@ -71,16 +71,16 @@ function Home() {
               let desc = '';
               if (category.id === 'german-silver') {
                 emoji = '⚜️';
-                desc = 'Discover handcrafted silver masterpieces blending antique charm with contemporary design.';
+                desc = 'A traditional engraved silver diya or silver peacock';
               } else if (category.id === 'one-gram-gold') {
                 emoji = '✨';
-                desc = 'Explore elegant gold-plated designs crafted with premium shine for festive wear.';
+                desc = 'A gold necklace with pendant or gold bangle';
               } else if (category.id === 'panchaloha') {
                 emoji = '🪔';
-                desc = 'Browse sacred five-metal alloy items designed to bring positivity and prosperity.';
+                desc = 'A temple deity idol silhouette (such as Lord Ganesha) or a bronze statue';
               } else if (category.id === 'gifts') {
                 emoji = '🎁';
-                desc = 'Find curated premium tokens and presents perfect for celebrating special occasions.';
+                desc = 'A wrapped gift box with ribbon or a decorative home décor vase';
               }
               
               return (

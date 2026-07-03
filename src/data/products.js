@@ -6,7 +6,7 @@ export const categories = [
   },
   {
     id: 'one-gram-gold',
-    name: 'One Gram Gold',
+    name: '1 Gram Gold Jewellery',
     subcategories: ['Rings', 'Necklaces', 'Earrings', 'Bangles', 'Pendants', 'Bracelets']
   },
   {
@@ -16,7 +16,7 @@ export const categories = [
   },
   {
     id: 'gifts',
-    name: 'Gifts',
+    name: 'Gift Articles',
     subcategories: []
   }
 ];
