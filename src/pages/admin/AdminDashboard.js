@@ -5,7 +5,7 @@ import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 
 function AdminDashboard() {
-  const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, coupons: 0 });
+  const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, coupons: 0, revenue: 0 });
   const { isAdmin } = useAuth();
   const location = useLocation();
 
@@ -26,11 +26,20 @@ function AdminDashboard() {
         const usersSnap = await getDocs(collection(db, 'users'));
         const couponsSnap = await getDocs(collection(db, 'coupons'));
         
+        const totalRev = ordersSnap.docs.reduce((acc, d) => {
+          const data = d.data();
+          if (data.status?.toLowerCase() !== 'cancelled') {
+            return acc + (data.finalTotal || data.total || 0);
+          }
+          return acc;
+        }, 0);
+
         const newStats = {
           products: productsSnap.size,
           orders: ordersSnap.size,
           users: usersSnap.size,
-          coupons: couponsSnap.size
+          coupons: couponsSnap.size,
+          revenue: totalRev
         };
         setStats(newStats);
         localStorage.setItem('admin_dashboard_stats', JSON.stringify(newStats));
@@ -143,59 +152,71 @@ function AdminDashboard() {
         </aside>
 
         <main className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-            <div className="bg-white rounded-2xl elegant-shadow p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+            <div className="bg-white rounded-2xl elegant-shadow p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">Total Products</p>
-                  <p className="text-4xl font-bold text-[#0f2a4a]">{stats.products}</p>
+                  <p className="text-gray-500 text-xs font-semibold">Total Products</p>
+                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.products}</p>
                 </div>
-                <div className="w-14 h-14 bg-[#f0f5fa] rounded-full flex items-center justify-center">
-                  <svg className="w-7 h-7 text-[#0f2a4a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-11 h-11 bg-[#f0f5fa] rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#0f2a4a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-8">
+            <div className="bg-white rounded-2xl elegant-shadow p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">Total Orders</p>
-                  <p className="text-4xl font-bold text-[#0f2a4a]">{stats.orders}</p>
+                  <p className="text-gray-500 text-xs font-semibold">Total Orders</p>
+                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.orders}</p>
                 </div>
-                <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-8">
+            <div className="bg-white rounded-2xl elegant-shadow p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">Total Users</p>
-                  <p className="text-4xl font-bold text-[#0f2a4a]">{stats.users}</p>
+                  <p className="text-gray-500 text-xs font-semibold">Total Users</p>
+                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.users}</p>
                 </div>
-                <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-11 h-11 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-8">
+            <div className="bg-white rounded-2xl elegant-shadow p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">Active Coupons</p>
-                  <p className="text-4xl font-bold text-[#0f2a4a]">{stats.coupons}</p>
+                  <p className="text-gray-500 text-xs font-semibold">Active Coupons</p>
+                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.coupons}</p>
                 </div>
-                <div className="w-14 h-14 bg-[#d4af37]/20 rounded-full flex items-center justify-center">
-                  <svg className="w-7 h-7 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-11 h-11 bg-[#d4af37]/20 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                   </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl elegant-shadow p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-xs font-semibold">Total Revenue</p>
+                  <p className="text-2xl font-black text-[#d4af37] font-serif mt-1">₹{stats.revenue.toFixed(0)}</p>
+                </div>
+                <div className="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center">
+                  <span className="text-xl">💸</span>
                 </div>
               </div>
             </div>

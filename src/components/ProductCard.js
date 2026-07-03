@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const [ratingStats, setRatingStats] = useState({ avg: '5.0', count: 0 });
+
+  useEffect(() => {
+    let active = true;
+    const fetchStats = async () => {
+      try {
+        const q = query(collection(db, 'reviews'), where('productId', '==', product.id));
+        const snap = await getDocs(q);
+        if (!active) return;
+        
+        if (!snap.empty) {
+          const list = snap.docs.map(d => d.data());
+          const sum = list.reduce((acc, r) => acc + r.rating, 0);
+          setRatingStats({
+            avg: (sum / list.length).toFixed(1),
+            count: list.length
+          });
+        }
+      } catch (err) {
+        console.warn('Error loading card ratings:', err);
+      }
+    };
+    fetchStats();
+    return () => { active = false; };
+  }, [product.id]);
 
   const handleWishlistClick = () => {
     if (!currentUser) {
@@ -78,6 +105,16 @@ function ProductCard({ product }) {
           >
             {product.name}
           </h3>
+          
+          {/* Star Rating Badge */}
+          {ratingStats.count > 0 && (
+            <div className="flex items-center gap-1 mt-1 select-none">
+              <span className="text-[#d4af37] text-[11px]">★</span>
+              <span className="text-[11px] font-bold text-gray-700">{ratingStats.avg}</span>
+              <span className="text-[9px] text-gray-400">({ratingStats.count})</span>
+            </div>
+          )}
+
           <p className="mt-1.5 text-gray-500 text-[10px] md:text-xs leading-relaxed line-clamp-2">{product.description}</p>
         </div>
 
