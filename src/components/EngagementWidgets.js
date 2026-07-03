@@ -40,7 +40,7 @@ export default function EngagementWidgets() {
       { text: "10% OFF", color: "#0f2a4a", textColor: "#ffffff" },
       { text: "Free Ship", color: "#d4af37", textColor: "#0f2a4a" },
       { text: "Retry", color: "#0f2a4a", textColor: "#ffffff" },
-      { text: "Gifts 8%", color: "#d4af37", textColor: "#0f2a4a" }
+      { text: "8% OFF", color: "#d4af37", textColor: "#0f2a4a" }
     ];
     
     const numSegments = segments.length;
