@@ -80,6 +80,10 @@ function Cart() {
                 <img 
                   src={item.image} 
                   alt={item.name} 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
+                  }}
                   className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl elegant-shadow border border-gray-100 flex-shrink-0" 
                 />
                 

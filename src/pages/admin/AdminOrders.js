@@ -108,7 +108,15 @@ function AdminOrders() {
                   <div className="flex flex-wrap gap-5">
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4 bg-[#f0f5fa] px-5 py-4 rounded-2xl">
-                        <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-xl elegant-shadow" />
+                        <img 
+                          src={item.image} 
+                          alt={item.name} 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
+                          }}
+                          className="w-14 h-14 object-cover rounded-xl elegant-shadow" 
+                        />
                         <div>
                           <p className="text-base font-semibold text-gray-800">{item.name}</p>
                           <p className="text-sm text-gray-500">Qty: {item.quantity} • ₹{item.price.toFixed(0)}</p>

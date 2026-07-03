@@ -51,6 +51,14 @@ function AdminProducts() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const imgUrl = form.image.trim();
+    if (imgUrl.includes('ibb.co/') && !imgUrl.includes('i.ibb.co')) {
+      alert('WARNING: You have pasted an ImgBB viewer page link (e.g., https://ibb.co/abcd) instead of a direct link (e.g. https://i.ibb.co/...).\n\nTo get the direct link:\n1. Open the ImgBB link in your browser.\n2. Right-click the image and select "Copy image address".\n3. Paste that copied address (which starts with https://i.ibb.co/) into this form.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const payload = {
         name: form.name.trim(),
@@ -143,7 +151,15 @@ function AdminProducts() {
               <tr key={product.id} className="hover:bg-[#f0f5fa] transition-colors">
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-5">
-                    <img src={product.image} alt={product.name} className="w-20 h-20 object-cover rounded-2xl elegant-shadow" />
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
+                      }}
+                      className="w-20 h-20 object-cover rounded-2xl elegant-shadow" 
+                    />
                     <div>
                       <p className="font-semibold text-gray-800 text-lg">{product.name}</p>
                       <p className="text-sm text-gray-500">{product.subcategory}</p>
