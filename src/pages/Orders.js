@@ -338,6 +338,60 @@ function Orders() {
                   {isExpanded && (
                     <div className="border-t border-gray-50 p-6 md:p-8 space-y-8 animate-fade-in bg-gray-50/30 rounded-b-3xl">
                       
+                      {/* Shipping progress tracker timeline bar */}
+                      {(() => {
+                        const s = order.status?.toLowerCase();
+                        if (s === 'cancelled') {
+                          return (
+                            <div className="bg-red-50 border border-red-200/60 p-4 rounded-2xl flex items-center gap-3 text-red-700 text-xs font-bold select-none">
+                              <span className="text-lg">❌</span>
+                              <span>Order Cancelled: This transaction has been cancelled. If any payment was deducted, refunds will process within 3-5 working days.</span>
+                            </div>
+                          );
+                        }
+                        const steps = ['Placed', 'Processing', 'Shipped', 'Delivered'];
+                        let activeIdx = 0; 
+                        if (s === 'processing') activeIdx = 1;
+                        if (s === 'shipped') activeIdx = 2;
+                        if (s === 'delivered') activeIdx = 3;
+                        
+                        return (
+                          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm select-none">
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6">Delivery Progress Timeline</h4>
+                            <div className="flex items-center justify-between relative max-w-xl mx-auto px-4">
+                              {/* Horizontal progress bar line background */}
+                              <div className="absolute top-[15px] left-0 right-0 h-1 bg-gray-100 rounded-full z-0" />
+                              <div 
+                                className="absolute top-[15px] left-0 h-1 bg-green-500 rounded-full z-0 transition-all duration-500" 
+                                style={{ width: `${(activeIdx / (steps.length - 1)) * 100}%` }}
+                              />
+                              
+                              {steps.map((step, idx) => {
+                                const isDone = idx <= activeIdx;
+                                const isActive = idx === activeIdx;
+                                return (
+                                  <div key={step} className="flex flex-col items-center relative z-10">
+                                    {/* Circle dot indicator */}
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 font-bold text-xs transition-all duration-300 ${
+                                      isDone 
+                                        ? 'bg-green-500 border-green-500 text-white shadow-md shadow-green-200' 
+                                        : 'bg-white border-gray-200 text-gray-400'
+                                    } ${isActive ? 'ring-4 ring-green-100 scale-110' : ''}`}>
+                                      {isDone && idx < activeIdx ? '✓' : idx + 1}
+                                    </div>
+                                    <span className={`text-[10px] mt-2.5 font-bold transition-colors ${
+                                      isDone ? 'text-gray-800' : 'text-gray-400'
+                                    } ${isActive ? 'text-green-600 font-extrabold' : ''}`}>
+                                      {step}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
                       {/* Item Listing */}
                       <div>
                         <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Purchased Items</h3>

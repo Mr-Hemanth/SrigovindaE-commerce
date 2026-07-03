@@ -13,6 +13,7 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [coupon, setCoupon] = useState(null);
   const [discount, setDiscount] = useState(0);
+  const [isCartOpen, setCartOpen] = useState(false);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export function CartProvider({ children }) {
       newCart = [...cart, { ...product, quantity: 1 }];
     }
     setCart(newCart);
+    setCartOpen(true);
     if (currentUser) {
       localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(newCart));
       try {
@@ -157,7 +159,9 @@ export function CartProvider({ children }) {
     discount,
     subtotal,
     discountAmount,
-    total
+    total,
+    isCartOpen,
+    setCartOpen
   };
 
   return (

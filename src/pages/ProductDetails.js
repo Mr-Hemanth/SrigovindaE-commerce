@@ -31,6 +31,24 @@ function ProductDetails() {
   // Image & Related State
   const [activeImage, setActiveImage] = useState('');
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [zoomStyle, setZoomStyle] = useState({ transformOrigin: 'center center', transform: 'scale(1)' });
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: 'scale(1.8)'
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setZoomStyle({
+      transformOrigin: 'center center',
+      transform: 'scale(1)'
+    });
+  };
 
   // Load product data
   useEffect(() => {
@@ -259,15 +277,23 @@ function ProductDetails() {
         
         {/* Left Column: Image Gallery preview */}
         <div className="flex flex-col space-y-4">
-          <div className="relative overflow-hidden rounded-2xl group border border-gray-100/60 bg-gray-50 flex items-center justify-center">
+          <div 
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="relative overflow-hidden rounded-2xl border border-gray-100/60 bg-gray-50 flex items-center justify-center cursor-zoom-in"
+          >
             <img 
               src={activeImage || product.image} 
               alt={product.name} 
+              style={{
+                ...zoomStyle,
+                transition: 'transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.05s ease-out'
+              }}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
               }}
-              className="w-full h-80 sm:h-[400px] md:h-[480px] object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-80 sm:h-[400px] md:h-[480px] object-cover rounded-2xl"
             />
             
             <button
