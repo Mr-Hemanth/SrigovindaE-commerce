@@ -7,6 +7,7 @@ import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { sampleJewelleryProducts } from '../data/products';
+import ProductCard from '../components/ProductCard';
 
 function ProductDetails() {
   const { id } = useParams();
@@ -24,10 +25,14 @@ function ProductDetails() {
 
   // Reviews State
   const [reviews, setReviews] = useState([]);
-  const [avgRating, setAvgRating] = useState('5.0');
+  const [avgRating, setAvgRating] = useState('0.0');
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
   const [reviewsLoading, setReviewsLoading] = useState(true);
+
+  // Image & Related State
+  const [activeImage, setActiveImage] = useState('');
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   // Load product data
   useEffect(() => {
@@ -35,11 +40,14 @@ function ProductDetails() {
       try {
         const productDoc = await getDoc(doc(db, 'products', id));
         if (productDoc.exists()) {
-          setProduct({ id: productDoc.id, ...productDoc.data() });
+          const data = productDoc.data();
+          setProduct({ id: productDoc.id, ...data });
+          setActiveImage(data.image || '');
         } else {
           const localProd = sampleJewelleryProducts.find(p => p.id === id);
           if (localProd) {
             setProduct(localProd);
+            setActiveImage(localProd.image || '');
           } else {
             setProduct(null);
           }
@@ -49,6 +57,7 @@ function ProductDetails() {
         const localProd = sampleJewelleryProducts.find(p => p.id === id);
         if (localProd) {
           setProduct(localProd);
+          setActiveImage(localProd.image || '');
         } else {
           setProduct(null);
         }
@@ -82,6 +91,43 @@ function ProductDetails() {
     } catch (err) {
       console.warn('Recently viewed storage error:', err);
     }
+  }, [product]);
+
+  // Load related products
+  useEffect(() => {
+    if (!product || !product.category) return;
+
+    const fetchRelated = async () => {
+      try {
+        const q = query(
+          collection(db, 'products'),
+          where('category', '==', product.category)
+        );
+        const snap = await getDocs(q);
+        let list = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Filter out current product & inactive products
+        list = list.filter(p => p.id !== product.id && p.isActive !== false);
+        
+        // Fallback to local array if firestore is empty
+        if (list.length === 0) {
+          list = sampleJewelleryProducts.filter(
+            p => p.category === product.category && p.id !== product.id
+          );
+        }
+        
+        // Limit to 4 items
+        setRelatedProducts(list.slice(0, 4));
+      } catch (err) {
+        console.warn('Error loading related products, using fallback:', err);
+        const list = sampleJewelleryProducts.filter(
+          p => p.category === product.category && p.id !== product.id
+        );
+        setRelatedProducts(list.slice(0, 4));
+      }
+    };
+
+    fetchRelated();
   }, [product]);
 
   // Load reviews dynamically
@@ -246,34 +292,58 @@ function ProductDetails() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl elegant-shadow p-6 md:p-10 border border-gray-55 mb-16 animate-fade-in">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl elegant-shadow p-6 md:p-10 border border-gray-100 mb-16 animate-fade-in">
         
-        {/* Left Column: Big Product Image */}
-        <div className="relative overflow-hidden rounded-2xl group">
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
-            }}
-            className="w-full h-80 sm:h-[400px] md:h-[500px] object-cover rounded-2xl elegant-shadow border border-gray-100 transition-transform duration-500 group-hover:scale-105"
-          />
-          
-          <button
-            onClick={handleWishlistToggle}
-            className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3.5 rounded-full shadow-lg hover:bg-white transition-all hover:scale-110 z-10"
-          >
-            {isFavorite ? (
-              <svg className="w-7 h-7 text-[#e74c3c]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            ) : (
-              <svg className="w-7 h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            )}
-          </button>
+        {/* Left Column: Image Gallery preview */}
+        <div className="flex flex-col space-y-4">
+          <div className="relative overflow-hidden rounded-2xl group border border-gray-100/60 bg-gray-50 flex items-center justify-center">
+            <img 
+              src={activeImage || product.image} 
+              alt={product.name} 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
+              }}
+              className="w-full h-80 sm:h-[400px] md:h-[480px] object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+            />
+            
+            <button
+              onClick={handleWishlistToggle}
+              className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3.5 rounded-full shadow-lg hover:bg-white transition-all hover:scale-110 z-10"
+            >
+              {isFavorite ? (
+                <svg className="w-7 h-7 text-[#e74c3c]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              ) : (
+                <svg className="w-7 h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Thumbnails Row */}
+          {product.images && Array.isArray(product.images) && product.images.length > 1 && (
+            <div className="flex gap-3 overflow-x-auto py-1 scrollbar-thin select-none">
+              {product.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveImage(img)}
+                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                    activeImage === img ? 'border-[#0f2a4a] scale-95 shadow-sm' : 'border-gray-100 hover:border-gray-200'
+                  }`}
+                >
+                  <img 
+                    src={img} 
+                    alt={`Preview ${idx + 1}`} 
+                    className="w-full h-full object-cover" 
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Spec / Cart Actions */}
@@ -512,6 +582,18 @@ function ProductDetails() {
         </div>
 
       </div>
+
+      {/* Related / Similar Products Section */}
+      {relatedProducts.length > 0 && (
+        <div className="border-t border-gray-100 pt-16 mt-16">
+          <h2 className="text-2xl font-bold text-[#0f2a4a] mb-8 font-serif">Similar Jewellery Pieces</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {relatedProducts.map(p => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );

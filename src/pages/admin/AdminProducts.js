@@ -17,6 +17,7 @@ function AdminProducts() {
     category: '',
     subcategory: '',
     image: '',
+    images: '',
     stock: '',
     isActive: true
   });
@@ -61,6 +62,12 @@ function AdminProducts() {
       return;
     }
 
+    const imagesArray = form.images
+      ? form.images.split(',').map(s => s.trim()).filter(s => s !== '')
+      : (form.image.trim() ? [form.image.trim()] : []);
+
+    const primaryImg = imagesArray[0] || form.image.trim();
+
     try {
       const payload = {
         name: form.name.trim(),
@@ -69,7 +76,8 @@ function AdminProducts() {
         discountedPrice: form.discountedPrice ? Number(form.discountedPrice) : null,
         category: form.category,
         subcategory: form.subcategory,
-        image: form.image.trim(),
+        image: primaryImg,
+        images: imagesArray,
         stock: Number(form.stock),
         isActive: form.isActive !== undefined ? form.isActive : true
       };
@@ -84,7 +92,7 @@ function AdminProducts() {
       }
       setShowModal(false);
       setEditingProduct(null);
-      setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', stock: '', isActive: true });
+      setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', images: '', stock: '', isActive: true });
       fetchProducts();
     } catch (err) {
       console.error('Error adding/updating product: ', err);
@@ -109,6 +117,7 @@ function AdminProducts() {
       category: product.category || '',
       subcategory: product.subcategory || '',
       image: product.image || '',
+      images: product.images ? product.images.join(', ') : (product.image || ''),
       stock: product.stock || '',
       isActive: product.isActive !== undefined ? product.isActive : true
     });
@@ -318,6 +327,17 @@ function AdminProducts() {
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
                     placeholder="https://..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Product Images (comma-separated list of URLs, first is the primary view)</label>
+                  <textarea
+                    value={form.images}
+                    onChange={(e) => setForm({ ...form, images: e.target.value })}
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
+                    placeholder="https://i.ibb.co/image1.png, https://i.ibb.co/image2.png"
+                    rows={3}
                   />
                 </div>
 
