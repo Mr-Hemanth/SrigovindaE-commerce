@@ -5,7 +5,7 @@ import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { sampleJewelleryProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 
@@ -48,6 +48,39 @@ function ProductDetails() {
       transformOrigin: 'center center',
       transform: 'scale(1)'
     });
+  };
+
+  const [notifyContact, setNotifyContact] = useState('');
+  const [isNotifiedSubmitted, setIsNotifiedSubmitted] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(false);
+
+  // Automatically pre-fill contact details if logged in
+  useEffect(() => {
+    if (currentUser) {
+      setNotifyContact(currentUser.email || currentUser.phone || '');
+    }
+  }, [currentUser]);
+
+  const handleNotifyMe = async (e) => {
+    e.preventDefault();
+    if (!notifyContact.trim()) return;
+    setNotifyLoading(true);
+    try {
+      await addDoc(collection(db, 'notifications'), {
+        productId: id,
+        productName: product?.name || 'Handcrafted Jewellery',
+        contact: notifyContact.trim(),
+        uid: currentUser ? currentUser.uid : 'Guest',
+        createdAt: new Date().toISOString(),
+        notified: false
+      });
+      setIsNotifiedSubmitted(true);
+      showNotification('Thank you! You will be notified as soon as this item is restocked.', 'success');
+    } catch (err) {
+      console.error('Error saving stock notify request:', err);
+      showNotification('Failed to submit request. Please try again.', 'error');
+    }
+    setNotifyLoading(false);
   };
 
   // Load product data
@@ -220,6 +253,27 @@ function ProductDetails() {
     }, 500);
   };
 
+  const handleBuyNow = () => {
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+    
+    const existingCartItem = cart.find(item => item.id === product.id);
+    if (existingCartItem) {
+      updateQuantity(product.id, existingCartItem.quantity + quantity);
+    } else {
+      addToCart({ ...product, quantity });
+    }
+    
+    if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
+      showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
+      navigate('/profile');
+    } else {
+      navigate('/checkout');
+    }
+  };
+
   // Review submission is handled separately after purchase.
 
   const incrementQty = () => {
@@ -388,42 +442,87 @@ function ProductDetails() {
           </div>
 
           <div className="space-y-6 pt-4 border-t border-gray-100">
-            {/* Quantity Selector Counter */}
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Quantity</span>
-              <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
-                <button
-                  type="button"
-                  onClick={decrementQty}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-sm"
-                >
-                  -
-                </button>
-                <span className="px-5 py-2 text-sm font-bold text-gray-800 min-w-[40px] text-center font-mono">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={incrementQty}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-sm"
-                >
-                  +
-                </button>
-              </div>
-            </div>
+            {(product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? (
+              <>
+                {/* Quantity Selector Counter */}
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Quantity</span>
+                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <button
+                      type="button"
+                      onClick={decrementQty}
+                      className="px-4 py-2 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-sm"
+                    >
+                      -
+                    </button>
+                    <span className="px-5 py-2 text-sm font-bold text-gray-800 min-w-[40px] text-center font-mono">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={incrementQty}
+                      className="px-4 py-2 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-sm"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
 
-            {/* Cart Trigger Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={addingState || (product.stock || 0) <= 0}
-              className="w-full bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl disabled:opacity-40"
-            >
-              {addingState ? 'Adding Item...' : `Add to Cart • ₹${(
-                (product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0
-                  ? Number(product.discountedPrice)
-                  : Number(product.price)) * quantity
-              ).toFixed(0)}`}
-            </button>
+                {/* Double checkout buttons grid */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={addingState}
+                    className="flex-1 bg-[#f0f5fa] hover:bg-[#e4effa] text-[#0f2a4a] py-4 rounded-xl transition-all duration-300 font-bold text-sm shadow-sm border border-gray-200/50"
+                  >
+                    {addingState ? 'Adding...' : 'Add to Cart'}
+                  </button>
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-bold text-sm shadow-lg hover:shadow-xl"
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* Out of Stock Notify Me form container */
+              <div className="bg-red-50/50 border border-red-200/60 p-5 rounded-2xl text-left space-y-4">
+                <div>
+                  <p className="text-xs text-red-800 font-bold flex items-center gap-1.5 select-none">
+                    <span>⏳</span>
+                    <span>Temporarily Out of Stock</span>
+                  </p>
+                  <p className="text-xxs text-gray-500 mt-1 leading-normal">
+                    This handcrafted design is currently sold out. Register your email or contact phone number below, and we will contact you directly when it is back in stock!
+                  </p>
+                </div>
+                
+                {isNotifiedSubmitted ? (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-xxs font-bold text-center animate-fade-in">
+                    ✓ Request submitted! We will alert you soon.
+                  </div>
+                ) : (
+                  <form onSubmit={handleNotifyMe} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={notifyContact}
+                      onChange={(e) => setNotifyContact(e.target.value)}
+                      placeholder="Enter Email or Phone number"
+                      className="flex-1 px-3 py-2 border-2 border-gray-200 focus:border-[#0f2a4a] focus:outline-none rounded-xl text-xs bg-white"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={notifyLoading}
+                      className="bg-[#0f2a4a] hover:bg-[#1b4965] text-white px-4 py-2.5 rounded-xl text-xxs font-black uppercase tracking-wider transition-colors disabled:opacity-40"
+                    >
+                      {notifyLoading ? 'Submitting...' : 'Notify Me'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Premium Store Trust Badges */}

@@ -197,6 +197,8 @@ function Orders() {
     }
   };
 
+
+
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case 'delivered':
@@ -317,6 +319,17 @@ function Orders() {
                     </div>
 
                     <div className="flex items-center justify-between md:justify-end w-full md:w-auto gap-8 border-t md:border-t-0 border-gray-50 pt-4 md:pt-0">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePrintInvoice(order);
+                        }}
+                        className="bg-gray-50 hover:bg-[#0f2a4a] text-gray-600 hover:text-white px-3.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 focus:outline-none border border-gray-100"
+                      >
+                        <span>📄</span>
+                        <span>Invoice</span>
+                      </button>
+
                       <div className="text-left md:text-right">
                         <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Total Amount</p>
                         <p className="text-2xl font-black text-[#0f2a4a] font-serif">₹{(order.finalTotal || order.total).toFixed(0)}</p>

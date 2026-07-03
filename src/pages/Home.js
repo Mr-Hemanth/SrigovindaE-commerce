@@ -9,6 +9,7 @@ import { collection, getDocs } from 'firebase/firestore';
 function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [activeFaq, setActiveFaq] = useState(null);
 
   useEffect(() => {
     try {
@@ -149,6 +150,54 @@ function Home() {
           </div>
         </section>
       )}
+
+      {/* 🙋 Customer FAQ Accordion Section */}
+      <section className="py-12 md:py-20 bg-[#fbf9f6] border-t border-b border-gray-100/50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12 font-serif">Customer Assistance & Care FAQ</h2>
+          
+          <div className="space-y-4">
+            {[
+              {
+                q: "What is Panchaloha jewellery made of?",
+                a: "Panchaloha is a sacred five-metal alloy consisting of Gold, Silver, Copper, Zinc, and Iron. It is traditionally crafted under precise temperatures to invite positive energy, spiritual balance, and long-lasting durability."
+              },
+              {
+                q: "How should I clean and care for handcrafted German Silver?",
+                a: "To ensure your German Silver items preserve their premium antique finish, avoid contact with heavy water, chemical soaps, or perfumes. Gently wipe clean with a soft dry cotton cloth after wearing, and store them inside airtight zip lock pouches."
+              },
+              {
+                q: "What is your shipping schedule and return policy?",
+                a: "We offer Free Express shipping across all locations in India. Every order comes with a secure 7-Day return or exchange guarantee. If you receive a damaged article or wish to request replacements, contact us directly within 7 days."
+              },
+              {
+                q: "Are the custom star ratings based on actual data?",
+                a: "Yes! All customer reviews and star rating scores displayed on our product description pages are fetched live from our secure cloud database, representing verified user feedbacks submitted after buying."
+              }
+            ].map((faq, idx) => {
+              const isExpanded = activeFaq === idx;
+              return (
+                <div key={idx} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300">
+                  <button
+                    onClick={() => setActiveFaq(isExpanded ? null : idx)}
+                    className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50/50 transition-colors focus:outline-none"
+                  >
+                    <span className="text-xs md:text-sm font-bold text-gray-800">{faq.q}</span>
+                    <span className={`text-xs text-gray-400 transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                      ▼
+                    </span>
+                  </button>
+                  {isExpanded && (
+                    <div className="px-6 pb-5 pt-1 text-xxs md:text-xs text-gray-500 leading-relaxed border-t border-gray-50/50 animate-fade-in text-left">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* Social / Info Block */}
       <section className="py-10 md:py-16 bg-gradient-to-r from-[#f0f4f8] to-[#eef3f7]">

@@ -26,20 +26,45 @@ function AdminDashboard() {
         const usersSnap = await getDocs(collection(db, 'users'));
         const couponsSnap = await getDocs(collection(db, 'coupons'));
         
-        const totalRev = ordersSnap.docs.reduce((acc, d) => {
+        let totalRev = 0;
+        let goldRevenue = 0;
+        let silverRevenue = 0;
+        let panchalohaRevenue = 0;
+        let giftsRevenue = 0;
+
+        const sortedOrders = ordersSnap.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+        ordersSnap.docs.forEach(d => {
           const data = d.data();
           if (data.status?.toLowerCase() !== 'cancelled') {
-            return acc + (data.finalTotal || data.total || 0);
+            const val = Number(data.finalTotal || data.total || 0);
+            totalRev += val;
+            (data.items || []).forEach(item => {
+              const cat = item.category?.toLowerCase() || '';
+              const price = Number(item.discountedPrice || item.price || 0);
+              const qty = Number(item.quantity || 1);
+              const cost = price * qty;
+              if (cat.includes('gold')) goldRevenue += cost;
+              else if (cat.includes('silver')) silverRevenue += cost;
+              else if (cat.includes('panchaloha')) panchalohaRevenue += cost;
+              else giftsRevenue += cost;
+            });
           }
-          return acc;
-        }, 0);
+        });
 
         const newStats = {
           products: productsSnap.size,
           orders: ordersSnap.size,
           users: usersSnap.size,
           coupons: couponsSnap.size,
-          revenue: totalRev
+          revenue: totalRev,
+          goldRev: goldRevenue,
+          silverRev: silverRevenue,
+          panchaRev: panchalohaRevenue,
+          giftsRev: giftsRevenue,
+          recentOrders: sortedOrders.slice(0, 5)
         };
         setStats(newStats);
         localStorage.setItem('admin_dashboard_stats', JSON.stringify(newStats));
@@ -152,79 +177,144 @@ function AdminDashboard() {
         </aside>
 
         <main className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-            <div className="bg-white rounded-2xl elegant-shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-xs font-semibold">Total Products</p>
-                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.products}</p>
-                </div>
-                <div className="w-11 h-11 bg-[#f0f5fa] rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-[#0f2a4a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5 mb-10">
+            {/* Total Products */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Products</p>
+                <p className="text-2xl font-bold text-gray-800 mt-1">{stats.products}</p>
               </div>
+              <span className="text-xl p-2 bg-gray-50 rounded-xl">📦</span>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-xs font-semibold">Total Orders</p>
-                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.orders}</p>
-                </div>
-                <div className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
+            {/* Total Orders */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Orders</p>
+                <p className="text-2xl font-bold text-gray-800 mt-1">{stats.orders}</p>
               </div>
+              <span className="text-xl p-2 bg-green-50 rounded-xl">🛒</span>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-xs font-semibold">Total Users</p>
-                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.users}</p>
-                </div>
-                <div className="w-11 h-11 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
+            {/* Total Users */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Users</p>
+                <p className="text-2xl font-bold text-gray-800 mt-1">{stats.users}</p>
               </div>
+              <span className="text-xl p-2 bg-purple-50 rounded-xl">👤</span>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-xs font-semibold">Active Coupons</p>
-                  <p className="text-3xl font-bold text-[#0f2a4a] mt-1">{stats.coupons}</p>
-                </div>
-                <div className="w-11 h-11 bg-[#d4af37]/20 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                  </svg>
-                </div>
+            {/* Active Coupons */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Active Coupons</p>
+                <p className="text-2xl font-bold text-gray-800 mt-1">{stats.coupons}</p>
               </div>
+              <span className="text-xl p-2 bg-amber-50 rounded-xl">🎫</span>
             </div>
 
-            <div className="bg-white rounded-2xl elegant-shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-500 text-xs font-semibold">Total Revenue</p>
-                  <p className="text-2xl font-black text-[#d4af37] font-serif mt-1">₹{stats.revenue.toFixed(0)}</p>
-                </div>
-                <div className="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center">
-                  <span className="text-xl">💸</span>
-                </div>
+            {/* Average Order Value */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Avg Order Value</p>
+                <p className="text-xl font-bold text-gray-800 mt-1">₹{(stats.revenue / (stats.orders || 1)).toFixed(0)}</p>
               </div>
+              <span className="text-xl p-2 bg-[#d4af37]/15 rounded-xl">📈</span>
+            </div>
+
+            {/* Total Revenue */}
+            <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Revenue</p>
+                <p className="text-xl font-black text-[#d4af37] font-serif mt-1">₹{stats.revenue.toFixed(0)}</p>
+              </div>
+              <span className="text-xl p-2 bg-yellow-50 rounded-xl">💸</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl elegant-shadow p-10">
-            <h2 className="text-2xl font-bold text-[#0f2a4a] mb-4 font-serif">Welcome to Admin Dashboard</h2>
-            <p className="text-gray-600 text-lg">Manage your jewellery store efficiently. Add products, track orders, and create coupon codes for your Instagram followers!</p>
+          {/* Welcome Intro Section */}
+          <div className="bg-white rounded-2xl elegant-shadow p-8 mb-8 border border-gray-50 text-left">
+            <h2 className="text-xl md:text-2xl font-bold text-[#0f2a4a] mb-2 font-serif">Welcome to Admin Dashboard</h2>
+            <p className="text-gray-600 text-sm">Manage your jewellery store efficiently. Add products, track orders, and create coupon codes for your Instagram followers!</p>
+          </div>
+
+          {/* Dynamic Sales Analytics Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Left Box: Category Sales Progress Bars */}
+            <div className="bg-white rounded-2xl elegant-shadow p-6 border border-gray-50 text-left">
+              <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-6">Sales Contribution by Category</h3>
+              
+              <div className="space-y-4">
+                {[
+                  { name: "German Silver", value: stats.silverRev, color: "bg-[#0f2a4a]" },
+                  { name: "1 Gram Gold Jewellery", value: stats.goldRev, color: "bg-[#d4af37]" },
+                  { name: "Panchaloha", value: stats.panchaRev, color: "bg-[#8b5a2b]" },
+                  { name: "Gift Articles", value: stats.giftsRev, color: "bg-[#e74c3c]" }
+                ].map((item) => {
+                  const pct = stats.revenue > 0 ? (item.value / stats.revenue) * 100 : 0;
+                  return (
+                    <div key={item.name} className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-bold text-gray-700">{item.name}</span>
+                        <span className="font-semibold text-gray-400">₹{item.value.toFixed(0)} ({pct.toFixed(0)}%)</span>
+                      </div>
+                      <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
+                        <div className={`h-full ${item.color} rounded-full`} style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right Box: Recent Orders Mini Table */}
+            <div className="bg-white rounded-2xl elegant-shadow p-6 border border-gray-50 text-left flex flex-col justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-5">Recent Store Transactions</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs text-left text-gray-600">
+                    <thead>
+                      <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase">
+                        <th className="py-2.5">OrderID</th>
+                        <th className="py-2.5">Customer</th>
+                        <th className="py-2.5">Total</th>
+                        <th className="py-2.5">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {(!stats.recentOrders || stats.recentOrders.length === 0) ? (
+                        <tr>
+                          <td colSpan="4" className="text-center py-6 text-gray-400">No transactions recorded yet</td>
+                        </tr>
+                      ) : (
+                        stats.recentOrders.map((ord) => (
+                          <tr key={ord.id} className="hover:bg-gray-50/50">
+                            <td className="py-2.5 font-bold uppercase text-[#0f2a4a] font-mono">#{ord.id.slice(-6)}</td>
+                            <td className="py-2.5 truncate max-w-[100px]">{ord.userName || 'Anonymous'}</td>
+                            <td className="py-2.5 font-bold">₹{(ord.finalTotal || ord.total || 0).toFixed(0)}</td>
+                            <td className="py-2.5">
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
+                                ord.status?.toLowerCase() === 'delivered' ? 'bg-green-100 text-green-800' :
+                                ord.status?.toLowerCase() === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {ord.status || 'Pending'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <Link 
+                to="/admin/orders" 
+                className="text-xxs font-bold text-[#0f2a4a] hover:text-[#1b4965] uppercase tracking-wider text-right block mt-4"
+              >
+                View all orders →
+              </Link>
+            </div>
           </div>
 
           <div className="bg-white rounded-2xl elegant-shadow p-8 mt-8 border border-gray-100">
