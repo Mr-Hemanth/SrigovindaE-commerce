@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { sampleJewelleryProducts as sampleProducts, categories } from '../../data/products';
 import ProductCard from '../../components/ProductCard';
 import { db } from '../../firebase';
@@ -13,6 +14,15 @@ function Products() {
   const [priceRange, setPriceRange] = useState(10000);
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat) {
+      setSelectedCategory(cat);
+      setSelectedSubcategory('all');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProducts = async () => {
