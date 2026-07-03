@@ -5,6 +5,7 @@ import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import Navbar from './components/Navbar';
+import EngagementWidgets from './components/EngagementWidgets';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Login from './pages/Login';
@@ -56,6 +57,7 @@ function App() {
             <Router>
               <div className="min-h-screen bg-gray-50">
                 <Navbar />
+                <EngagementWidgets />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/products" element={<Products />} />
