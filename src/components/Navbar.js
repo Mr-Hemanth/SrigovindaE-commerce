@@ -59,6 +59,16 @@ function Navbar() {
     setSearchSuggestions(matches.slice(0, 5));
   };
 
+  // Dynamic Browser Tab Cart Indicator
+  useEffect(() => {
+    const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+    if (count > 0) {
+      document.title = `(${count}) Srigovinda collections`;
+    } else {
+      document.title = 'Srigovinda collections';
+    }
+  }, [cart]);
+
   // Promo and Countdown banner states
   const [promo, setPromo] = useState(null);
   const [timeLeft, setTimeLeft] = useState('');
