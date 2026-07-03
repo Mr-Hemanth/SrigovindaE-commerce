@@ -67,34 +67,44 @@ function Home() {
           <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12 font-serif">Shop by Category</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {categories.map(category => {
-              let emoji = '⚜️';
-              let desc = '';
+              let iconSvg = null;
               if (category.id === 'german-silver') {
-                emoji = '⚜️';
-                desc = 'A traditional engraved silver diya or silver peacock';
+                iconSvg = (
+                  <svg className="w-12 h-12 text-[#0f2a4a] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.5c.667 1 2 2.5 2 4.5 0 2.5-2 4-2 4s-2-1.5-2-4c0-2 1.333-3.5 2-4.5zM4 14.5c0-1.5 1-3.5 3-4.5m10 4.5c0-1.5-1-3.5-3-4.5M3 15h18c0 3-4 5-9 5s-9-2-9-5z" />
+                  </svg>
+                );
               } else if (category.id === 'one-gram-gold') {
-                emoji = '✨';
-                desc = 'A gold necklace with pendant or gold bangle';
+                iconSvg = (
+                  <svg className="w-12 h-12 text-[#d4af37] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 3c1.5 5 4.5 9 6 9s4.5-4 6-9M12 12l-2 3.5h4L12 12zm-3-6h6M8 8h8" />
+                  </svg>
+                );
               } else if (category.id === 'panchaloha') {
-                emoji = '🪔';
-                desc = 'A temple deity idol silhouette (such as Lord Ganesha) or a bronze statue';
+                iconSvg = (
+                  <svg className="w-12 h-12 text-[#8b5a2b] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2L4 7h16L12 2zm-6 5v10m12-10v10M2 17h20M5 21h14M12 9c-1 0-2 1-2 2 0 1.5 2 2.5 2 3.5m0-5.5c1 0 2 1 2 2 0 1.5-2 2.5-2 3.5" />
+                  </svg>
+                );
               } else if (category.id === 'gifts') {
-                emoji = '🎁';
-                desc = 'A wrapped gift box with ribbon or a decorative home décor vase';
+                iconSvg = (
+                  <svg className="w-12 h-12 text-[#e74c3c] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12v8H4v-8m16 0H4m16 0a2 2 0 002-2V8a2 2 0 00-2-2h-3.82c-.88-.88-2.3-1-3.18-.18L12 7.02l-1.00-1.20c-.88-.82-2.30-.70-3.18.18H4a2 2 0 00-2 2v2a2 2 0 002 2m16 0H4m8-6v14" />
+                  </svg>
+                );
               }
               
               return (
                 <Link
                   key={category.id}
                   to={`/products?category=${category.id}`}
-                  className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 border border-gray-50 flex flex-col justify-between"
+                  className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 border border-gray-50 flex flex-col justify-between min-h-[220px]"
                 >
-                  <div>
-                    <div className="text-4xl md:text-5xl mb-4 select-none">
-                      {emoji}
+                  <div className="flex flex-col items-center justify-center flex-1">
+                    <div className="mb-5 select-none p-4 bg-gray-50 rounded-2xl border border-gray-100/60 group-hover:bg-white transition-all">
+                      {iconSvg}
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2.5 font-serif">{category.name}</h3>
-                    <p className="text-gray-500 text-xxs md:text-xs leading-relaxed max-w-[240px] mx-auto">{desc}</p>
+                    <h3 className="text-base md:text-lg font-black text-gray-800 font-serif leading-tight">{category.name}</h3>
                   </div>
                   <p className="text-[#0f2a4a] text-[10px] font-bold mt-4 uppercase tracking-wider">
                     Explore →
