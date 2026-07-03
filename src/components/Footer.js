@@ -11,7 +11,7 @@ function Footer() {
           <div className="col-span-2 md:col-span-1 space-y-4">
             <h3 className="text-xl md:text-2xl font-bold font-serif tracking-wide">Srigovinda collections</h3>
             <p className="text-xs text-[#fdf6e9]/80 leading-relaxed max-w-sm">
-              Exquisite handcrafted jewellery featuring German Silver, One Gram Gold, and Panchaloha pieces designed with timeless details and premium quality.
+              Exquisite jewellery featuring German Silver, One Gram Gold, and Panchaloha pieces designed with timeless details and premium quality.
             </p>
             <div className="text-[11px] text-[#fdf6e9]/80 space-y-1 pt-1 font-medium">
               <p>📍 Devangula Street, Amalapuram, AP, India</p>

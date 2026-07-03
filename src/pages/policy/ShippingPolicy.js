@@ -11,7 +11,7 @@ function ShippingPolicy() {
 
         <div className="text-sm text-gray-600 leading-relaxed space-y-6">
           <p>
-            At <strong>Srigovinda collections</strong>, we package and ship our handcrafted jewellery collections with care to ensure they reach you safely. Below are the details of our shipping terms and delivery schedules:
+            At <strong>Srigovinda collections</strong>, we package and ship our premium jewellery collections with care to ensure they reach you safely. Below are the details of our shipping terms and delivery schedules:
           </p>
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">1. Shipping Coverage & Zones</h2>

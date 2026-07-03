@@ -249,7 +249,7 @@ function Orders() {
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow border border-gray-100">
           <span className="text-5xl block mb-4">📦</span>
           <h2 className="text-2xl font-bold text-gray-800 mb-2 font-serif">No Orders Found</h2>
-          <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">You haven't placed any orders yet. Explore our handcrafted jewellery collections and check out your first order!</p>
+          <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">You haven't placed any orders yet. Explore our exquisite jewellery collections and check out your first order!</p>
           <Link
             to="/products"
             className="inline-block bg-gradient-to-r from-[#0f2a4a] to-[#1b4965] text-white px-8 py-4 rounded-xl hover:from-[#1b4965] hover:to-[#0f2a4a] transition-all duration-300 font-bold shadow-md hover:shadow-lg"

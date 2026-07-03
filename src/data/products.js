@@ -135,7 +135,7 @@ export const sampleJewelleryProducts = [
   {
     id: 'pl-idol-001',
     name: 'Panchaloha Ganesha Idol',
-    description: 'Handcrafted Panchaloha Ganesha idol for puja and decoration',
+    description: 'Premium Panchaloha Ganesha idol for puja and decoration',
     price: 5999,
     category: 'panchaloha',
     subcategory: 'Idols',

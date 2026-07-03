@@ -68,7 +68,7 @@ function ProductDetails() {
     try {
       await addDoc(collection(db, 'notifications'), {
         productId: id,
-        productName: product?.name || 'Handcrafted Jewellery',
+        productName: product?.name || 'Premium Jewellery',
         contact: notifyContact.trim(),
         uid: currentUser ? currentUser.uid : 'Guest',
         createdAt: new Date().toISOString(),
@@ -494,7 +494,7 @@ function ProductDetails() {
                     <span>Temporarily Out of Stock</span>
                   </p>
                   <p className="text-xxs text-gray-500 mt-1 leading-normal">
-                    This handcrafted design is currently sold out. Register your email or contact phone number below, and we will contact you directly when it is back in stock!
+                    This premium design is currently sold out. Register your email or contact phone number below, and we will contact you directly when it is back in stock!
                   </p>
                 </div>
                 
@@ -532,7 +532,7 @@ function ProductDetails() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
               <div>
-                <p className="text-[11px] font-black text-gray-800 leading-tight">Handcrafted Artistry</p>
+                <p className="text-[11px] font-black text-gray-800 leading-tight">Premium Artistry</p>
                 <p className="text-[9px] text-gray-400 mt-0.5">Authentic German Silver</p>
               </div>
             </div>

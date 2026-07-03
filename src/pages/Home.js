@@ -49,7 +49,7 @@ function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h1 className="text-3xl md:text-6xl font-bold font-serif leading-tight">Srigovinda collections</h1>
           <p className="text-sm md:text-2xl opacity-90 max-w-2xl mx-auto leading-relaxed">
-            Exquisite German Silver, One Gram Gold & Panchaloha Jewellery Handcrafted with Love
+            Exquisite German Silver, One Gram Gold & Panchaloha Jewellery Designed with Care
           </p>
           <div className="pt-4">
             <Link 
@@ -163,7 +163,7 @@ function Home() {
                 a: "Panchaloha is a sacred five-metal alloy consisting of Gold, Silver, Copper, Zinc, and Iron. It is traditionally crafted under precise temperatures to invite positive energy, spiritual balance, and long-lasting durability."
               },
               {
-                q: "How should I clean and care for handcrafted German Silver?",
+                q: "How should I clean and care for German Silver jewellery?",
                 a: "To ensure your German Silver items preserve their premium antique finish, avoid contact with heavy water, chemical soaps, or perfumes. Gently wipe clean with a soft dry cotton cloth after wearing, and store them inside airtight zip lock pouches."
               },
               {

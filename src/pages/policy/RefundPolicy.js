@@ -11,7 +11,7 @@ function RefundPolicy() {
 
         <div className="text-sm text-gray-600 leading-relaxed space-y-6">
           <p>
-            At <strong>Srigovinda collections</strong>, we want to ensure you are completely satisfied with your handcrafted jewellery. Below are our terms for product cancellations, returns, and payment refunds:
+            At <strong>Srigovinda collections</strong>, we want to ensure you are completely satisfied with your premium jewellery. Below are our terms for product cancellations, returns, and payment refunds:
           </p>
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">1. Order Cancellations</h2>

@@ -25,7 +25,7 @@ function Terms() {
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">2. Pricing & Purchase Conditions</h2>
           <p>
-            We strive to provide accurate information regarding pricing, descriptions, and stock counts of our handcrafted German Silver, One Gram Gold, and Panchaloha jewellery. In the event of pricing discrepancies, we reserve the right to cancel or adjust orders and will contact you directly to process corrections.
+            We strive to provide accurate information regarding pricing, descriptions, and stock counts of our premium German Silver, One Gram Gold, and Panchaloha jewellery. In the event of pricing discrepancies, we reserve the right to cancel or adjust orders and will contact you directly to process corrections.
           </p>
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">3. Custom Promotions & Coupons</h2>
