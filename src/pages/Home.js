@@ -65,22 +65,45 @@ function Home() {
       <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12 font-serif">Shop by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-            {categories.map(category => (
-              <Link
-                key={category.id}
-                to={`/products?category=${category.id}`}
-                className="bg-white rounded-3xl elegant-shadow p-6 md:p-10 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 border border-gray-50/50"
-              >
-                <div className="text-4xl md:text-5xl mb-4 md:mb-5">
-                  {category.id === 'german-silver' && '⚜️'}
-                  {category.id === 'one-gram-gold' && '✨'}
-                  {category.id === 'panchaloha' && '🪔'}
-                </div>
-                <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 font-serif">{category.name}</h3>
-                <p className="text-gray-500 text-xs md:text-sm">Discover {category.subcategories.length} beautiful subcategories</p>
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {categories.map(category => {
+              let emoji = '⚜️';
+              let desc = '';
+              if (category.id === 'german-silver') {
+                emoji = '⚜️';
+                desc = 'Discover handcrafted silver masterpieces blending antique charm with contemporary design.';
+              } else if (category.id === 'one-gram-gold') {
+                emoji = '✨';
+                desc = 'Explore elegant gold-plated designs crafted with premium shine for festive wear.';
+              } else if (category.id === 'panchaloha') {
+                emoji = '🪔';
+                desc = 'Browse sacred five-metal alloy items designed to bring positivity and prosperity.';
+              } else if (category.id === 'gifts') {
+                emoji = '🎁';
+                desc = 'Find curated premium tokens and presents perfect for celebrating special occasions.';
+              }
+              
+              return (
+                <Link
+                  key={category.id}
+                  to={`/products?category=${category.id}`}
+                  className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 text-center hover:shadow-2xl transition-all duration-400 transform hover:-translate-y-2 border border-gray-50 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="text-4xl md:text-5xl mb-4 select-none">
+                      {emoji}
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2.5 font-serif">{category.name}</h3>
+                    <p className="text-gray-500 text-xxs md:text-xs leading-relaxed max-w-[240px] mx-auto">{desc}</p>
+                  </div>
+                  {category.subcategories.length > 0 && (
+                    <p className="text-[#0f2a4a] text-[10px] font-bold mt-4 uppercase tracking-wider">
+                      Explore {category.subcategories.length} Collections →
+                    </p>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
