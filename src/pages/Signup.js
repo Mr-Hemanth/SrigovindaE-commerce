@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -12,6 +13,7 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const { signup, logout, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -32,7 +34,7 @@ function Signup() {
       setLoading(true);
       await signup(email, password, name, phone.trim());
       await logout();
-      alert('Verification link has been sent to your email. Please verify your account before logging in.');
+      showNotification('Verification link has been sent to your email. Please verify your account before logging in.', 'warning');
       navigate('/login');
     } catch (err) {
       console.error('Signup error details:', err);

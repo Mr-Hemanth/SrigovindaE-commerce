@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
@@ -25,6 +26,7 @@ function Checkout() {
   const { cart, total, clearCart, discount, applyCoupon } = useCart();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
   
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [loading, setLoading] = useState(false);
@@ -69,10 +71,10 @@ function Checkout() {
     if (!currentUser) {
       navigate('/login');
     } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
-      alert('⚠️ Complete Profile Details:\n\nPlease complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.');
+      showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
       navigate('/profile');
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, showNotification]);
 
   // Load user's saved addresses
   useEffect(() => {
@@ -276,7 +278,7 @@ function Checkout() {
             });
           } catch (err) {
             console.error('Error writing Razorpay order to database:', err);
-            alert('Your payment was successful, but we ran into an error registering your order. Contact support with payment ID: ' + response.razorpay_payment_id);
+            showNotification('Your payment was successful, but we ran into an error registering your order. Contact support with payment ID: ' + response.razorpay_payment_id, 'error');
           }
         },
         prefill: {

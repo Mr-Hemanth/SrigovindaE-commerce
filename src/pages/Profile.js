@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 function Profile() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
   
   // Profile state details
   const [name, setName] = useState('');
@@ -153,7 +155,7 @@ function Profile() {
   // Open address modal for adding
   const handleOpenAdd = () => {
     if (addresses.length >= 4) {
-      alert('You can save up to 4 addresses max. Please delete one to add a new address.');
+      showNotification('You can save up to 4 addresses max. Please delete one to add a new address.', 'error');
       return;
     }
     setEditingAddressId(null);

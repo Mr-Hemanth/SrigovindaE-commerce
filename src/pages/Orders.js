@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 function Orders() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
   
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -187,10 +189,10 @@ function Orders() {
           localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(updatedCached));
         }
 
-        alert('Order cancelled successfully.');
+        showNotification('Order cancelled successfully.', 'success');
       } catch (err) {
         console.error('Error cancelling order:', err);
-        alert('Could not cancel order. Please try again.');
+        showNotification('Could not cancel order. Please try again.', 'error');
       }
     }
   };

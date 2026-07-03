@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { categories, sampleJewelleryProducts } from '../../data/products';
+import { useNotification } from '../../contexts/NotificationContext';
 
 function AdminProducts() {
+  const { showNotification } = useNotification();
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -54,7 +56,7 @@ function AdminProducts() {
 
     const imgUrl = form.image.trim();
     if (imgUrl.includes('ibb.co/') && !imgUrl.includes('i.ibb.co')) {
-      alert('WARNING: You have pasted an ImgBB viewer page link (e.g., https://ibb.co/abcd) instead of a direct link (e.g. https://i.ibb.co/...).\n\nTo get the direct link:\n1. Open the ImgBB link in your browser.\n2. Right-click the image and select "Copy image address".\n3. Paste that copied address (which starts with https://i.ibb.co/) into this form.');
+      showNotification('Please copy the direct image link (starts with https://i.ibb.co/) rather than the ImgBB viewer page URL.', 'error');
       setLoading(false);
       return;
     }

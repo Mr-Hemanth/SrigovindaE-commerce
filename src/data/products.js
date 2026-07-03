@@ -13,6 +13,11 @@ export const categories = [
     id: 'panchaloha',
     name: 'Panchaloha',
     subcategories: ['Idols', 'Puja Items', 'Jewellery', 'Decorative Pieces']
+  },
+  {
+    id: 'gifts',
+    name: 'Gifts',
+    subcategories: []
   }
 ];
 

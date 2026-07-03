@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { sampleJewelleryProducts } from '../data/products';
@@ -11,6 +12,7 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { showNotification } = useNotification();
   
   const { cart, addToCart, updateQuantity } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -152,7 +154,7 @@ function ProductDetails() {
 
     setTimeout(() => {
       setAddingState(false);
-      alert(`${quantity} x ${product.name} added to your cart successfully!`);
+      showNotification(`${quantity} x ${product.name} added to your cart successfully!`, 'success');
     }, 500);
   };
 
@@ -186,10 +188,10 @@ function ProductDetails() {
 
       setNewComment('');
       setNewRating(5);
-      alert('Your review has been submitted successfully! Thank you.');
+      showNotification('Your review has been submitted successfully! Thank you.', 'success');
     } catch (err) {
       console.error('Error submitting review:', err);
-      alert('Could not submit review. Please try again.');
+      showNotification('Could not submit review. Please try again.', 'error');
     }
   };
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
@@ -10,6 +11,7 @@ function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { currentUser } = useAuth();
+  const { showNotification } = useNotification();
   const navigate = useNavigate();
   const [ratingStats, setRatingStats] = useState({ avg: '5.0', count: 0 });
 
@@ -50,7 +52,7 @@ function ProductCard({ product }) {
       navigate('/login');
     } else {
       addToCart(product);
-      alert(`${product.name} added to your cart successfully!`);
+      showNotification(`${product.name} added to your cart successfully!`, 'success');
     }
   };
 

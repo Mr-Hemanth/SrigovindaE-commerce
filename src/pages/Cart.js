@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 function Cart() {
   const { cart, removeFromCart, updateQuantity, subtotal, discountAmount, total, applyCoupon, removeCoupon, coupon, discount } = useCart();
   const { currentUser } = useAuth();
+  const { showNotification } = useNotification();
   const [couponCode, setCouponCode] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
   const [availableCoupons, setAvailableCoupons] = useState([]);
@@ -233,7 +235,7 @@ function Cart() {
                   if (!currentUser) {
                     navigate('/login');
                   } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
-                    alert('⚠️ Complete Profile Details:\n\nPlease complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.');
+                    showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
                     navigate('/profile');
                   } else {
                     navigate('/checkout');
