@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -14,6 +14,8 @@ export default function EngagementWidgets() {
   const [wonCoupon, setWonCoupon] = useState('');
   const [hasSpun, setHasSpun] = useState(false);
 
+  const canvasRef = useRef(null);
+
   // Check if user already spun in the last 30 days
   useEffect(() => {
     const lastSpunTime = localStorage.getItem('srigovinda_wheel_spun_time');
@@ -26,6 +28,50 @@ export default function EngagementWidgets() {
       }
     }
   }, []);
+
+  // Redraw canvas whenever lucky wheel modal is open
+  useEffect(() => {
+    if (!isWheelOpen || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const segments = [
+      { text: "5% OFF", color: "#0f2a4a", textColor: "#ffffff" },
+      { text: "Retry", color: "#d4af37", textColor: "#0f2a4a" },
+      { text: "10% OFF", color: "#0f2a4a", textColor: "#ffffff" },
+      { text: "Free Ship", color: "#d4af37", textColor: "#0f2a4a" },
+      { text: "Retry", color: "#0f2a4a", textColor: "#ffffff" },
+      { text: "Gifts 8%", color: "#d4af37", textColor: "#0f2a4a" }
+    ];
+    
+    const numSegments = segments.length;
+    const angle = 2 * Math.PI / numSegments;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2 - 4;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < numSegments; i++) {
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, i * angle, (i + 1) * angle);
+      ctx.fillStyle = segments[i].color;
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(i * angle + angle / 2);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = segments[i].textColor;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText(segments[i].text, radius - 15, 0);
+      ctx.restore();
+    }
+  }, [isWheelOpen]);
 
   // Handle Wheel Spin
   const spinWheel = async () => {
@@ -206,24 +252,16 @@ export default function EngagementWidgets() {
               <div className="absolute top-0 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[20px] border-t-red-600 z-10 origin-bottom" style={{ transform: 'translateY(-10px)' }} />
               
               {/* Spinning Canvas representation */}
-              <div 
-                className="w-52 h-52 rounded-full border-4 border-[#d4af37] shadow-lg relative overflow-hidden"
+              <canvas 
+                ref={canvasRef}
+                width="220"
+                height="220"
+                className="w-52 h-52 rounded-full border-4 border-[#d4af37] shadow-lg relative overflow-hidden bg-white"
                 style={{
                   transform: `rotate(${wheelAngle}deg)`,
-                  transition: isSpinning ? 'transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)' : 'none',
-                  backgroundImage: 'conic-gradient(#0b1a30 0deg 60deg, #d4af37 60deg 120deg, #0b1a30 120deg 180deg, #d4af37 180deg 240deg, #0b1a30 240deg 300deg, #d4af37 300deg 360deg)'
+                  transition: isSpinning ? 'transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)' : 'none'
                 }}
-              >
-                {/* Visual lines overlay inside wheel */}
-                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white font-serif">
-                  <span className="absolute transform -rotate-60 translate-y-[-70px]">5% OFF</span>
-                  <span className="absolute transform rotate-0 translate-x-[75px] text-[#0b1a30]">Retry</span>
-                  <span className="absolute transform rotate-60 translate-y-[70px]">10% OFF</span>
-                  <span className="absolute transform rotate-120 translate-y-[70px] text-[#0b1a30]">Free Ship</span>
-                  <span className="absolute transform -rotate-180 translate-y-[-70px]">Retry</span>
-                  <span className="absolute transform -rotate-120 translate-y-[-70px] text-[#0b1a30]">Gifts 8%</span>
-                </div>
-              </div>
+              />
               <div className="absolute w-8 h-8 rounded-full bg-white border-4 border-[#d4af37] flex items-center justify-center font-bold text-xs text-gray-800 z-10">
                 ★
               </div>
