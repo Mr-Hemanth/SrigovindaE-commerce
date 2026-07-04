@@ -15,6 +15,13 @@ function Orders() {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Request Cancellation / Return States
+  const [requestModalOpen, setRequestModalOpen] = useState(false);
+  const [requestOrderId, setRequestOrderId] = useState(null);
+  const [requestType, setRequestType] = useState('cancel');
+  const [requestReason, setRequestReason] = useState('');
+  const [submittingRequest, setSubmittingRequest] = useState(false);
+
   useEffect(() => {
     if (!currentUser) {
       navigate('/login');
@@ -194,6 +201,53 @@ function Orders() {
         console.error('Error cancelling order:', err);
         showNotification('Could not cancel order. Please try again.', 'error');
       }
+    }
+  };
+
+  const handleOpenRequestModal = (orderId, type) => {
+    setRequestOrderId(orderId);
+    setRequestType(type);
+    setRequestReason('');
+    setRequestModalOpen(true);
+  };
+
+  const handleSubmitRequest = async (e) => {
+    e.preventDefault();
+    if (!requestReason.trim()) return;
+    setSubmittingRequest(true);
+    try {
+      const updateData = {
+        requestType,
+        requestReason: requestReason.trim(),
+        requestStatus: 'pending',
+        requestDate: new Date().toISOString()
+      };
+
+      await updateDoc(doc(db, 'orders', requestOrderId), updateData);
+
+      // Update local state dynamically
+      setOrders(prev => prev.map(o => 
+        o.id === requestOrderId ? { ...o, ...updateData } : o
+      ));
+
+      // Sync with local cache
+      const cached = localStorage.getItem(`orders_${currentUser.uid}`);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const updatedCached = parsed.map(o => 
+          o.id === requestOrderId ? { ...o, ...updateData } : o
+        );
+        localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(updatedCached));
+      }
+
+      showNotification(`${requestType === 'cancel' ? 'Cancellation' : 'Return'} request submitted successfully.`, 'success');
+      setRequestModalOpen(false);
+      setRequestReason('');
+    } catch (err) {
+      console.error('Error submitting request:', err);
+      showNotification('Could not submit request. Please try again.', 'error');
+    } finally {
+      setSubmittingRequest(false);
     }
   };
 
@@ -506,15 +560,51 @@ function Orders() {
                             🖨️ Print Invoice Receipt
                           </button>
 
-                          {/* Cancel Order Action Button */}
-                          {['pending', 'processing'].includes(order.status?.toLowerCase()) && (
-                            <button
-                              type="button"
-                              onClick={() => handleCancelOrder(order.id)}
-                              className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl border border-red-200 transition-colors text-xs text-center focus:outline-none"
-                            >
-                              Cancel Order
-                            </button>
+                          {/* Cancellation/Return Requests */}
+                          {order.requestType ? (
+                            <div className="bg-gray-50 border border-gray-150 p-4 rounded-xl text-[11px] space-y-1 mt-2 text-left select-none">
+                              <p className="font-bold text-gray-700 capitalize flex items-center justify-between">
+                                <span>{order.requestType === 'cancel' ? 'Cancellation' : 'Return'} Request:</span>
+                                <span className={`px-2 py-0.5 rounded-full font-bold uppercase text-[9px] ${
+                                  order.requestStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                  order.requestStatus === 'approved' ? 'bg-green-100 text-green-800' :
+                                  'bg-red-100 text-red-800'
+                                }`}>
+                                  {order.requestStatus}
+                                </span>
+                              </p>
+                              <p className="text-gray-500"><span className="font-semibold text-gray-600">Reason:</span> {order.requestReason}</p>
+                            </div>
+                          ) : (
+                            <>
+                              {order.status?.toLowerCase() === 'pending' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleCancelOrder(order.id)}
+                                  className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl border border-red-200 transition-colors text-xs text-center focus:outline-none"
+                                >
+                                  Cancel Order
+                                </button>
+                              )}
+                              {['processing', 'shipped'].includes(order.status?.toLowerCase()) && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenRequestModal(order.id, 'cancel')}
+                                  className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl border border-red-200 transition-colors text-xs text-center focus:outline-none"
+                                >
+                                  Request Cancellation
+                                </button>
+                              )}
+                              {order.status?.toLowerCase() === 'delivered' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenRequestModal(order.id, 'return')}
+                                  className="w-full bg-orange-50 hover:bg-orange-100 text-orange-600 font-bold py-2.5 rounded-xl border border-orange-200 transition-colors text-xs text-center focus:outline-none"
+                                >
+                                  Request Return
+                                </button>
+                              )}
+                            </>
                           )}
                         </div>
 
@@ -526,6 +616,58 @@ function Orders() {
               );
             })
           )}
+        </div>
+      )}
+      {/* Cancellation / Return Request Modal Dialog */}
+      {requestModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center select-none font-sans text-left">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs animate-fade-in"
+            onClick={() => { if (!submittingRequest) setRequestModalOpen(false); }}
+          />
+
+          <div className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 p-8 max-w-sm w-full mx-4 animate-slide-up flex flex-col">
+            <h3 className="text-lg font-bold text-gray-800 font-serif capitalize">
+              Request {requestType === 'cancel' ? 'Cancellation' : 'Return'}
+            </h3>
+            <p className="text-xxs text-gray-400 mt-1">
+              Please provide a detailed reason. Your request will be sent to our support team for verification.
+            </p>
+
+            <form onSubmit={handleSubmitRequest} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xxs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  Reason for {requestType === 'cancel' ? 'Cancellation' : 'Return'}
+                </label>
+                <textarea
+                  value={requestReason}
+                  onChange={(e) => setRequestReason(e.target.value)}
+                  placeholder="e.g. Ordered a wrong item size, changed my mind, item package damaged..."
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-xs focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/5 bg-white resize-none"
+                  required
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRequestModalOpen(false)}
+                  disabled={submittingRequest}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-2xl font-bold text-xs transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingRequest || !requestReason.trim()}
+                  className="flex-1 bg-gradient-to-r from-[#0b1a30] to-[#0f2a4a] text-white py-3 rounded-2xl font-bold text-xs shadow-md disabled:opacity-40 transition-colors uppercase tracking-wider"
+                >
+                  {submittingRequest ? 'Submitting...' : 'Submit Request'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

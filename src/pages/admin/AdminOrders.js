@@ -37,6 +37,23 @@ function AdminOrders() {
     fetchOrders();
   };
 
+  const handleRequestDecision = async (orderId, nextStatus, decision) => {
+    const updateData = {
+      requestStatus: decision
+    };
+    if (decision === 'approved') {
+      if (nextStatus === 'cancelled') {
+        updateData.status = 'cancelled';
+        updateData.paymentStatus = 'Cancelled';
+      } else if (nextStatus === 'returned') {
+        updateData.status = 'returned';
+        updateData.paymentStatus = 'Refunded';
+      }
+    }
+    await updateDoc(doc(db, 'orders', orderId), updateData);
+    fetchOrders();
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-700';
@@ -44,6 +61,7 @@ function AdminOrders() {
       case 'shipped': return 'bg-purple-100 text-purple-700';
       case 'delivered': return 'bg-green-100 text-green-700';
       case 'cancelled': return 'bg-red-100 text-red-700';
+      case 'returned': return 'bg-orange-100 text-orange-700';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -91,6 +109,45 @@ function AdminOrders() {
                     <p className="text-lg font-bold text-[#0f2a4a] mt-3">
                       Total: ₹{(order.finalTotal || order.total).toFixed(2)}
                     </p>
+
+                    {order.requestType && (
+                      <div className="mt-4 p-4 rounded-2xl text-left border select-none max-w-lg bg-orange-50 border-orange-200">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                          <div>
+                            <p className="text-sm font-black text-orange-900 capitalize">
+                              ⚠️ {order.requestType === 'cancel' ? 'Cancellation' : 'Return'} Requested
+                            </p>
+                            <p className="text-xs text-orange-700 mt-1">
+                              <span className="font-bold">Reason:</span> {order.requestReason}
+                            </p>
+                          </div>
+                          {order.requestStatus === 'pending' ? (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleRequestDecision(order.id, order.requestType === 'cancel' ? 'cancelled' : 'returned', 'approved')}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleRequestDecision(order.id, null, 'rejected')}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="text-xxs font-black uppercase tracking-wider">
+                              {order.requestStatus === 'approved' ? (
+                                <span className="text-green-700">✓ Approved</span>
+                              ) : (
+                                <span className="text-red-700">✗ Rejected</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col items-start lg:items-end gap-4">
@@ -104,6 +161,7 @@ function AdminOrders() {
                       <option value="shipped">Shipped</option>
                       <option value="delivered">Delivered</option>
                       <option value="cancelled">Cancelled</option>
+                      <option value="returned">Returned</option>
                     </select>
 
                     <div className="text-base text-gray-500 font-medium">
