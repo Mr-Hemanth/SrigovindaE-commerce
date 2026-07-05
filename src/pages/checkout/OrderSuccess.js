@@ -104,11 +104,21 @@ function OrderSuccess() {
               </div>
 
               {/* Delivery Details */}
-              <div className="border-t border-gray-100 pt-6">
-                <h3 className="text-base font-bold text-gray-800 mb-3 font-serif">Shipping Details</h3>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p className="font-medium text-gray-800">{shippingAddress}</p>
-                  <p>Contact Phone: <span className="font-semibold">{phone}</span></p>
+              <div className="border-t border-gray-100 pt-6 space-y-4">
+                <div>
+                  <h3 className="text-base font-bold text-gray-800 mb-2 font-serif text-left">Shipping Details</h3>
+                  <div className="text-sm text-gray-600 space-y-1 text-left">
+                    <p className="font-medium text-gray-800">{shippingAddress}</p>
+                    <p>Contact Phone: <span className="font-semibold">{phone}</span></p>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50/50 border border-yellow-100/70 rounded-2xl p-4 text-left">
+                  <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wide">📦 Estimated Delivery</h4>
+                  <p className="text-xs text-gray-600 mt-1">Expected delivery window: <span className="font-bold text-[#0f2a4a]">{new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span></p>
+                  <Link to={`/track/${orderId}`} className="text-xs font-extrabold text-[#0f2a4a] hover:underline mt-2 inline-block">
+                    Track Shipment Status →
+                  </Link>
                 </div>
               </div>
             </>
@@ -123,6 +133,28 @@ function OrderSuccess() {
 
           {/* Action Links */}
           <div className="space-y-4 pt-4 border-t border-gray-100">
+            {/* Share / Invite Friends */}
+            <div className="py-4 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col items-center gap-3">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Share your purchase with friends! 📸</span>
+              <div className="flex gap-4">
+                <a
+                  href={`https://wa.me/?text=I%20just%20ordered%20exquisite%20jewellery%20pieces%20from%20Sri%20Govinda%20Collections!%20Check%20out%20their%20catalog%20here:%20https://srigovinda-collections.vercel.app`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#25D366] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
+                >
+                  WhatsApp Share
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=I%20just%20ordered%20exquisite%20jewellery%20pieces%20from%20Sri%20Govinda%20Collections!%20Check%20out%20their%20catalog%20here:%20https://srigovinda-collections.vercel.app`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#1DA1F2] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
+                >
+                  Tweet Share
+                </a>
+              </div>
+            </div>
             {orderId && (
               <a
                 href={generateWhatsAppLink()}

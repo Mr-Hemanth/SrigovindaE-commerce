@@ -5,9 +5,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import { db } from '../../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { sampleJewelleryProducts as sampleProducts } from '../../data/products';
 
 function Cart() {
-  const { cart, removeFromCart, updateQuantity, subtotal, discountAmount, total, applyCoupon, removeCoupon, coupon, discount } = useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, subtotal, discountAmount, total, applyCoupon, removeCoupon, coupon, discount } = useCart();
+  const [crossSellItems, setCrossSellItems] = useState([]);
   const { currentUser } = useAuth();
   const { showNotification } = useNotification();
   const [couponCode, setCouponCode] = useState('');
@@ -39,6 +41,12 @@ function Cart() {
     };
     fetchCoupons();
   }, [currentUser]);
+
+  useEffect(() => {
+    const cartIds = cart.map(item => item.id);
+    const available = sampleProducts.filter(p => !cartIds.includes(p.id) && p.isActive !== false);
+    setCrossSellItems(available.slice(0, 3));
+  }, [cart]);
 
   if (!currentUser) return null;
 
@@ -151,7 +159,23 @@ function Cart() {
           {/* Right Summary Panel */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 border border-gray-50 sticky top-28 space-y-6">
-              <h2 className="text-xl md:text-2xl font-bold text-[#0f2a4a] font-serif border-b border-gray-50 pb-4">Order Summary</h2>
+              {/* Free Shipping Progress Bar */}
+              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-2 select-none text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-gray-500 uppercase font-sans">Free Delivery Progress</span>
+                  <span className="text-[9px] font-bold text-[#0f2a4a] font-mono">
+                    {subtotal >= 1000 
+                      ? "🎉 You qualify for FREE shipping!" 
+                      : `Add ₹${(1000 - subtotal).toFixed(0)} more for FREE delivery`}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-[#d4af37] to-[#0f2a4a] h-full rounded-full transition-all duration-500" 
+                    style={{ width: `${Math.min((subtotal / 1000) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
 
               <div className="space-y-4">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Have a coupon?</label>
@@ -251,6 +275,40 @@ function Cart() {
               </Link>
             </div>
           </div>
+
+          {/* Cart Cross-sell Section */}
+          {crossSellItems.length > 0 && (
+            <div className="lg:col-span-3 mt-12 border-t pt-10 select-none text-left">
+              <h3 className="text-lg md:text-xl font-bold text-gray-800 font-serif mb-6">Add these too</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {crossSellItems.map(item => (
+                  <div key={item.id} className="bg-white rounded-3xl elegant-shadow p-4 border border-gray-100 flex flex-row sm:flex-col gap-4 justify-between items-center sm:items-stretch text-left">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="w-14 h-14 object-cover rounded-xl border flex-shrink-0"
+                      />
+                      <div>
+                        <h4 className="text-xs font-bold text-gray-800 font-serif line-clamp-1">{item.name}</h4>
+                        <span className="text-xxs text-gray-400 capitalize">{item.category?.replace('-', ' ')}</span>
+                        <p className="text-xs font-extrabold text-[#0f2a4a] mt-0.5">₹{item.price}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        addToCart(item);
+                        showNotification(`"${item.name}" added to cart!`, 'success');
+                      }}
+                      className="bg-[#0f2a4a] hover:bg-[#1b4965] text-white px-4 py-2 rounded-xl text-xxs font-bold transition-all whitespace-nowrap self-center sm:self-auto text-center"
+                    >
+                      + Add to Cart
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       )}

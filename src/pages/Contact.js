@@ -142,6 +142,49 @@ function Contact() {
           </form>
         </div>
 
+        {/* Map Embed and Social Links */}
+        <div className="lg:col-span-3 border-t pt-12 space-y-8 select-none text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-gray-800 font-serif">Visit Our Showroom</h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Located in the heart of Amalapuram, near the historical Subbaalamma temple. We showcase antique German Silver plates, bowls, gifting articles, One Gram Gold Kasulaperu harams, and certified Panchaloha rings. Come visit us for custom size fittings!
+              </p>
+              
+              <div className="pt-2">
+                <a 
+                  href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I%20want%20to%20visit%20your%20physical%20store%20in%20Amalapuram."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold text-xs px-5 py-3 rounded-xl hover:scale-[1.02] transition-transform shadow-md"
+                >
+                  💬 Chat on WhatsApp for Location
+                </a>
+              </div>
+
+              {/* Social links */}
+              <div className="pt-4 space-y-2">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Connect on Socials</span>
+                <div className="flex gap-3">
+                  <a href="https://instagram.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-xs font-bold text-[#0f2a4a] hover:underline bg-[#f0f5fa] px-3.5 py-2 rounded-lg">📸 Instagram</a>
+                  <a href="https://facebook.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-xs font-bold text-[#0f2a4a] hover:underline bg-[#f0f5fa] px-3.5 py-2 rounded-lg">📘 Facebook</a>
+                </div>
+              </div>
+            </div>
+
+            {/* Map Frame Embed */}
+            <div className="w-full h-72 rounded-3xl overflow-hidden elegant-shadow border border-gray-100 bg-gray-50">
+              <iframe
+                title="Amalapuram Showroom Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.2372605856417!2d82.00392331536762!3d16.570774288572183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a37fc36ffaaaaaa%3A0x6bba8f07be80164c!2sAmalapuram%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1625480000000!5m2!1sen!2sin"
+                className="w-full h-full border-0 opacity-90"
+                allowFullScreen=""
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

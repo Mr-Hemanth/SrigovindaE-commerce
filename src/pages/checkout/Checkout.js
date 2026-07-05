@@ -29,6 +29,7 @@ function Checkout() {
   const { showNotification } = useNotification();
   
   const [paymentMethod, setPaymentMethod] = useState('online');
+  const [shippingMethod, setShippingMethod] = useState('standard');
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -58,6 +59,20 @@ function Checkout() {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setCaptchaCode(code);
     setEnteredCaptcha('');
+  };
+
+  const getEstimatedDates = (method) => {
+    const start = new Date();
+    const end = new Date();
+    if (method === 'express') {
+      start.setDate(start.getDate() + 2);
+      end.setDate(end.getDate() + 3);
+    } else {
+      start.setDate(start.getDate() + 5);
+      end.setDate(end.getDate() + 7);
+    }
+    const options = { month: 'short', day: 'numeric' };
+    return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
   };
 
   useEffect(() => {
@@ -185,7 +200,8 @@ function Checkout() {
     }
 
     const orderId = `SG_${currentUser.uid.slice(0, 5)}_${Date.now()}`;
-    const finalTotal = total * (1 - (discount / 100));
+    const shippingCost = shippingMethod === 'express' ? 150 : 0;
+    const finalTotal = total * (1 - (discount / 100)) + shippingCost;
 
     if (paymentMethod === 'cod') {
       setLoading(true);
@@ -310,7 +326,8 @@ function Checkout() {
     return null;
   }
 
-  const finalTotal = total * (1 - (discount / 100));
+  const shippingCost = shippingMethod === 'express' ? 150 : 0;
+  const finalTotal = total * (1 - (discount / 100)) + shippingCost;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 animate-fade-in">
@@ -383,6 +400,50 @@ function Checkout() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Delivery Method and Estimated Date */}
+          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100 select-none text-left">
+            <h2 className="text-lg md:text-2xl font-bold mb-2 text-gray-800 font-serif">Delivery Method</h2>
+            <p className="text-xs text-gray-400 mb-6">Choose how fast you want your exquisite jewellery items delivered</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              {/* Standard */}
+              <label className={`flex items-center gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${shippingMethod === 'standard' ? 'border-[#0f2a4a] bg-[#f0f5fa]/20' : 'border-gray-100 hover:border-gray-200'}`}>
+                <input 
+                  type="radio" 
+                  name="shipping" 
+                  value="standard" 
+                  checked={shippingMethod === 'standard'} 
+                  onChange={(e) => setShippingMethod(e.target.value)}
+                  className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
+                />
+                <div>
+                  <span className="font-bold text-gray-800 text-sm block">Standard Free Shipping</span>
+                  <span className="text-[10px] text-gray-400 font-mono">Est: {getEstimatedDates('standard')}</span>
+                </div>
+              </label>
+
+              {/* Express */}
+              <label className={`flex items-center gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${shippingMethod === 'express' ? 'border-[#0f2a4a] bg-[#f0f5fa]/20' : 'border-gray-100 hover:border-gray-200'}`}>
+                <input 
+                  type="radio" 
+                  name="shipping" 
+                  value="express" 
+                  checked={shippingMethod === 'express'} 
+                  onChange={(e) => setShippingMethod(e.target.value)}
+                  className="w-4 h-4 text-[#0f2a4a] accent-[#0f2a4a]"
+                />
+                <div className="flex-1 flex justify-between items-center">
+                  <div>
+                    <span className="font-bold text-gray-800 text-sm block">Express Courier Delivery</span>
+                    <span className="text-[10px] text-gray-400 font-mono">Est: {getEstimatedDates('express')}</span>
+                  </div>
+                  <span className="bg-[#0b1a30] text-white font-bold text-xs px-2.5 py-1 rounded-lg">₹150</span>
+                </div>
+              </label>
+
+            </div>
           </div>
 
           {/* Payment Methods */}
@@ -515,6 +576,10 @@ function Checkout() {
                   <span>-₹{(total * (discount / 100)).toFixed(0)}</span>
                 </div>
               )}
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>Shipping Delivery</span>
+                <span className="font-semibold text-gray-800">{shippingMethod === 'express' ? '₹150 (Express)' : 'FREE (Standard)'}</span>
+              </div>
               <div className="flex justify-between text-base font-bold text-[#0f2a4a] pt-1">
                 <span>Grand Total</span>
                 <span className="text-xl">₹{finalTotal.toFixed(0)}</span>
@@ -524,10 +589,20 @@ function Checkout() {
             <button
               onClick={handlePlaceOrder}
               disabled={loading}
-              className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm"
+              className="w-full bg-[#0f2a4a] hover:bg-[#1b4965] text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm mb-4"
             >
               {loading ? 'Processing Order...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Proceed to Payment'}
             </button>
+
+            {/* Trust Badges */}
+            <div className="pt-4 flex flex-col items-center gap-2 border-t border-gray-50 text-[10px] text-gray-400 font-bold select-none uppercase tracking-wider">
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1">🔒 SSL Secure</span>
+                <span className="flex items-center gap-1">🛡️ Razorpay Safe</span>
+                <span className="flex items-center gap-1">✨ 100% Original</span>
+              </div>
+              <span className="text-[9px] text-gray-300">Secured with 256-bit encryption</span>
+            </div>
           </div>
         </div>
 

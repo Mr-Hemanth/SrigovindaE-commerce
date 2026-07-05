@@ -28,6 +28,10 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminCoupons from './pages/admin/AdminCoupons';
 import { useAuth } from './contexts/AuthContext';
+import About from './pages/About';
+import FAQ from './pages/policy/FAQ';
+import TrackOrder from './pages/user/TrackOrder';
+import NotFound from './pages/NotFound';
 
 function AdminRoute({ children }) {
   const { isAdmin, loading } = useAuth();
@@ -204,6 +208,10 @@ function App() {
                   <Route path="/refund-policy" element={<RefundPolicy />} />
                   <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/track/:orderId" element={<TrackOrder />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Footer />
               </div>
