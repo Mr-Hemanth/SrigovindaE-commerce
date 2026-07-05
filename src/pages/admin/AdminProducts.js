@@ -270,9 +270,8 @@ function AdminProducts() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Subcategory</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Subcategory (Optional)</label>
                     <select
-                      required
                       value={form.subcategory}
                       onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
                       className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0f2a4a] focus:ring-4 focus:ring-[#0f2a4a]/10 transition-all duration-300"
