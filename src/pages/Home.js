@@ -161,66 +161,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Occasion-based Collections */}
-      <section className="py-12 md:py-20 bg-[#fdfaf6]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Curated for Occasions</h2>
-          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Traditional South Indian designs handpicked for your most celebrated milestones</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Wedding Season */}
-            <Link 
-              to="/products?category=german-silver" 
-              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1605722243979-fe0be8158232?w=600&auto=format&fit=crop&q=80" 
-                alt="Wedding Season" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
-                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Bridal & Gifting</span>
-                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">👰 Wedding & Bridal Season</h3>
-                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Exquisite German Silver plates, bowls, gift sets, and heavy bridal chokers.</p>
-              </div>
-            </Link>
 
-            {/* Ugadi & Diwali Festivals */}
-            <Link 
-              to="/products?category=panchaloha" 
-              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=80" 
-                alt="Festive Celebrations" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
-                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Festive Sparkle</span>
-                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">🪔 Ugadi & Diwali Celebrations</h3>
-                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Panchaloha rings, necklaces, and traditional One Gram Gold necklaces to invite prosperity.</p>
-              </div>
-            </Link>
-
-            {/* Everyday Gifting */}
-            <Link 
-              to="/products?category=gifts" 
-              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop&q=80" 
-                alt="Gifting & Housewarming" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
-                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Shubh Gifting</span>
-                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">🎁 Gifting & Housewarming</h3>
-                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Premium gift articles, silver-plated sets, and customized luxury boxes for housewarming.</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* WhatsApp Chat & Catalog Callout Banner */}
       <section className="py-8 bg-gradient-to-r from-green-500 to-green-600 text-white select-none text-left">
@@ -261,51 +202,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Video & Reels Gallery showcasing Jewelry on Models */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Style Reels & Lookbooks</h2>
-          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">See our collections styled live on models for wedding wear inspiration</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Traditional German Silver Choker Set",
-                desc: "Styled for grand wedding housewarming events.",
-                url: "https://assets.mixkit.co/videos/preview/mixkit-woman-showing-silver-rings-41220-large.mp4"
-              },
-              {
-                title: "One Gram Gold Kasu Mala Look",
-                desc: "Draped elegantly on silk sarees for Ugadi festivals.",
-                url: "https://assets.mixkit.co/videos/preview/mixkit-girl-wearing-golden-jewelry-41221-large.mp4"
-              },
-              {
-                title: "Festive Panchaloha Kada & Rings",
-                desc: "Elegant stackable rings styled with modern outfits.",
-                url: "https://assets.mixkit.co/videos/preview/mixkit-woman-showing-silver-rings-41220-large.mp4"
-              }
-            ].map((reel, idx) => (
-              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 flex flex-col justify-between h-full">
-                <div className="relative aspect-[9/16] bg-black overflow-hidden group">
-                  <video 
-                    src={reel.url} 
-                    className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-5 text-left">
-                    <span className="text-[9px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full w-max mb-2 animate-pulse uppercase">Live Lookbook</span>
-                    <h4 className="text-sm font-black text-white">{reel.title}</h4>
-                    <p className="text-[10px] text-gray-300 mt-1 leading-normal">{reel.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* "As Seen on Instagram" Shoppable Tiles */}
       <section className="py-12 md:py-20 bg-[#faf8f5] border-t border-b border-gray-100">
