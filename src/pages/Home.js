@@ -206,44 +206,7 @@ function Home() {
 
 
 
-      {/* Blog & Style Guide Teaser */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Style Guides & Inspiration</h2>
-          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Tips and guides from style experts on how to choose, pair, and style premium traditional jewelry</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {[
-              {
-                title: "How to Style Your Wedding Gifting Set: The Ultimate Guide",
-                desc: "Planning a wedding? Discover how to choose matching German Silver plates, gifting sets, and accessory pieces that leave a premium lasting impression.",
-                img: "https://images.unsplash.com/photo-1605722243979-fe0be8158232?w=600&auto=format&fit=crop&q=80",
-                readTime: "5 min read"
-              },
-              {
-                title: "Diwali & Ugadi Jewelry: Styling Traditional Panchaloha for Festivals",
-                desc: "Learn the traditional value of five-metal alloy rings and kasu harams, and how to style them with silk Kanjeevarams for South Indian festivals.",
-                img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=80",
-                readTime: "4 min read"
-              }
-            ].map((blog, idx) => (
-              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 text-left flex flex-col justify-between group">
-                <div className="relative aspect-[16/9] overflow-hidden">
-                  <img src={blog.img} alt={blog.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103" />
-                  <span className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-[9px] font-bold text-[#0f2a4a] px-2.5 py-1 rounded-full shadow-sm">{blog.readTime}</span>
-                </div>
-                <div className="p-6 md:p-8 space-y-3">
-                  <h4 className="text-base md:text-xl font-bold text-gray-800 font-serif leading-snug group-hover:text-[#0f2a4a] transition-colors">{blog.title}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{blog.desc}</p>
-                  <Link to="/products" className="inline-block text-xs font-bold text-[#0f2a4a] hover:underline pt-2">
-                    Read Full Article →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Recently Viewed Grid Section */}
       {recentlyViewed.length > 0 && (
