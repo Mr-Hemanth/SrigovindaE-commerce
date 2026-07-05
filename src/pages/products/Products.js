@@ -244,6 +244,48 @@ function Products() {
 
         {/* Product Cards Grid */}
         <div className="flex-grow">
+          {/* Active Filter Pills */}
+          {(selectedCategory !== 'all' || selectedSubcategory !== 'all' || priceRange < 20000 || searchQuery !== '') && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#f0f5fa] text-[#0f2a4a] border border-[#0f2a4a]/10">
+                  Search: "{searchQuery}"
+                  <button onClick={() => setSearchQuery('')} className="hover:text-red-500 font-extrabold text-xs ml-1">✕</button>
+                </span>
+              )}
+              {selectedCategory !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#f0f5fa] text-[#0f2a4a] border border-[#0f2a4a]/10 capitalize">
+                  Category: {categories.find(c => c.id === selectedCategory)?.name || selectedCategory}
+                  <button onClick={() => { setSelectedCategory('all'); setSelectedSubcategory('all'); }} className="hover:text-red-500 font-extrabold text-xs ml-1">✕</button>
+                </span>
+              )}
+              {selectedSubcategory !== 'all' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#f0f5fa] text-[#0f2a4a] border border-[#0f2a4a]/10 capitalize">
+                  Subcategory: {selectedSubcategory}
+                  <button onClick={() => setSelectedSubcategory('all')} className="hover:text-red-500 font-extrabold text-xs ml-1">✕</button>
+                </span>
+              )}
+              {priceRange < 20000 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#f0f5fa] text-[#0f2a4a] border border-[#0f2a4a]/10">
+                  Under ₹{priceRange}
+                  <button onClick={() => setPriceRange(20000)} className="hover:text-red-500 font-extrabold text-xs ml-1">✕</button>
+                </span>
+              )}
+              <button 
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedSubcategory('all');
+                  setPriceRange(20000);
+                  setSearchQuery('');
+                  setSortBy('default');
+                }}
+                className="text-[10px] font-bold text-red-500 hover:text-red-700 hover:underline px-2.5 py-1.5"
+              >
+                Reset All
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
             {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
