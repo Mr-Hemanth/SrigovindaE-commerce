@@ -107,7 +107,7 @@ function AdminOrders() {
                       </p>
                     )}
                     <p className="text-lg font-bold text-[#0f2a4a] mt-3">
-                      Total: ₹{(order.finalTotal || order.total).toFixed(2)}
+                      Total: ₹{Number(order.finalTotal || order.total || 0).toFixed(2)}
                     </p>
 
                     {order.requestType && (
@@ -185,7 +185,7 @@ function AdminOrders() {
                         />
                         <div>
                           <p className="text-base font-semibold text-gray-800">{item.name}</p>
-                          <p className="text-sm text-gray-500">Qty: {item.quantity} • ₹{item.price.toFixed(0)}</p>
+                          <p className="text-sm text-gray-500">Qty: {item.quantity} • ₹{Number(item.discountedPrice || item.price || 0).toFixed(0)}</p>
                         </div>
                       </div>
                     ))}

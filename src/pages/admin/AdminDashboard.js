@@ -248,7 +248,7 @@ function AdminDashboard() {
             <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Avg Order Value</p>
-                <p className="text-xl font-bold text-gray-800 mt-1">₹{(stats.revenue / (stats.orders || 1)).toFixed(0)}</p>
+                <p className="text-xl font-bold text-gray-800 mt-1">₹{Number((stats.revenue || 0) / (stats.orders || 1)).toFixed(0)}</p>
               </div>
               <span className="text-xl p-2 bg-[#d4af37]/15 rounded-xl">📈</span>
             </div>
@@ -257,7 +257,7 @@ function AdminDashboard() {
             <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Revenue</p>
-                <p className="text-xl font-black text-[#d4af37] font-serif mt-1">₹{stats.revenue.toFixed(0)}</p>
+                <p className="text-xl font-black text-[#d4af37] font-serif mt-1">₹{Number(stats.revenue || 0).toFixed(0)}</p>
               </div>
               <span className="text-xl p-2 bg-yellow-50 rounded-xl">💸</span>
             </div>
@@ -287,7 +287,7 @@ function AdminDashboard() {
                     <div key={item.name} className="space-y-1.5">
                       <div className="flex justify-between text-xs">
                         <span className="font-bold text-gray-700">{item.name}</span>
-                        <span className="font-semibold text-gray-400">₹{item.value.toFixed(0)} ({pct.toFixed(0)}%)</span>
+                        <span className="font-semibold text-gray-400">₹{Number(item.value || 0).toFixed(0)} ({pct.toFixed(0)}%)</span>
                       </div>
                       <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
                         <div className={`h-full ${item.color} rounded-full`} style={{ width: `${pct}%` }} />

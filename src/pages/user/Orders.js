@@ -130,8 +130,8 @@ function Orders() {
                 <tr>
                   <td>${item.name}</td>
                   <td style="text-align:center;">${item.quantity}</td>
-                  <td style="text-align:right;">₹${(item.discountedPrice || item.price)}</td>
-                  <td style="text-align:right;">₹${((item.discountedPrice || item.price) * item.quantity).toFixed(0)}</td>
+                  <td style="text-align:right;">₹${(item.discountedPrice || item.price || 0)}</td>
+                  <td style="text-align:right;">₹${(Number(item.discountedPrice || item.price || 0) * Number(item.quantity || 0)).toFixed(0)}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -140,17 +140,17 @@ function Orders() {
           <div class="total-section">
             <div class="total-row">
               <span>Subtotal:</span>
-              <span>₹${(order.subtotal || order.total).toFixed(0)}</span>
+              <span>₹${Number(order.subtotal || order.total || 0).toFixed(0)}</span>
             </div>
             ${order.discount > 0 ? `
               <div class="total-row" style="color:green;">
                 <span>Discount (${order.discount}%):</span>
-                <span>-₹${((order.subtotal || order.total) * (order.discount / 100)).toFixed(0)}</span>
+                <span>-₹${(Number(order.subtotal || order.total || 0) * (Number(order.discount || 0) / 100)).toFixed(0)}</span>
               </div>
             ` : ''}
             <div class="total-row grand-total">
               <span>Grand Total:</span>
-              <span>₹${(order.finalTotal || order.total).toFixed(0)}</span>
+              <span>₹${Number(order.finalTotal || order.total || 0).toFixed(0)}</span>
             </div>
           </div>
           
@@ -386,7 +386,7 @@ function Orders() {
 
                       <div className="text-left md:text-right">
                         <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Total Amount</p>
-                        <p className="text-2xl font-black text-[#0f2a4a] font-serif">₹{(order.finalTotal || order.total).toFixed(0)}</p>
+                        <p className="text-2xl font-black text-[#0f2a4a] font-serif">₹{Number(order.finalTotal || order.total || 0).toFixed(0)}</p>
                       </div>
                       <div className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors">
                         <svg 
@@ -517,19 +517,19 @@ function Orders() {
                           <div className="space-y-2 text-sm border-b border-gray-50 pb-3">
                             <div className="flex justify-between text-gray-500">
                               <span>Subtotal</span>
-                              <span className="font-medium text-gray-800">₹{order.subtotal?.toFixed(0) || order.total?.toFixed(0)}</span>
+                              <span className="font-medium text-gray-800">₹{Number(order.subtotal || order.total || 0).toFixed(0)}</span>
                             </div>
                             
                             {order.discount > 0 && (
                               <div className="flex justify-between text-green-600 font-medium">
                                 <span>Coupon Discount ({order.discount}%)</span>
-                                <span>-₹{((order.subtotal || order.total) * (order.discount / 100)).toFixed(0)}</span>
+                                <span>-₹{(Number(order.subtotal || order.total || 0) * (Number(order.discount || 0) / 100)).toFixed(0)}</span>
                               </div>
                             )}
 
                             <div className="flex justify-between text-base font-bold text-[#0f2a4a] pt-1">
                               <span>Grand Total</span>
-                              <span>₹{(order.finalTotal || order.total).toFixed(0)}</span>
+                              <span>₹{Number(order.finalTotal || order.total || 0).toFixed(0)}</span>
                             </div>
                           </div>
 
