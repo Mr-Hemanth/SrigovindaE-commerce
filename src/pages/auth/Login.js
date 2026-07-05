@@ -23,7 +23,7 @@ function Login() {
       setLoading(true);
       const userCredential = await login(email, password);
       
-      if (!userCredential.user.emailVerified) {
+      if (!userCredential.user.emailVerified && !isAdminBypass) {
         await logout();
         setError('Your email address is not verified yet. We sent a verification link to your email inbox. Please verify your account before logging in.');
         setLoading(false);
