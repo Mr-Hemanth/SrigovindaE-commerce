@@ -11,6 +11,28 @@ function Home() {
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [activeFaq, setActiveFaq] = useState(null);
 
+  // Flash Sale Countdown State
+  const [countdown, setCountdown] = useState({ hours: 24, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      const diff = endOfDay.getTime() - now.getTime();
+      if (diff <= 0) {
+        setCountdown({ hours: 24, minutes: 0, seconds: 0 });
+      } else {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown({ hours, minutes, seconds });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     try {
       const stored = localStorage.getItem('recently_viewed');
@@ -58,6 +80,28 @@ function Home() {
             >
               Explore Our Collection
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Flash Sale Countdown Timer Announcement */}
+      <section className="bg-gradient-to-r from-[#d4af37] to-[#c49d2f] text-[#0b1a30] py-4 shadow-inner relative z-10 select-none text-left">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">⚡</span>
+            <span className="font-extrabold text-sm md:text-base uppercase tracking-wider text-[#0b1a30]">
+              Flash Sale: 10% OFF site-wide! Code: <span className="bg-[#0b1a30] text-white px-2.5 py-1 rounded font-mono select-all text-xs font-black">FLASH10</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0b1a30]/85 mr-2">ENDS IN:</span>
+            <div className="flex gap-1.5 font-mono text-sm">
+              <span className="bg-[#0b1a30] text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.hours).padStart(2, '0')}h</span>
+              <span className="font-bold text-[#0b1a30] self-center">:</span>
+              <span className="bg-[#0b1a30] text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.minutes).padStart(2, '0')}m</span>
+              <span className="font-bold text-[#0b1a30] self-center">:</span>
+              <span className="bg-[#0b1a30] text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.seconds).padStart(2, '0')}s</span>
+            </div>
           </div>
         </div>
       </section>
@@ -117,6 +161,86 @@ function Home() {
         </div>
       </section>
 
+      {/* Occasion-based Collections */}
+      <section className="py-12 md:py-20 bg-[#fdfaf6]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Curated for Occasions</h2>
+          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Traditional South Indian designs handpicked for your most celebrated milestones</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Wedding Season */}
+            <Link 
+              to="/products?category=german-silver" 
+              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1605722243979-fe0be8158232?w=600&auto=format&fit=crop&q=80" 
+                alt="Wedding Season" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
+                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Bridal & Gifting</span>
+                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">👰 Wedding & Bridal Season</h3>
+                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Exquisite German Silver plates, bowls, gift sets, and heavy bridal chokers.</p>
+              </div>
+            </Link>
+
+            {/* Ugadi & Diwali Festivals */}
+            <Link 
+              to="/products?category=panchaloha" 
+              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=80" 
+                alt="Festive Celebrations" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
+                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Festive Sparkle</span>
+                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">🪔 Ugadi & Diwali Celebrations</h3>
+                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Panchaloha rings, necklaces, and traditional One Gram Gold necklaces to invite prosperity.</p>
+              </div>
+            </Link>
+
+            {/* Everyday Gifting */}
+            <Link 
+              to="/products?category=gifts" 
+              className="group relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] cursor-pointer"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop&q=80" 
+                alt="Gifting & Housewarming" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-8 text-left">
+                <span className="text-[10px] font-bold text-[#d4af37] tracking-widest uppercase mb-1">Shubh Gifting</span>
+                <h3 className="text-lg md:text-2xl font-bold text-white font-serif">🎁 Gifting & Housewarming</h3>
+                <p className="text-xs text-white/80 mt-1.5 leading-relaxed">Premium gift articles, silver-plated sets, and customized luxury boxes for housewarming.</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* WhatsApp Chat & Catalog Callout Banner */}
+      <section className="py-8 bg-gradient-to-r from-green-500 to-green-600 text-white select-none text-left">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-6">
+          <div className="text-center lg:text-left">
+            <h3 className="text-xl md:text-2xl font-extrabold">💬 Order Direct on WhatsApp</h3>
+            <p className="text-xs md:text-sm text-green-50 mt-1 max-w-2xl">Prefer ordering through messaging? Chat directly with us, request real-time video clips of jewelry, or share screenshots of items you love!</p>
+          </div>
+          <a 
+            href="https://wa.me/919966144888?text=Hi%20Srigovinda%20Collections,%20I'm%20interested%20in%20viewing%20your%20jewellery%20catalog." 
+            target="_blank" 
+            rel="noreferrer"
+            className="bg-white text-green-600 hover:bg-green-50 px-6 py-3.5 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-md flex items-center gap-2 hover:scale-[1.03]"
+          >
+            <span>Open WhatsApp Catalog</span>
+            <span>→</span>
+          </a>
+        </div>
+      </section>
+
       {/* Featured Pieces Grid */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-[#f7f2ed] to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,6 +257,150 @@ function Home() {
             >
               View All Products
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Video & Reels Gallery showcasing Jewelry on Models */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Style Reels & Lookbooks</h2>
+          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">See our collections styled live on models for wedding wear inspiration</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Traditional German Silver Choker Set",
+                desc: "Styled for grand wedding housewarming events.",
+                url: "https://assets.mixkit.co/videos/preview/mixkit-woman-showing-silver-rings-41220-large.mp4"
+              },
+              {
+                title: "One Gram Gold Kasu Mala Look",
+                desc: "Draped elegantly on silk sarees for Ugadi festivals.",
+                url: "https://assets.mixkit.co/videos/preview/mixkit-girl-wearing-golden-jewelry-41221-large.mp4"
+              },
+              {
+                title: "Festive Panchaloha Kada & Rings",
+                desc: "Elegant stackable rings styled with modern outfits.",
+                url: "https://assets.mixkit.co/videos/preview/mixkit-woman-showing-silver-rings-41220-large.mp4"
+              }
+            ].map((reel, idx) => (
+              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 flex flex-col justify-between h-full">
+                <div className="relative aspect-[9/16] bg-black overflow-hidden group">
+                  <video 
+                    src={reel.url} 
+                    className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-5 text-left">
+                    <span className="text-[9px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full w-max mb-2 animate-pulse uppercase">Live Lookbook</span>
+                    <h4 className="text-sm font-black text-white">{reel.title}</h4>
+                    <p className="text-[10px] text-gray-300 mt-1 leading-normal">{reel.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* "As Seen on Instagram" Shoppable Tiles */}
+      <section className="py-12 md:py-20 bg-[#faf8f5] border-t border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">As Seen on Instagram</h2>
+          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Follow <a href="https://instagram.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-[#0f2a4a] hover:underline font-bold">@srigovindacollections</a> and shop tagged favorites!</p>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                handle: "@srigovindacollections",
+                img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&auto=format&fit=crop&q=80",
+                caption: "Traditional One Gram Gold haram styled with fresh jasmine flowers. 🌸✨",
+                link: "/products?category=one-gram-gold"
+              },
+              {
+                handle: "@srigovindacollections",
+                img: "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&auto=format&fit=crop&q=80",
+                caption: "Antique German Silver jewelry cases and plates for luxury gifting. 🎁💍",
+                link: "/products?category=german-silver"
+              },
+              {
+                handle: "@srigovindacollections",
+                img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop&q=80",
+                caption: "The timeless Panchaloha ring set, bringing positive vibes and traditional luster. 🪔💍",
+                link: "/products?category=panchaloha"
+              },
+              {
+                handle: "@srigovindacollections",
+                img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&auto=format&fit=crop&q=80",
+                caption: "Grand festive gift boxes for Ugadi housewarmings. Order on WhatsApp! 📦💬",
+                link: "/products?category=gifts"
+              }
+            ].map((post, idx) => (
+              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 text-left flex flex-col justify-between group">
+                <div>
+                  <div className="p-4 flex items-center gap-2 border-b border-gray-50">
+                    <div className="w-7.5 h-7.5 rounded-full bg-[#0f2a4a] text-white flex items-center justify-center font-bold text-[9px] select-none">SG</div>
+                    <span className="text-[10px] font-bold text-gray-800">{post.handle}</span>
+                  </div>
+                  <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => window.open(post.link, '_self')}>
+                    <img 
+                      src={post.img} 
+                      alt="Instagram Post" 
+                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="bg-white text-gray-900 text-[10px] font-extrabold px-3 py-2 rounded-xl shadow-lg uppercase tracking-wider">Shop Item</span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-[10px] text-gray-600 leading-normal line-clamp-2">{post.caption}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Blog & Style Guide Teaser */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">Style Guides & Inspiration</h2>
+          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Tips and guides from style experts on how to choose, pair, and style premium traditional jewelry</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {[
+              {
+                title: "How to Style Your Wedding Gifting Set: The Ultimate Guide",
+                desc: "Planning a wedding? Discover how to choose matching German Silver plates, gifting sets, and accessory pieces that leave a premium lasting impression.",
+                img: "https://images.unsplash.com/photo-1605722243979-fe0be8158232?w=600&auto=format&fit=crop&q=80",
+                readTime: "5 min read"
+              },
+              {
+                title: "Diwali & Ugadi Jewelry: Styling Traditional Panchaloha for Festivals",
+                desc: "Learn the traditional value of five-metal alloy rings and kasu harams, and how to style them with silk Kanjeevarams for South Indian festivals.",
+                img: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=80",
+                readTime: "4 min read"
+              }
+            ].map((blog, idx) => (
+              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 text-left flex flex-col justify-between group">
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <img src={blog.img} alt={blog.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103" />
+                  <span className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-[9px] font-bold text-[#0f2a4a] px-2.5 py-1 rounded-full shadow-sm">{blog.readTime}</span>
+                </div>
+                <div className="p-6 md:p-8 space-y-3">
+                  <h4 className="text-base md:text-xl font-bold text-gray-800 font-serif leading-snug group-hover:text-[#0f2a4a] transition-colors">{blog.title}</h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">{blog.desc}</p>
+                  <Link to="/products" className="inline-block text-xs font-bold text-[#0f2a4a] hover:underline pt-2">
+                    Read Full Article →
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
