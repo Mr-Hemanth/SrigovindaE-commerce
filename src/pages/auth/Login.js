@@ -12,6 +12,9 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!email.trim().toLowerCase().endsWith('@gmail.com')) {
+      return setError('Only registered Google email addresses (@gmail.com) are allowed.');
+    }
     try {
       setError('');
       setLoading(true);

@@ -29,6 +29,9 @@ function Signup() {
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
     }
+    if (!email.trim().toLowerCase().endsWith('@gmail.com')) {
+      return setError('Only registered Google email addresses (@gmail.com) are allowed for registration.');
+    }
     try {
       setError('');
       setLoading(true);
