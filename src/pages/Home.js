@@ -204,64 +204,7 @@ function Home() {
 
 
 
-      {/* "As Seen on Instagram" Shoppable Tiles */}
-      <section className="py-12 md:py-20 bg-[#faf8f5] border-t border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-2 font-serif">As Seen on Instagram</h2>
-          <p className="text-center text-gray-500 text-xs md:text-sm mb-10 md:mb-16">Follow <a href="https://instagram.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-[#0f2a4a] hover:underline font-bold">@srigovindacollections</a> and shop tagged favorites!</p>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                handle: "@srigovindacollections",
-                img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&auto=format&fit=crop&q=80",
-                caption: "Traditional One Gram Gold haram styled with fresh jasmine flowers. 🌸✨",
-                link: "/products?category=one-gram-gold"
-              },
-              {
-                handle: "@srigovindacollections",
-                img: "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=400&auto=format&fit=crop&q=80",
-                caption: "Antique German Silver jewelry cases and plates for luxury gifting. 🎁💍",
-                link: "/products?category=german-silver"
-              },
-              {
-                handle: "@srigovindacollections",
-                img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop&q=80",
-                caption: "The timeless Panchaloha ring set, bringing positive vibes and traditional luster. 🪔💍",
-                link: "/products?category=panchaloha"
-              },
-              {
-                handle: "@srigovindacollections",
-                img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&auto=format&fit=crop&q=80",
-                caption: "Grand festive gift boxes for Ugadi housewarmings. Order on WhatsApp! 📦💬",
-                link: "/products?category=gifts"
-              }
-            ].map((post, idx) => (
-              <div key={idx} className="bg-white rounded-3xl elegant-shadow overflow-hidden border border-gray-100 text-left flex flex-col justify-between group">
-                <div>
-                  <div className="p-4 flex items-center gap-2 border-b border-gray-50">
-                    <div className="w-7.5 h-7.5 rounded-full bg-[#0f2a4a] text-white flex items-center justify-center font-bold text-[9px] select-none">SG</div>
-                    <span className="text-[10px] font-bold text-gray-800">{post.handle}</span>
-                  </div>
-                  <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => window.open(post.link, '_self')}>
-                    <img 
-                      src={post.img} 
-                      alt="Instagram Post" 
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="bg-white text-gray-900 text-[10px] font-extrabold px-3 py-2 rounded-xl shadow-lg uppercase tracking-wider">Shop Item</span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <p className="text-[10px] text-gray-600 leading-normal line-clamp-2">{post.caption}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Blog & Style Guide Teaser */}
       <section className="py-12 md:py-20 bg-white">
