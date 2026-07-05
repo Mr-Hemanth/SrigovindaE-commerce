@@ -89,6 +89,7 @@ function Navbar() {
   // Notifications center states
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -381,14 +382,52 @@ function Navbar() {
                     </div>
                   )}
                 </div>
-                <Link to="/orders" className="text-[#f0f5fa] hover:text-white transition-all duration-300 font-medium text-sm">Orders</Link>
-                <Link to="/profile" className="text-[#f0f5fa] hover:text-white transition-all duration-300 font-medium text-sm">Profile</Link>
-                {isAdmin && (
-                  <Link to="/admin" className="bg-[#d4af37] text-[#0b1a30] px-5 py-2 rounded-xl hover:bg-[#c49d2f] transition-all duration-300 font-bold text-xs shadow-md">
-                    Admin Panel
-                  </Link>
-                )}
-                <button onClick={handleLogout} className="bg-[#c0392b] text-white px-5 py-2 rounded-xl hover:bg-[#a93226] transition-all duration-300 font-bold text-xs shadow-md">Logout</button>
+                {/* Account Dropdown */}
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsAccountOpen(!isAccountOpen)}
+                    className="text-[#f0f5fa] hover:text-white transition-all duration-300 flex items-center gap-1.5 focus:outline-none font-medium text-sm"
+                    title="Account Options"
+                  >
+                    👤 Account <span className="text-[8px] opacity-70">▼</span>
+                  </button>
+                  
+                  {isAccountOpen && (
+                    <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 text-left animate-slide-up text-gray-800">
+                      <div className="p-2 space-y-1">
+                        <Link 
+                          to="/profile" 
+                          onClick={() => setIsAccountOpen(false)}
+                          className="block px-4 py-2.5 text-xs font-bold hover:bg-gray-50 rounded-xl transition-colors"
+                        >
+                          👤 Profile Settings
+                        </Link>
+                        <Link 
+                          to="/orders" 
+                          onClick={() => setIsAccountOpen(false)}
+                          className="block px-4 py-2.5 text-xs font-bold hover:bg-gray-50 rounded-xl transition-colors"
+                        >
+                          📦 Order History
+                        </Link>
+                        {isAdmin && (
+                          <Link 
+                            to="/admin" 
+                            onClick={() => setIsAccountOpen(false)}
+                            className="block px-4 py-2.5 text-xs font-bold hover:bg-gray-50 rounded-xl text-[#d4af37] transition-colors"
+                          >
+                            🛠️ Admin Panel
+                          </Link>
+                        )}
+                        <button 
+                          onClick={() => { setIsAccountOpen(false); handleLogout(); }}
+                          className="w-full text-left block px-4 py-2.5 text-xs font-bold hover:bg-red-50 text-red-600 rounded-xl transition-colors"
+                        >
+                          ✕ Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
