@@ -171,7 +171,7 @@ function Home() {
             <p className="text-xs md:text-sm text-green-50 mt-1 max-w-2xl">Prefer ordering through messaging? Chat directly with us, request real-time video clips of jewelry, or share screenshots of items you love!</p>
           </div>
           <a 
-            href="https://wa.me/919966144888?text=Hi%20Srigovinda%20Collections,%20I'm%20interested%20in%20viewing%20your%20jewellery%20catalog." 
+            href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I'm%20interested%20in%20viewing%20your%20jewellery%20catalog." 
             target="_blank" 
             rel="noreferrer"
             className="bg-white text-green-600 hover:bg-green-50 px-6 py-3.5 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-md flex items-center gap-2 hover:scale-[1.03]"
