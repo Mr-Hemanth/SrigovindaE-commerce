@@ -25,7 +25,7 @@ function Products() {
   const [priceRange, setPriceRange] = useState(20000);
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
 
   // Grid/List Toggle & Pagination States
   const [viewMode, setViewMode] = useState('grid');

@@ -1,9 +1,13 @@
+const isDev = process.env.NODE_ENV === 'development';
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://www.googletagmanager.com",
-  "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://lumberjack.razorpay.com https://api.razorpay.com https://www.google-analytics.com",
+  // 'unsafe-eval' is required by Next.js/Turbopack's dev-mode Fast Refresh runtime (it never
+  // runs in production builds) — without it every page crashes in `next dev`.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://www.googletagmanager.com`,
+  "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://lumberjack.razorpay.com https://api.razorpay.com https://www.google-analytics.com https://www.google.com",
   "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com",
-  "img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos",
+  "img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos https://i.ibb.co",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "object-src 'none'",
@@ -20,6 +24,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'fastly.picsum.photos' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'i.ibb.co' },
     ],
   },
   async headers() {

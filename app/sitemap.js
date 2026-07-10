@@ -24,13 +24,17 @@ export default async function sitemap() {
 
   let productEntries = [];
   try {
-    const snap = await adminDb().collection('products').where('isActive', '!=', false).get();
-    productEntries = snap.docs.map((doc) => ({
-      url: `${siteUrl}/product/${doc.id}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    }));
+    // Firestore's `!=` filter excludes documents missing the field entirely, which would
+    // silently drop any product that predates the isActive field — fetch all and filter in JS.
+    const snap = await adminDb().collection('products').get();
+    productEntries = snap.docs
+      .filter((doc) => doc.data().isActive !== false)
+      .map((doc) => ({
+        url: `${siteUrl}/product/${doc.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      }));
   } catch {
     // Admin SDK not configured yet (no FIREBASE_SERVICE_ACCOUNT_BASE64) or offline — ship the
     // static routes only rather than failing the whole sitemap.

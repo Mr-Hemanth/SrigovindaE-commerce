@@ -79,5 +79,21 @@ service cloud.firestore {
       allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
     }
 
+    // Site settings (e.g. the flash-sale promo banner) - publicly readable so the banner shows
+    // to all visitors including guests, only admins can change it.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Restock notification requests - anyone (including guests) can submit a request to be
+    // notified when a product is back in stock; only admins can view/manage the resulting list
+    // since it contains customer contact details.
+    match /notifications/{notificationId} {
+      allow create: if request.resource.data.productId is string &&
+        request.resource.data.contact is string;
+      allow read, delete: if isAdmin();
+    }
+
   }
 }
