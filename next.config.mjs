@@ -7,7 +7,7 @@ const csp = [
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://www.googletagmanager.com`,
   "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://lumberjack.razorpay.com https://api.razorpay.com https://www.google-analytics.com https://www.google.com",
   "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://www.google.com",
-  "img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos https://i.ibb.co",
+  "img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos https://i.ibb.co https://res.cloudinary.com",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "object-src 'none'",
@@ -29,6 +29,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'fastly.picsum.photos' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'i.ibb.co' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
     ],
   },
   async headers() {

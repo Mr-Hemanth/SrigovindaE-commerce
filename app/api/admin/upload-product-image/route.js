@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'crypto';
-import { getDownloadURL } from 'firebase-admin/storage';
-import { adminAuth, adminDb, adminBucket } from '@/lib/firebase/admin';
+import { v2 as cloudinary } from 'cloudinary';
+import { adminAuth, adminDb } from '@/lib/firebase/admin';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -20,10 +19,19 @@ async function requireAdmin(request) {
   }
 }
 
-// Uploads go through this server route (rather than straight from the browser to Firebase
-// Storage) because the Storage bucket has no CORS configuration for direct client uploads —
-// routing through our own origin sidesteps that entirely and lets us verify admin auth the
-// same way the other /api/admin/* routes do.
+function uploadToCloudinary(buffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'products', resource_type: 'image' },
+      (err, result) => (err ? reject(err) : resolve(result))
+    );
+    stream.end(buffer);
+  });
+}
+
+// Uploads go through this server route (rather than straight from the browser) so we can
+// verify admin auth the same way the other /api/admin/* routes do, and so the Cloudinary API
+// secret never has to reach the client.
 export async function POST(request) {
   const admin = await requireAdmin(request);
   if (!admin) {
@@ -42,19 +50,12 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Image must be under 5MB' }, { status: 400 });
   }
 
-  const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
-  const path = `products/${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
-  const token = randomUUID();
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const bucketFile = adminBucket().file(path);
-  await bucketFile.save(buffer, {
-    metadata: {
-      contentType: file.type,
-      metadata: { firebaseStorageDownloadTokens: token },
-    },
-  });
-
-  const url = await getDownloadURL(bucketFile);
-  return NextResponse.json({ url });
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const result = await uploadToCloudinary(buffer);
+    return NextResponse.json({ url: result.secure_url });
+  } catch (err) {
+    console.error('Cloudinary upload failed:', err);
+    return NextResponse.json({ error: 'Upload failed. Please try again.' }, { status: 502 });
+  }
 }
