@@ -46,16 +46,23 @@ export function AuthProvider({ children }) {
 
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
+    const isNewUser = !userSnap.exists();
+    if (isNewUser) {
       await setDoc(userRef, {
         name: user.displayName || 'Customer',
         email: user.email,
-        phone: '', // Google login doesn't have phone, must complete profile
+        phone: '', // Google doesn't provide a phone number — collected immediately after via a signup-page prompt
         isAdmin: false,
         createdAt: new Date()
       });
     }
-    return userCredential;
+    return { userCredential, isNewUser };
+  }
+
+  async function savePhoneNumber(phone) {
+    if (!auth.currentUser) return;
+    await setDoc(doc(db, 'users', auth.currentUser.uid), { phone }, { merge: true });
+    setCurrentUser((prev) => (prev ? { ...prev, phone } : prev));
   }
 
   function login(email, password) {
@@ -99,7 +106,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
-    loginWithGoogle
+    loginWithGoogle,
+    savePhoneNumber
   };
 
   return (

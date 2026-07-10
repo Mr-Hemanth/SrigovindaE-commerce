@@ -46,8 +46,8 @@ function Signup() {
     try {
       setError('');
       setLoading(true);
-      await loginWithGoogle();
-      router.push('/');
+      const { isNewUser } = await loginWithGoogle();
+      router.push(isNewUser ? '/complete-profile' : '/');
     } catch (err) {
       console.error('Google Sign Up Error:', err);
       setError(err.message || 'Failed to authenticate with Google');
