@@ -6,16 +6,19 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import EngagementWidgets from '@/components/EngagementWidgets';
 
+// Weight lists are trimmed to what's actually referenced in className strings across the
+// app (checked via grep) — every unused weight is a separate font file the browser would
+// otherwise have to download.
 const playfair = Playfair_Display({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '700', '800', '900'],
   variable: '--font-playfair',
   display: 'swap',
 });
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-poppins',
   display: 'swap',
 });

@@ -6,11 +6,13 @@ import ProductCard from '@/components/ProductCard';
 import { categories } from '@/lib/data/products';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
+import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
 function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [activeFaq, setActiveFaq] = useState(null);
+  const ratingsById = useProductRatings();
 
   // Flash Sale Countdown State
   const [countdown, setCountdown] = useState({ hours: 24, minutes: 0, seconds: 0 });
@@ -188,7 +190,7 @@ function Home() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
               {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} />
               ))}
             </div>
           )}
@@ -213,7 +215,7 @@ function Home() {
             <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-8 md:mb-12 text-center font-serif">Recently Viewed</h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10 animate-fade-in">
               {recentlyViewed.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} />
               ))}
             </div>
           </div>

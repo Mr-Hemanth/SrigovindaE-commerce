@@ -18,6 +18,10 @@ const csp = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
+    // Product photos essentially never change in place (edits create a new upload path), so
+    // the optimizer's cached output can be kept at the edge far longer than the 4h default.
+    minimumCacheTTL: 2592000, // 30 days
     remotePatterns: [
       { protocol: 'https', hostname: 'firebasestorage.googleapis.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
@@ -38,6 +42,14 @@ const nextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        ],
+      },
+      {
+        // Static brand assets rarely change; a day-long cache skips repeat conditional
+        // GETs on every page load without risking a long-lived stale asset.
+        source: '/(logo.jpg|icon.svg|manifest.json)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, must-revalidate' },
         ],
       },
     ];

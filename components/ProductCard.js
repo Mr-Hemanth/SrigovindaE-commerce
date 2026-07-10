@@ -10,7 +10,7 @@ import { useNotification } from '@/contexts/NotificationContext';
 import { db } from '@/lib/firebase/client';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-function ProductCard({ product }) {
+function ProductCard({ product, ratingOverride }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { currentUser } = useAuth();
@@ -19,14 +19,17 @@ function ProductCard({ product }) {
   const [ratingStats, setRatingStats] = useState({ avg: '5.0', count: 0 });
   const [imgSrc, setImgSrc] = useState(product.image);
 
+  // If a parent already fetched ratings in bulk (see useProductRatings), use that instead of
+  // this card running its own Firestore query — avoids an N+1 query per grid of cards.
   useEffect(() => {
+    if (ratingOverride !== undefined) return;
     let active = true;
     const fetchStats = async () => {
       try {
         const q = query(collection(db, 'reviews'), where('productId', '==', product.id));
         const snap = await getDocs(q);
         if (!active) return;
-        
+
         if (!snap.empty) {
           const list = snap.docs.map(d => d.data());
           const sum = list.reduce((acc, r) => acc + r.rating, 0);
@@ -41,7 +44,9 @@ function ProductCard({ product }) {
     };
     fetchStats();
     return () => { active = false; };
-  }, [product.id]);
+  }, [product.id, ratingOverride]);
+
+  const displayedRating = ratingOverride !== undefined ? { avg: ratingOverride.avg, count: ratingOverride.count } : ratingStats;
 
   const handleWishlistClick = () => {
     if (!currentUser) {
@@ -112,11 +117,11 @@ function ProductCard({ product }) {
           </h3>
           
           {/* Star Rating Badge */}
-          {ratingStats.count > 0 && (
+          {displayedRating.count > 0 && (
             <div className="flex items-center gap-1 mt-1 select-none">
               <span className="text-brand-gold-500 text-[11px]">★</span>
-              <span className="text-[11px] font-bold text-gray-700">{ratingStats.avg}</span>
-              <span className="text-[9px] text-gray-400">({ratingStats.count})</span>
+              <span className="text-[11px] font-bold text-gray-700">{displayedRating.avg}</span>
+              <span className="text-[9px] text-gray-400">({displayedRating.count})</span>
             </div>
           )}
 

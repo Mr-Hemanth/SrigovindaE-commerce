@@ -8,6 +8,7 @@ import { categories } from '@/lib/data/products';
 import ProductCard from '@/components/ProductCard';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
+import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
 const UNSPECIFIED = 'Unspecified';
 
@@ -35,7 +36,7 @@ function Products() {
   const itemsPerPage = 6;
 
   // productId -> { avg, count }, built from the real reviews collection
-  const [ratingsById, setRatingsById] = useState({});
+  const ratingsById = useProductRatings();
 
   useEffect(() => {
     const cat = searchParams.get('category');
@@ -76,30 +77,6 @@ function Products() {
       }
     };
     fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const fetchRatings = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'reviews'));
-        const totals = {};
-        snap.docs.forEach((d) => {
-          const { productId, rating } = d.data();
-          if (!productId || typeof rating !== 'number') return;
-          if (!totals[productId]) totals[productId] = { sum: 0, count: 0 };
-          totals[productId].sum += rating;
-          totals[productId].count += 1;
-        });
-        const map = {};
-        Object.entries(totals).forEach(([productId, { sum, count }]) => {
-          map[productId] = { avg: sum / count, count };
-        });
-        setRatingsById(map);
-      } catch (err) {
-        console.warn('Ratings query failed:', err);
-      }
-    };
-    fetchRatings();
   }, []);
 
   // Only reflects real product data set by the admin — never fabricates values.
@@ -571,7 +548,7 @@ function Products() {
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
               {currentProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} />
               ))}
             </div>
           ) : (

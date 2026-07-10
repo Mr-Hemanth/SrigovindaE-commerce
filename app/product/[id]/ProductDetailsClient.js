@@ -12,6 +12,7 @@ import { db } from '@/lib/firebase/client';
 import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import ProductCard from '@/components/ProductCard';
 import { trackViewItem } from '@/lib/analytics';
+import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
 function ProductDetails({ params }) {
   const { id } = use(params);
@@ -21,6 +22,7 @@ function ProductDetails({ params }) {
 
   const { cart, addToCart, updateQuantity } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const ratingsById = useProductRatings();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -719,7 +721,7 @@ function ProductDetails({ params }) {
           <h2 className="text-2xl font-bold text-brand-navy-900 mb-8 font-serif">Similar Jewellery Pieces</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {relatedProducts.map(p => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} ratingOverride={ratingsById[p.id] || { avg: '0.0', count: 0 }} />
             ))}
           </div>
         </div>
