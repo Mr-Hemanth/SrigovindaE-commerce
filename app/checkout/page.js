@@ -82,6 +82,7 @@ function Checkout() {
 
   useEffect(() => {
     if (paymentMethod === 'cod') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- regenerates the CAPTCHA challenge, a stateful side effect not derivable during render
       generateCaptcha();
     }
     setValidationError('');

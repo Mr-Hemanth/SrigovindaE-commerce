@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 function About() {
   return (
@@ -36,10 +37,12 @@ function About() {
             </p>
           </div>
           <div className="relative rounded-3xl overflow-hidden elegant-shadow aspect-[4/3] bg-gray-100">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80"
               alt="Artisan Workshop"
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
             />
             <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xxs font-bold text-brand-navy-900 shadow border">
               📍 Crafted in Amalapuram, AP
@@ -60,7 +63,7 @@ function About() {
               <span className="text-3xl block">💎</span>
               <h4 className="text-base md:text-lg font-bold text-brand-navy-900 font-serif">Premium German Silver</h4>
               <p className="text-xxs md:text-xs text-gray-500 leading-relaxed">
-                Made using high-grade copper-nickel-zinc alloys, polished to emulate antique silver's rustic luster. Ideal for heavy chokers, gift plates, and wedding return gift boxes.
+                Made using high-grade copper-nickel-zinc alloys, polished to emulate antique silver&apos;s rustic luster. Ideal for heavy chokers, gift plates, and wedding return gift boxes.
               </p>
             </div>
 

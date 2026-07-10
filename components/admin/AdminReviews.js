@@ -26,7 +26,9 @@ function AdminReviews() {
   };
 
   useEffect(() => {
-    fetchReviews();
+    (async () => {
+      await fetchReviews();
+    })();
   }, []);
 
   const handleDelete = async (reviewId) => {

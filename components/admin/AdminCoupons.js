@@ -14,10 +14,6 @@ function AdminCoupons() {
   });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
-
   const fetchCoupons = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'coupons'));
@@ -35,6 +31,12 @@ function AdminCoupons() {
       }
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      await fetchCoupons();
+    })();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

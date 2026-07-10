@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -67,9 +68,11 @@ function SearchBar() {
               href={`/product/${prod.id}`}
               className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
             >
-              <img
+              <Image
                 src={prod.image}
                 alt={prod.name}
+                width={32}
+                height={32}
                 className="w-8 h-8 rounded-lg object-cover border border-gray-100"
               />
               <div className="min-w-0 flex-1 text-left">

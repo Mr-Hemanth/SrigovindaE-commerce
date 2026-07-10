@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 function OrderCard({
   order,
@@ -133,9 +134,11 @@ function OrderCard({
             <div className="divide-y divide-gray-100 bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
               {order.items.map((item) => (
                 <div key={item.id} className="p-4 flex items-center gap-4 hover:bg-gray-50/50 transition-colors">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.name}
+                    width={64}
+                    height={64}
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";

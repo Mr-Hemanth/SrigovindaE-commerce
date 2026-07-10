@@ -30,7 +30,7 @@ function PrivacyPolicy() {
           </p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Provide, operate, and maintain our e-commerce platform.</li>
-            <li>Improve, personalize, and expand our store's jewellery catalog.</li>
+            <li>Improve, personalize, and expand our store&apos;s jewellery catalog.</li>
             <li>Understand and analyze how you use our storefront.</li>
             <li>Process transactions, handle shipping deliveries, and dispatch tracking details.</li>
             <li>Send email verification codes or customer support updates.</li>

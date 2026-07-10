@@ -38,6 +38,7 @@ function Home() {
     try {
       const stored = localStorage.getItem('recently_viewed');
       if (stored) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from localStorage, not derivable during render
         setRecentlyViewed(JSON.parse(stored).filter(p => p.isActive !== false));
       }
     } catch (err) {

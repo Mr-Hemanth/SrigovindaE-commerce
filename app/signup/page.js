@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
@@ -59,7 +60,7 @@ function Signup() {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl elegant-shadow">
         <div className="text-center">
           <div className="mb-6">
-            <img src="/logo.jpg" alt="Logo" className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-brand-gold-500/30 object-cover elegant-shadow" />
+            <Image src="/logo.jpg" alt="Logo" width={96} height={96} priority className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-brand-gold-500/30 object-cover elegant-shadow" />
             <h2 className="text-2xl md:text-4xl font-bold text-gray-800 font-serif">Join Our Family</h2>
             <p className="text-gray-600 mt-2 text-lg">Create your account at Srigovinda collections</p>
           </div>

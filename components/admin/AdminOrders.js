@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { auth, db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -31,7 +32,9 @@ function AdminOrders() {
   };
 
   useEffect(() => {
-    fetchOrders();
+    (async () => {
+      await fetchOrders();
+    })();
   }, []);
 
   const callUpdateOrderStatus = async (body) => {
@@ -187,9 +190,11 @@ function AdminOrders() {
                   <div className="flex flex-wrap gap-5">
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4 bg-brand-cream-100 px-5 py-4 rounded-2xl">
-                        <img
+                        <Image
                           src={item.image}
                           alt={item.name}
+                          width={56}
+                          height={56}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";

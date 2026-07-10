@@ -37,6 +37,7 @@ function NotificationsDropdown({ mobile = false }) {
 
   useEffect(() => {
     if (!currentUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets notifications on logout, driven by auth context change
       setNotifications([]);
       setUnreadCount(0);
       return;

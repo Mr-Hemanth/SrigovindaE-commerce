@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { categories } from '@/lib/data/products';
@@ -18,12 +19,21 @@ function AdminProducts() {
     discountedPrice: '',
     category: '',
     subcategory: '',
+    material: '',
+    occasion: '',
+    color: '',
+    giftingTier: '',
     image: '',
     images: '',
     stock: '',
     isActive: true
   });
   const [loading, setLoading] = useState(false);
+
+  const emptyForm = {
+    name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '',
+    material: '', occasion: '', color: '', giftingTier: '', image: '', images: '', stock: '', isActive: true
+  };
 
   async function fetchProducts() {
     try {
@@ -75,6 +85,10 @@ function AdminProducts() {
         discountedPrice: form.discountedPrice ? Number(form.discountedPrice) : null,
         category: form.category,
         subcategory: form.subcategory,
+        material: form.material || null,
+        occasion: form.occasion || null,
+        color: form.color || null,
+        giftingTier: form.giftingTier || null,
         image: primaryImg,
         images: imagesArray,
         stock: Number(form.stock),
@@ -91,7 +105,7 @@ function AdminProducts() {
       }
       setShowModal(false);
       setEditingProduct(null);
-      setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', images: '', stock: '', isActive: true });
+      setForm(emptyForm);
       fetchProducts();
     } catch (err) {
       console.error('Error adding/updating product: ', err);
@@ -115,6 +129,10 @@ function AdminProducts() {
       discountedPrice: product.discountedPrice || '',
       category: product.category || '',
       subcategory: product.subcategory || '',
+      material: product.material || '',
+      occasion: product.occasion || '',
+      color: product.color || '',
+      giftingTier: product.giftingTier || '',
       image: product.image || '',
       images: product.images ? product.images.join(', ') : (product.image || ''),
       stock: product.stock || '',
@@ -135,7 +153,7 @@ function AdminProducts() {
         <button
           onClick={() => {
             setEditingProduct(null);
-            setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', stock: '', isActive: true });
+            setForm(emptyForm);
             setShowModal(true);
           }}
           className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-8 py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
@@ -161,9 +179,11 @@ function AdminProducts() {
               <tr key={product.id} className="hover:bg-brand-cream-100 transition-colors">
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-5">
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.name}
+                      width={80}
+                      height={80}
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
@@ -328,6 +348,68 @@ function AdminProducts() {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="product-material" className="block text-sm font-semibold text-gray-700 mb-3">Material (Optional)</label>
+                    <select
+                      id="product-material"
+                      value={form.material}
+                      onChange={(e) => setForm({ ...form, material: e.target.value })}
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
+                    >
+                      <option value="">Unspecified</option>
+                      <option value="German Silver">German Silver</option>
+                      <option value="Gold Plated">Gold Plated</option>
+                      <option value="Panchaloha">Panchaloha</option>
+                      <option value="Brass">Brass</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="product-occasion" className="block text-sm font-semibold text-gray-700 mb-3">Occasion (Optional)</label>
+                    <select
+                      id="product-occasion"
+                      value={form.occasion}
+                      onChange={(e) => setForm({ ...form, occasion: e.target.value })}
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
+                    >
+                      <option value="">Unspecified</option>
+                      <option value="Wedding">Wedding Wear</option>
+                      <option value="Festival">Festivals</option>
+                      <option value="Gifting">Gifting Shubh</option>
+                      <option value="Casual">Casual Wear</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="product-color" className="block text-sm font-semibold text-gray-700 mb-3">Color (Optional)</label>
+                    <select
+                      id="product-color"
+                      value={form.color}
+                      onChange={(e) => setForm({ ...form, color: e.target.value })}
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
+                    >
+                      <option value="">Unspecified</option>
+                      <option value="Gold">Antique Gold</option>
+                      <option value="Silver">Silver White</option>
+                      <option value="Ruby Red">Ruby Red</option>
+                      <option value="Emerald Green">Emerald Green</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="product-gifting-tier" className="block text-sm font-semibold text-gray-700 mb-3">Gifting Tier (Optional)</label>
+                    <select
+                      id="product-gifting-tier"
+                      value={form.giftingTier}
+                      onChange={(e) => setForm({ ...form, giftingTier: e.target.value })}
+                      className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
+                    >
+                      <option value="">Unspecified</option>
+                      <option value="Budget">Budget</option>
+                      <option value="Premium">Premium</option>
+                      <option value="Luxury">Luxury</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="product-image" className="block text-sm font-semibold text-gray-700 mb-3">Image URL</label>
                   <input
@@ -373,7 +455,7 @@ function AdminProducts() {
                     onClick={() => {
                       setShowModal(false);
                       setEditingProduct(null);
-                      setForm({ name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '', image: '', stock: '', isActive: true });
+                      setForm(emptyForm);
                     }}
                     className="flex-1 border-2 border-brand-navy-900 text-brand-navy-900 py-4 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold"
                   >

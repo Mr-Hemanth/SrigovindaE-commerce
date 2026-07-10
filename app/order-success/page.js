@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { db } from '@/lib/firebase/client';
 import { doc, getDoc } from 'firebase/firestore';
@@ -44,6 +45,18 @@ function OrderSuccessContent() {
   const shippingAddress = order?.shippingAddress;
   const phone = order?.phone;
   const items = order?.items;
+
+  // Estimated delivery window is anchored to when the order was placed, not to
+  // whenever this page happens to render (Date.now() during render is impure
+  // and would drift on a later revisit of this URL).
+  const deliveryWindow = useMemo(() => {
+    const base = order?.createdAt?.toDate ? order.createdAt.toDate() : new Date();
+    const format = (d) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return {
+      from: format(new Date(base.getTime() + 5 * 24 * 60 * 60 * 1000)),
+      to: format(new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000)),
+    };
+  }, [order]);
 
   const getPaymentMethodLabel = (method) => {
     switch (method) {
@@ -109,9 +122,11 @@ function OrderSuccessContent() {
                       <div key={item.id} className="flex justify-between items-center py-3.5 first:pt-0 last:pb-0 text-sm">
                         <div className="flex items-center gap-4">
                           {item.image && (
-                            <img
+                            <Image
                               src={item.image}
                               alt={item.name}
+                              width={48}
+                              height={48}
                               onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
@@ -166,7 +181,7 @@ function OrderSuccessContent() {
 
                   <div className="bg-yellow-50/50 border border-yellow-100/70 rounded-2xl p-4 text-left">
                     <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wide">📦 Estimated Delivery</h4>
-                    <p className="text-xs text-gray-600 mt-1">Expected delivery window: <span className="font-bold text-brand-navy-900">{new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span></p>
+                    <p className="text-xs text-gray-600 mt-1">Expected delivery window: <span className="font-bold text-brand-navy-900">{deliveryWindow.from} - {deliveryWindow.to}</span></p>
                     <Link href={`/track/${orderId}`} className="text-xs font-extrabold text-brand-navy-900 hover:underline mt-2 inline-block">
                       Track Shipment Status →
                     </Link>

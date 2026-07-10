@@ -18,13 +18,16 @@ export default function EngagementWidgets() {
 
   const canvasRef = useRef(null);
 
-  // Check if user already spun in the last 30 days
+  // Check if user already spun in the last 30 days. This must stay an effect
+  // (not a useState lazy initializer) so the server-rendered and first client
+  // paint match before localStorage is consulted, avoiding a hydration mismatch.
   useEffect(() => {
     const lastSpunTime = localStorage.getItem('srigovinda_wheel_spun_time');
     const savedCoupon = localStorage.getItem('srigovinda_wheel_spun');
     if (lastSpunTime) {
       const diffDays = (new Date().getTime() - Number(lastSpunTime)) / (1000 * 3600 * 24);
       if (diffDays < 30) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from localStorage, not derivable during render
         setHasSpun(true);
         if (savedCoupon) setWonCoupon(savedCoupon);
       }

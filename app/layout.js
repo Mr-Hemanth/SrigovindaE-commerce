@@ -27,12 +27,43 @@ export const metadata = {
     template: '%s | Sri Govinda Collections',
   },
   description: 'Sri Govinda Collections — exquisite jewellery for every occasion.',
+  openGraph: {
+    title: 'Sri Govinda Collections | Fine Jewellery',
+    description: 'Exquisite German Silver, One Gram Gold & Panchaloha jewellery designed with care.',
+    siteName: 'Sri Govinda Collections',
+    images: ['/logo.jpg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sri Govinda Collections | Fine Jewellery',
+    description: 'Exquisite German Silver, One Gram Gold & Panchaloha jewellery designed with care.',
+    images: ['/logo.jpg'],
+  },
 };
 
 export default function RootLayout({ children }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.srigovindacollections.com';
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Sri Govinda Collections',
+    url: siteUrl,
+    logo: `${siteUrl}/logo.jpg`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+91-9533866777',
+      contactType: 'customer service',
+    },
+  };
+
   return (
     <html lang="en" className={`${playfair.variable} ${poppins.variable}`}>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>
           <div className="min-h-screen bg-gray-50">
             <Navbar />

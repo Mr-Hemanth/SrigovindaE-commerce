@@ -1,17 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { categories } from '@/lib/data/products';
 import ProductCard from '@/components/ProductCard';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 
+const UNSPECIFIED = 'Unspecified';
+
 function Products() {
   const router = useRouter();
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
   // Custom Filter States
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -32,38 +34,36 @@ function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Typo "did you mean" correction suggest trigger
-  const [didYouMean, setDidYouMean] = useState('');
+  // productId -> { avg, count }, built from the real reviews collection
+  const [ratingsById, setRatingsById] = useState({});
 
   useEffect(() => {
     const cat = searchParams.get('category');
     if (cat) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- seeds filter state from the URL on navigation
       setSelectedCategory(cat);
       setSelectedSubcategory('all');
+      setCurrentPage(1);
     }
   }, [searchParams]);
 
   useEffect(() => {
     const search = searchParams.get('search');
     if (search) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- seeds filter state from the URL on navigation
       setSearchQuery(search);
+      setCurrentPage(1);
     }
   }, [searchParams]);
 
-  // "Did you mean" logic for common typos
-  useEffect(() => {
+  // "Did you mean" logic for common typos — pure function of searchQuery, no effect needed
+  const didYouMean = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (q === 'chokr' || q === 'chokre' || q === 'chokar') {
-      setDidYouMean('choker');
-    } else if (q === 'ringg' || q === 'rin') {
-      setDidYouMean('ring');
-    } else if (q === 'erring' || q === 'earing' || q === 'earings') {
-      setDidYouMean('earrings');
-    } else if (q === 'necklacee' || q === 'necklas') {
-      setDidYouMean('necklace');
-    } else {
-      setDidYouMean('');
-    }
+    if (q === 'chokr' || q === 'chokre' || q === 'chokar') return 'choker';
+    if (q === 'ringg' || q === 'rin') return 'ring';
+    if (q === 'erring' || q === 'earing' || q === 'earings') return 'earrings';
+    if (q === 'necklacee' || q === 'necklas') return 'necklace';
+    return '';
   }, [searchQuery]);
 
   useEffect(() => {
@@ -78,27 +78,45 @@ function Products() {
     fetchProducts();
   }, []);
 
-  const getProductMeta = (p) => {
-    const idStr = String(p.id || p.name || '');
-    const charSum = idStr.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-    const prevMaterials = ['Panchaloha', 'Gold Plated', 'German Silver', 'Brass'];
-    const prevOccasions = ['Wedding', 'Festival', 'Gifting', 'Casual'];
-    const prevColors = ['Gold', 'Silver', 'Ruby Red', 'Emerald Green'];
-    const prevGiftingTiers = ['Budget', 'Premium', 'Luxury'];
-
-    return {
-      material: p.material || prevMaterials[charSum % prevMaterials.length],
-      occasion: p.occasion || prevOccasions[(charSum + 1) % prevOccasions.length],
-      color: p.color || prevColors[(charSum + 2) % prevColors.length],
-      giftingTier: p.giftingTier || prevGiftingTiers[(charSum + 3) % prevGiftingTiers.length],
-      popularity: p.popularity !== undefined ? p.popularity : (charSum % 150) + 10,
-      newestDays: p.newestDays !== undefined ? p.newestDays : (charSum % 60),
-      rating: p.rating !== undefined ? p.rating : ((charSum % 15) / 10 + 3.5)
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'reviews'));
+        const totals = {};
+        snap.docs.forEach((d) => {
+          const { productId, rating } = d.data();
+          if (!productId || typeof rating !== 'number') return;
+          if (!totals[productId]) totals[productId] = { sum: 0, count: 0 };
+          totals[productId].sum += rating;
+          totals[productId].count += 1;
+        });
+        const map = {};
+        Object.entries(totals).forEach(([productId, { sum, count }]) => {
+          map[productId] = { avg: sum / count, count };
+        });
+        setRatingsById(map);
+      } catch (err) {
+        console.warn('Ratings query failed:', err);
+      }
     };
+    fetchRatings();
+  }, []);
+
+  // Only reflects real product data set by the admin — never fabricates values.
+  const getProductMeta = (p) => ({
+    material: p.material || null,
+    occasion: p.occasion || null,
+    color: p.color || null,
+    giftingTier: p.giftingTier || null,
+  });
+
+  const getCreatedAtMs = (p) => {
+    if (!p.createdAt) return 0;
+    if (p.createdAt.toDate) return p.createdAt.toDate().getTime();
+    return new Date(p.createdAt).getTime() || 0;
   };
 
-  const applyFilters = useCallback(() => {
+  const filteredProducts = useMemo(() => {
     let temp = [...products];
 
     // Filter by Search Query
@@ -151,21 +169,14 @@ function Products() {
         const pB = b.discountedPrice !== undefined && b.discountedPrice !== null && b.discountedPrice !== '' && Number(b.discountedPrice) > 0 ? Number(b.discountedPrice) : Number(b.price);
         return pB - pA;
       });
-    } else if (sortBy === 'popularity') {
-      temp.sort((a, b) => getProductMeta(b).popularity - getProductMeta(a).popularity);
     } else if (sortBy === 'newest') {
-      temp.sort((a, b) => getProductMeta(a).newestDays - getProductMeta(b).newestDays);
+      temp.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a));
     } else if (sortBy === 'rating') {
-      temp.sort((a, b) => getProductMeta(b).rating - getProductMeta(a).rating);
+      temp.sort((a, b) => (ratingsById[b.id]?.avg || 0) - (ratingsById[a.id]?.avg || 0));
     }
 
-    setFilteredProducts(temp.filter(p => p.isActive !== false));
-    setCurrentPage(1);
-  }, [products, selectedCategory, selectedSubcategory, selectedMaterial, selectedOccasion, selectedColor, selectedGiftingTier, priceRange, sortBy, searchQuery]);
-
-  useEffect(() => {
-    applyFilters();
-  }, [applyFilters]);
+    return temp.filter(p => p.isActive !== false);
+  }, [products, selectedCategory, selectedSubcategory, selectedMaterial, selectedOccasion, selectedColor, selectedGiftingTier, priceRange, sortBy, searchQuery, ratingsById]);
 
   const renderListCard = (product) => {
     const hasDiscount = product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0;
@@ -175,7 +186,7 @@ function Products() {
     return (
       <div key={product.id} className="bg-white rounded-3xl elegant-shadow p-5 flex flex-col md:flex-row items-center gap-6 border border-gray-50/50 hover:border-brand-navy-900/20 transition-all duration-300 select-none text-left">
         <div className="relative w-full md:w-48 h-48 rounded-2xl overflow-hidden cursor-pointer flex-shrink-0" onClick={() => router.push(`/product/${product.id}`)}>
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          <Image src={product.image} alt={product.name} fill sizes="(max-width: 768px) 100vw, 192px" className="object-cover" />
           {hasDiscount && (
             <span className="absolute top-3 left-3 bg-brand-gold-500 text-brand-navy-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow">
               SAVE {discountPercentage}%
@@ -188,8 +199,8 @@ function Products() {
             <h3 className="text-lg font-bold text-gray-800 font-serif leading-tight mt-1 hover:text-brand-navy-900 cursor-pointer" onClick={() => router.push(`/product/${product.id}`)}>{product.name}</h3>
             <p className="text-xs text-gray-500 line-clamp-2 mt-2 leading-relaxed">{product.description}</p>
             <div className="mt-3 flex items-center gap-3 text-xs">
-              <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg font-bold">{meta.material}</span>
-              <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg font-bold">{meta.occasion}</span>
+              <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg font-bold">{meta.material || UNSPECIFIED}</span>
+              <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg font-bold">{meta.occasion || UNSPECIFIED}</span>
             </div>
           </div>
 
@@ -250,7 +261,7 @@ function Products() {
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
           placeholder="Search for jewellery items (e.g. necklace, ring, earrings)..."
           className="w-full pl-10 pr-4 py-3 md:py-3.5 border border-gray-200 rounded-2xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/5 bg-white elegant-shadow"
         />
@@ -302,6 +313,7 @@ function Products() {
                     onChange={(e) => {
                       setSelectedCategory(e.target.value);
                       setSelectedSubcategory('all');
+                      setCurrentPage(1);
                     }}
                     className="w-4 h-4 text-brand-navy-900 accent-brand-navy-900"
                   />
@@ -317,6 +329,7 @@ function Products() {
                       onChange={(e) => {
                         setSelectedCategory(e.target.value);
                         setSelectedSubcategory('all');
+                        setCurrentPage(1);
                       }}
                       className="w-4 h-4 text-brand-navy-900 accent-brand-navy-900"
                     />
@@ -349,7 +362,7 @@ function Products() {
                         name="subcategory"
                         value={sub}
                         checked={selectedSubcategory === sub}
-                        onChange={(e) => setSelectedSubcategory(e.target.value)}
+                        onChange={(e) => { setSelectedSubcategory(e.target.value); setCurrentPage(1); }}
                         className="w-4 h-4 text-brand-navy-900 accent-brand-navy-900"
                       />
                       <span className="text-gray-700 font-medium text-xs lg:text-sm truncate">{sub}</span>
@@ -367,7 +380,7 @@ function Products() {
                 min="100"
                 max="20000"
                 value={priceRange}
-                onChange={(e) => setPriceRange(Number(e.target.value))}
+                onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
                 className="w-full accent-brand-navy-900"
               />
             </div>
@@ -377,7 +390,7 @@ function Products() {
               <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Material</h4>
               <select
                 value={selectedMaterial}
-                onChange={(e) => setSelectedMaterial(e.target.value)}
+                onChange={(e) => { setSelectedMaterial(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
               >
                 <option value="all">All Materials</option>
@@ -393,7 +406,7 @@ function Products() {
               <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Occasion</h4>
               <select
                 value={selectedOccasion}
-                onChange={(e) => setSelectedOccasion(e.target.value)}
+                onChange={(e) => { setSelectedOccasion(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
               >
                 <option value="all">All Occasions</option>
@@ -409,7 +422,7 @@ function Products() {
               <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Color</h4>
               <select
                 value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
+                onChange={(e) => { setSelectedColor(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
               >
                 <option value="all">All Colors</option>
@@ -425,7 +438,7 @@ function Products() {
               <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Gifting Tier</h4>
               <select
                 value={selectedGiftingTier}
-                onChange={(e) => setSelectedGiftingTier(e.target.value)}
+                onChange={(e) => { setSelectedGiftingTier(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
               >
                 <option value="all">All Budgets</option>
@@ -440,13 +453,12 @@ function Products() {
               <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Sort By</h4>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/5 bg-white text-gray-700"
               >
                 <option value="default">Default</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
-                <option value="popularity">Popularity</option>
                 <option value="newest">Newest Arrival</option>
                 <option value="rating">Average Rating</option>
               </select>

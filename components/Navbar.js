@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -106,7 +107,7 @@ function Navbar() {
 
           {/* Logo Title */}
           <Link href="/" className="flex items-center gap-3 select-none">
-            <img src="/logo.jpg" alt="Srigovinda Collections" className="w-10 h-10 rounded-full border border-brand-gold-500/40 object-cover elegant-shadow" />
+            <Image src="/logo.jpg" alt="Srigovinda Collections" width={40} height={40} priority className="w-10 h-10 rounded-full border border-brand-gold-500/40 object-cover elegant-shadow" />
             <span className="text-lg md:text-2xl font-bold text-brand-cream-100 font-serif tracking-wide">
               Srigovinda collections
             </span>

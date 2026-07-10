@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -16,6 +17,7 @@ function ProductCard({ product }) {
   const { showNotification } = useNotification();
   const router = useRouter();
   const [ratingStats, setRatingStats] = useState({ avg: '5.0', count: 0 });
+  const [imgSrc, setImgSrc] = useState(product.image);
 
   useEffect(() => {
     let active = true;
@@ -63,15 +65,14 @@ function ProductCard({ product }) {
 
   return (
     <div className="bg-white rounded-3xl elegant-shadow overflow-hidden hover:scale-[1.02] transition-all duration-300 ease-out border border-gray-50/50 hover:border-brand-navy-900/20 relative group animate-fade-in flex flex-col justify-between h-full">
-      <div className="relative cursor-pointer overflow-hidden" onClick={() => router.push(`/product/${product.id}`)}>
-        <img 
-          src={product.image} 
-          alt={product.name} 
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
-          }}
-          className="w-full h-48 md:h-64 object-cover transition-transform duration-500 group-hover:scale-105" 
+      <div className="relative h-48 md:h-64 cursor-pointer overflow-hidden" onClick={() => router.push(`/product/${product.id}`)}>
+        <Image
+          src={imgSrc}
+          alt={product.name}
+          fill
+          sizes="(max-width: 768px) 50vw, 25vw"
+          onError={() => setImgSrc("https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3")}
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         
         {/* Discount Badge Ribbon */}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -64,9 +65,11 @@ function ProductDetails({ params }) {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState('');
 
-  // Automatically pre-fill contact details if logged in
+  // Automatically pre-fill contact details if logged in. Kept as an effect
+  // (not derived during render) so the user can still edit/clear the field afterward.
   useEffect(() => {
     if (currentUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time seed of an editable field from auth state
       setNotifyContact(currentUser.email || currentUser.phone || '');
     }
   }, [currentUser]);
@@ -239,7 +242,7 @@ function ProductDetails({ params }) {
           const sum = list.reduce((acc, r) => acc + r.rating, 0);
           setAvgRating((sum / list.length).toFixed(1));
         } else {
-          setAvgRating('5.0');
+          setAvgRating('0.0');
         }
         localStorage.setItem(`reviews_${product.id}`, JSON.stringify(list));
       } catch (err) {
@@ -249,7 +252,7 @@ function ProductDetails({ params }) {
           const parsed = JSON.parse(cached);
           setReviews(parsed);
           const sum = parsed.reduce((acc, r) => acc + r.rating, 0);
-          setAvgRating(parsed.length > 0 ? (sum / parsed.length).toFixed(1) : '5.0');
+          setAvgRating(parsed.length > 0 ? (sum / parsed.length).toFixed(1) : '0.0');
         }
       }
       setReviewsLoading(false);
@@ -369,11 +372,14 @@ function ProductDetails({ params }) {
           <div
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="relative overflow-hidden rounded-2xl border border-gray-100/60 bg-gray-50 flex items-center justify-center cursor-zoom-in"
+            className="relative h-80 sm:h-[400px] md:h-[480px] overflow-hidden rounded-2xl border border-gray-100/60 bg-gray-50 flex items-center justify-center cursor-zoom-in"
           >
-            <img
+            <Image
               src={activeImage || product.image}
               alt={product.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
               style={{
                 ...zoomStyle,
                 transition: 'transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform-origin 0.05s ease-out'
@@ -382,7 +388,7 @@ function ProductDetails({ params }) {
                 e.target.onerror = null;
                 e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
               }}
-              className="w-full h-80 sm:h-[400px] md:h-[480px] object-cover rounded-2xl"
+              className="object-cover rounded-2xl"
             />
 
             <button
@@ -413,9 +419,11 @@ function ProductDetails({ params }) {
                     activeImage === img ? 'border-brand-navy-900 scale-95 shadow-sm' : 'border-gray-100 hover:border-gray-200'
                   }`}
                 >
-                  <img
+                  <Image
                     src={img}
                     alt={`Preview ${idx + 1}`}
+                    width={64}
+                    height={64}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -446,11 +454,11 @@ function ProductDetails({ params }) {
             <div className="flex items-center gap-2">
               <div className="flex text-yellow-400 text-lg">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i}>{i < Math.round(Number(avgRating)) ? '★' : '☆'}</span>
+                  <span key={i}>{reviews.length > 0 && i < Math.round(Number(avgRating)) ? '★' : '☆'}</span>
                 ))}
               </div>
               <span className="text-xs text-gray-500 font-semibold font-mono">
-                {avgRating} ({reviews.length} customer reviews)
+                {reviews.length > 0 ? `${avgRating} (${reviews.length} customer reviews)` : 'No reviews yet'}
               </span>
             </div>
 

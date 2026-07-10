@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
@@ -86,9 +87,11 @@ function CartDrawer() {
             ) : (
               cart.map((item) => (
                 <div key={item.id} className="flex gap-4 bg-white p-4 rounded-2xl border border-gray-150/50 hover:shadow-md transition-shadow duration-300">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.name}
+                    width={80}
+                    height={80}
                     className="w-20 h-20 rounded-xl object-cover border border-gray-100 flex-shrink-0"
                   />
                   <div className="flex-grow min-w-0 flex flex-col justify-between">

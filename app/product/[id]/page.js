@@ -34,6 +34,56 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function Page({ params }) {
-  return <ProductDetails params={params} />;
+async function getReviewStats(id) {
+  try {
+    const snap = await adminDb().collection('reviews').where('productId', '==', id).get();
+    if (snap.empty) return null;
+    const ratings = snap.docs.map((d) => d.data().rating).filter((r) => typeof r === 'number');
+    if (ratings.length === 0) return null;
+    const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+    return { avg, count: ratings.length };
+  } catch {
+    return null;
+  }
+}
+
+export default async function Page({ params }) {
+  const { id } = await params;
+  const [product, reviewStats] = await Promise.all([getProduct(id), getReviewStats(id)]);
+
+  const jsonLd = product ? {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    image: product.image ? [product.image] : undefined,
+    sku: id,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'INR',
+      price: String(product.discountedPrice || product.price),
+      availability: (product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+    },
+    ...(reviewStats ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: reviewStats.avg.toFixed(1),
+        reviewCount: reviewStats.count,
+      },
+    } : {}),
+  } : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <ProductDetails params={params} />
+    </>
+  );
 }
