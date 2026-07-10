@@ -26,14 +26,14 @@ function Products({ initialProducts = [] }) {
 
   const [sortBy, setSortBy] = useState('default');
   const [priceRange, setPriceRange] = useState(20000);
-  const [showFiltersMobile, setShowFiltersMobile] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const searchParams = useSearchParams();
 
   // Grid/List Toggle & Pagination States
   const [viewMode, setViewMode] = useState('grid');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
 
   // productId -> { avg, count }, built from the real reviews collection
   const ratingsById = useProductRatings();
@@ -253,31 +253,29 @@ function Products({ initialProducts = [] }) {
         </div>
       )}
 
-      {/* Filters Toggle Button for Mobile */}
+      {/* Filters Toggle Button */}
       <button
         type="button"
-        onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-        className="lg:hidden w-full flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-brand-navy-900 mb-6 transition-all hover:bg-brand-cream-100"
+        onClick={() => setShowFilters(!showFilters)}
+        className="w-full flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-brand-navy-900 mb-6 transition-all hover:bg-brand-cream-100"
       >
-        <span className="flex items-center gap-2">🔍 {showFiltersMobile ? 'Hide Filters' : 'Show Filters'}</span>
-        <span>{showFiltersMobile ? '▲' : '▼'}</span>
+        <span className="flex items-center gap-2">🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}</span>
+        <span>{showFilters ? '▲' : '▼'}</span>
       </button>
 
       <div className="flex flex-col lg:flex-row gap-10">
-        <div className={`lg:w-72 flex-shrink-0 ${showFiltersMobile ? 'block animate-fade-in' : 'hidden lg:block'}`}>
+        <div className={`lg:w-72 flex-shrink-0 ${showFilters ? 'block animate-fade-in' : 'hidden'}`}>
           <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-6 sticky top-28 border border-gray-100 space-y-6">
 
             {/* Header */}
             <div className="flex justify-between items-center border-b pb-3">
               <h3 className="text-lg font-bold text-brand-navy-900 font-serif">Filters</h3>
-              {showFiltersMobile && (
-                <button
-                  onClick={() => setShowFiltersMobile(false)}
-                  className="text-xs font-semibold text-gray-400 hover:text-red-500"
-                >
-                  Close ✕
-                </button>
-              )}
+              <button
+                onClick={() => setShowFilters(false)}
+                className="text-xs font-semibold text-gray-400 hover:text-red-500"
+              >
+                Close ✕
+              </button>
             </div>
 
             {/* Categories */}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -19,6 +20,10 @@ function Navbar() {
   const { cart, setCartOpen } = useCart();
   const { wishlist } = useWishlist();
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  // The /products page has its own search box wired into its filters/sort — showing the
+  // navbar's autocomplete search there too reads as two redundant search bars on one screen.
+  const showNavSearch = pathname !== '/products';
 
   // Dynamic Browser Tab Cart Indicator
   useEffect(() => {
@@ -114,7 +119,7 @@ function Navbar() {
           </Link>
 
           {/* Desktop Search Bar with Autocomplete Suggestions */}
-          <SearchBar />
+          {showNavSearch && <SearchBar />}
 
           {/* Desktop Nav Items */}
           <div className="hidden lg:flex items-center space-x-7">
