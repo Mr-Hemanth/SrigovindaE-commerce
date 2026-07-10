@@ -12,9 +12,9 @@ import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
 const UNSPECIFIED = 'Unspecified';
 
-function Products() {
+function Products({ initialProducts = [] }) {
   const router = useRouter();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(initialProducts);
 
   // Custom Filter States
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -67,17 +67,20 @@ function Products() {
     return '';
   }, [searchQuery]);
 
+  // Server-rendered initialProducts already covers the common case (fast first paint, images
+  // start loading immediately); this only hits Firestore client-side as a fallback when that
+  // wasn't available (e.g. local dev without the Admin SDK configured).
   useEffect(() => {
-    const fetchProducts = async () => {
+    if (initialProducts.length > 0) return;
+    (async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'products'));
         setProducts(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
         console.warn('Firebase query failed:', err);
       }
-    };
-    fetchProducts();
-  }, []);
+    })();
+  }, [initialProducts]);
 
   // Only reflects real product data set by the admin — never fabricates values.
   const getProductMeta = (p) => ({

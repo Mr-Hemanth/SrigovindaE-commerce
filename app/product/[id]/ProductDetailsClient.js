@@ -14,7 +14,7 @@ import ProductCard from '@/components/ProductCard';
 import { trackViewItem } from '@/lib/analytics';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
-function ProductDetails({ params }) {
+function ProductDetails({ params, initialProduct = null }) {
   const { id } = use(params);
   const router = useRouter();
   const { currentUser } = useAuth();
@@ -24,8 +24,8 @@ function ProductDetails({ params }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const ratingsById = useProductRatings();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(initialProduct);
+  const [loading, setLoading] = useState(!initialProduct);
   const [quantity, setQuantity] = useState(1);
   const [addingState, setAddingState] = useState(false);
 
@@ -142,9 +142,12 @@ function ProductDetails({ params }) {
     setSubmittingReview(false);
   };
 
-  // Load product data
+  // Server-rendered initialProduct already covers the common case (fast first paint, main
+  // image starts loading immediately); this only hits Firestore client-side as a fallback when
+  // that wasn't available (e.g. local dev without the Admin SDK configured).
   useEffect(() => {
-    const fetchProduct = async () => {
+    if (initialProduct) return;
+    (async () => {
       try {
         const productDoc = await getDoc(doc(db, 'products', id));
         if (productDoc.exists()) {
@@ -159,10 +162,8 @@ function ProductDetails({ params }) {
         setProduct(null);
       }
       setLoading(false);
-    };
-
-    fetchProduct();
-  }, [id]);
+    })();
+  }, [id, initialProduct]);
 
   useEffect(() => {
     if (product) trackViewItem(product);

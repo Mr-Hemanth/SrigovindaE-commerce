@@ -8,8 +8,8 @@ import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
-function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
+function Home({ initialFeaturedProducts = [] }) {
+  const [featuredProducts, setFeaturedProducts] = useState(initialFeaturedProducts);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [activeFaq, setActiveFaq] = useState(null);
   const ratingsById = useProductRatings();
@@ -49,7 +49,8 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    const fetchFeatured = async () => {
+    if (initialFeaturedProducts.length > 0) return;
+    (async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'products'));
         const prods = querySnapshot.docs
@@ -59,9 +60,8 @@ function Home() {
       } catch (err) {
         console.warn('Home page products fetch failed:', err);
       }
-    };
-    fetchFeatured();
-  }, []);
+    })();
+  }, [initialFeaturedProducts]);
 
   return (
     <div>

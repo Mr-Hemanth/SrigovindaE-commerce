@@ -1,10 +1,19 @@
 import ProductDetails from './ProductDetailsClient';
 import { adminDb } from '@/lib/firebase/admin';
 
+export const revalidate = 60;
+
 async function getProduct(id) {
   try {
     const snap = await adminDb().collection('products').doc(id).get();
-    if (snap.exists) return { id: snap.id, ...snap.data() };
+    if (snap.exists) {
+      const data = snap.data();
+      return {
+        id: snap.id,
+        ...data,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : (data.createdAt ?? null),
+      };
+    }
   } catch {
     // Admin SDK not configured yet (e.g. local dev without secrets) — fall through to generic metadata.
   }
@@ -83,7 +92,7 @@ export default async function Page({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <ProductDetails params={params} />
+      <ProductDetails params={params} initialProduct={product} />
     </>
   );
 }
