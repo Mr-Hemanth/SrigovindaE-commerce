@@ -1,0 +1,74 @@
+import { NextResponse } from 'next/server';
+import { adminDb, adminAuth } from '@/lib/firebase/admin';
+import { sendOrderStatusEmail } from '@/lib/notify/email';
+
+// Only these fields may ever be set through this route — an explicit allowlist rather than
+// trusting an arbitrary "updates" object from the client.
+const ALLOWED_STATUS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'];
+const ALLOWED_PAYMENT_STATUS = ['Cancelled', 'Refunded'];
+const ALLOWED_REQUEST_STATUS = ['approved', 'rejected'];
+
+async function requireAdmin(request) {
+  const authHeader = request.headers.get('authorization') || '';
+  const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!idToken) return null;
+  try {
+    const decoded = await adminAuth().verifyIdToken(idToken);
+    const userSnap = await adminDb().collection('users').doc(decoded.uid).get();
+    if (!userSnap.exists || userSnap.data().isAdmin !== true) return null;
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
+export async function POST(request) {
+  const admin = await requireAdmin(request);
+  if (!admin) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  const { orderId, status, paymentStatus, requestStatus } = await request.json();
+  if (!orderId) {
+    return NextResponse.json({ error: 'orderId is required' }, { status: 400 });
+  }
+
+  const updates = {};
+  if (status !== undefined) {
+    if (!ALLOWED_STATUS.includes(status)) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+    updates.status = status;
+  }
+  if (paymentStatus !== undefined) {
+    if (!ALLOWED_PAYMENT_STATUS.includes(paymentStatus)) {
+      return NextResponse.json({ error: 'Invalid paymentStatus' }, { status: 400 });
+    }
+    updates.paymentStatus = paymentStatus;
+  }
+  if (requestStatus !== undefined) {
+    if (!ALLOWED_REQUEST_STATUS.includes(requestStatus)) {
+      return NextResponse.json({ error: 'Invalid requestStatus' }, { status: 400 });
+    }
+    updates.requestStatus = requestStatus;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+  }
+
+  const orderRef = adminDb().collection('orders').doc(orderId);
+  const orderSnap = await orderRef.get();
+  if (!orderSnap.exists) {
+    return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+  }
+
+  await orderRef.update(updates);
+
+  if (updates.status) {
+    const order = { ...orderSnap.data(), ...updates };
+    await sendOrderStatusEmail(order, updates.status);
+  }
+
+  return NextResponse.json({ success: true });
+}

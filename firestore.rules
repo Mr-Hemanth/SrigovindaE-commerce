@@ -28,18 +28,25 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Orders - users can create/read their own orders, owners can update status (payments), admins have full access
+    // Orders - created exclusively by the server (Admin SDK, which bypasses these rules) after
+    // Razorpay signature verification / COD validation. Client-side creation is disabled so an
+    // order can never be forged directly against Firestore.
     match /orders/{orderId} {
-      allow create: if request.auth != null && 
-        request.resource.data.userId == request.auth.uid && 
-        (request.resource.data.status == 'pending' || request.resource.data.status == 'processing');
+      allow create: if false;
       allow read: if request.auth != null && (
-        request.auth.uid == resource.data.userId || 
+        request.auth.uid == resource.data.userId ||
         isAdmin()
       );
+      // Owners may update their own order (e.g. cancel, request return/exchange) but can never
+      // touch financial/payment-identity fields, and can never set paymentStatus to 'Paid'
+      // themselves (that only ever happens server-side after signature verification).
       allow update: if request.auth != null && (
-        (request.auth.uid == resource.data.userId && 
-         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['userId', 'items', 'subtotal', 'discount', 'finalTotal'])) ||
+        (request.auth.uid == resource.data.userId &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(
+           ['userId', 'items', 'subtotal', 'discount', 'finalTotal', 'razorpayOrderId', 'razorpayPaymentId']
+         ) &&
+         (request.resource.data.paymentStatus == resource.data.paymentStatus ||
+          request.resource.data.paymentStatus != 'Paid')) ||
         isAdmin()
       );
     }
@@ -50,10 +57,26 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Coupons - anyone can read, only admins can write
+    // Coupons - anyone can read (needed for client-side pre-check before checkout; the
+    // authoritative discount is recomputed server-side when the order is created), only admins can write
     match /coupons/{couponId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // Reviews - public read, authenticated users can create their own review with a valid
+    // rating; reviews are immutable once posted (no editing productId/userId/rating after the
+    // fact) except by the author replacing text, and can be removed by their author or an admin.
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.auth != null &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.productId is string &&
+        request.resource.data.rating is number &&
+        request.resource.data.rating >= 1 && request.resource.data.rating <= 5;
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['userId', 'productId']);
+      allow delete: if request.auth != null && (request.auth.uid == resource.data.userId || isAdmin());
     }
 
   }
