@@ -51,7 +51,7 @@ function About() {
         </section>
 
         {/* Craftsmanship details */}
-        <section className="bg-gradient-to-b from-[#fbf9f6] to-[#faf6f0] border border-gray-100/50 rounded-3xl p-8 md:p-12 space-y-10">
+        <section className="bg-gradient-to-b from-brand-cream-100 to-brand-cream-200 border border-gray-100/50 rounded-3xl p-8 md:p-12 space-y-10">
           <div className="text-center max-w-lg mx-auto space-y-2">
             <h3 className="text-xl md:text-3xl font-bold text-gray-800 font-serif">Our Material Pillars</h3>
             <p className="text-xxs md:text-xs text-gray-500 uppercase tracking-widest font-bold">100% Quality & Metal Authenticity</p>

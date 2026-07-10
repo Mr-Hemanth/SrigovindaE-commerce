@@ -315,7 +315,7 @@ function Checkout() {
           shipping_address: shippingAddressText
         },
         theme: {
-          color: '#0f2a4a'
+          color: '#1a1a1a'
         }
       };
 

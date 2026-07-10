@@ -238,7 +238,7 @@ function Cart() {
                             }
                             setTimeout(() => setCouponMessage(''), 3000);
                           }}
-                          className="bg-brand-cream-100 border border-brand-gold-500/30 hover:border-brand-navy-900 hover:bg-[#e1ecf7] px-3 py-1.5 rounded-xl text-[10px] font-bold text-brand-navy-900 transition-all duration-300 flex items-center gap-1.5 shadow-sm"
+                          className="bg-brand-cream-100 border border-brand-gold-500/30 hover:border-brand-navy-900 hover:bg-brand-cream-200 px-3 py-1.5 rounded-xl text-[10px] font-bold text-brand-navy-900 transition-all duration-300 flex items-center gap-1.5 shadow-sm"
                         >
                           🎟️ {c.code} <span className="text-[9px] bg-brand-gold-500/20 px-1 py-0.5 rounded font-black text-brand-navy-900">{c.discountPercentage}% OFF</span>
                         </button>

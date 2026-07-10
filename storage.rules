@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null &&
+        firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Product photos - publicly viewable (they're shown in the storefront to guests),
+    // only admins can upload/replace/delete. Capped at 5MB and image-only as a sanity
+    // check; the admin upload flow already compresses down to well under this.
+    match /products/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        request.resource.size < 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+  }
+}

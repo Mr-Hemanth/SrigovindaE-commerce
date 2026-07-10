@@ -42,6 +42,10 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: '#1a1a1a',
+};
+
 export default function RootLayout({ children }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.srigovindacollections.com';
   const jsonLd = {
@@ -65,7 +69,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Providers>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-brand-cream-50">
             <Navbar />
             <EngagementWidgets />
             {children}

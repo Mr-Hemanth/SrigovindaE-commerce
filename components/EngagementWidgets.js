@@ -40,12 +40,12 @@ export default function EngagementWidgets() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const segments = [
-      { text: "5% OFF", color: "#0f2a4a", textColor: "#ffffff" },
-      { text: "Retry", color: "#d4af37", textColor: "#0f2a4a" },
-      { text: "10% OFF", color: "#0f2a4a", textColor: "#ffffff" },
-      { text: "Free Ship", color: "#d4af37", textColor: "#0f2a4a" },
-      { text: "Retry", color: "#0f2a4a", textColor: "#ffffff" },
-      { text: "8% OFF", color: "#d4af37", textColor: "#0f2a4a" }
+      { text: "5% OFF", color: "#1a1a1a", textColor: "#ffffff" },
+      { text: "Retry", color: "#b8860b", textColor: "#1a1a1a" },
+      { text: "10% OFF", color: "#1a1a1a", textColor: "#ffffff" },
+      { text: "Free Ship", color: "#b8860b", textColor: "#1a1a1a" },
+      { text: "Retry", color: "#1a1a1a", textColor: "#ffffff" },
+      { text: "8% OFF", color: "#b8860b", textColor: "#1a1a1a" }
     ];
     
     const numSegments = segments.length;
@@ -147,7 +147,7 @@ export default function EngagementWidgets() {
         {/* Spin to Win Gift Wheel Button */}
         <button
           onClick={() => setIsWheelOpen(true)}
-          className="bg-gradient-to-r from-brand-gold-500 to-[#bfa030] text-brand-navy-950 p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2 border border-white/20 text-xs font-extrabold"
+          className="bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-brand-navy-950 p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2 border border-white/20 text-xs font-extrabold"
           title="Spin the Lucky Wheel"
         >
           <span className="animate-bounce">🎁</span>
@@ -281,7 +281,7 @@ export default function EngagementWidgets() {
                 {wonCoupon && (
                   <button
                     onClick={() => handleCopyText(wonCoupon)}
-                    className="w-full bg-brand-gold-500 hover:bg-[#bfa030] text-brand-navy-950 py-3 rounded-2xl font-bold text-xs shadow-md transition-colors uppercase tracking-wider"
+                    className="w-full bg-brand-gold-500 hover:bg-brand-gold-600 text-brand-navy-950 py-3 rounded-2xl font-bold text-xs shadow-md transition-colors uppercase tracking-wider"
                   >
                     Copy Coupon Code
                   </button>

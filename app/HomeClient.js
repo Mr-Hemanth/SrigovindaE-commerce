@@ -73,7 +73,7 @@ function Home() {
           <div className="pt-4">
             <Link
               href="/products"
-              className="bg-white text-brand-navy-900 px-6 py-3 md:px-10 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-[#f0f4f8] transition-all duration-300 shadow-xl hover:shadow-2xl inline-block"
+              className="bg-white text-brand-navy-900 px-6 py-3 md:px-10 md:py-4 rounded-full font-bold text-sm md:text-lg hover:bg-brand-cream-100 transition-all duration-300 shadow-xl hover:shadow-2xl inline-block"
             >
               Explore Our Collection
             </Link>
@@ -221,7 +221,7 @@ function Home() {
       )}
 
       {/* 🙋 Customer FAQ Accordion Section */}
-      <section className="py-12 md:py-20 bg-[#fbf9f6] border-t border-b border-gray-100/50">
+      <section className="py-12 md:py-20 bg-brand-cream-100 border-t border-b border-gray-100/50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12 font-serif">Customer Assistance & Care FAQ</h2>
 
@@ -269,7 +269,7 @@ function Home() {
       </section>
 
       {/* Social / Info Block */}
-      <section className="py-10 md:py-16 bg-gradient-to-r from-[#f0f4f8] to-[#eef3f7]">
+      <section className="py-10 md:py-16 bg-gradient-to-r from-brand-cream-100 to-brand-cream-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <h3 className="text-xl md:text-3xl font-bold text-gray-800 font-serif">Follow us on Instagram for Coupons! 📸</h3>
           <p className="text-gray-600 text-xs md:text-base max-w-xl mx-auto leading-relaxed">

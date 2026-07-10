@@ -98,7 +98,7 @@ function FAQ() {
         </div>
 
         {/* Support box */}
-        <div className="bg-[#fdfaf6] border border-brand-gold-500/20 rounded-3xl p-8 text-center space-y-4">
+        <div className="bg-brand-cream-100 border border-brand-gold-500/20 rounded-3xl p-8 text-center space-y-4">
           <h3 className="text-lg font-bold text-gray-800 font-serif">Still Have Questions?</h3>
           <p className="text-xs text-gray-500 leading-relaxed max-w-md mx-auto">Reach out to our customer support team directly. We are active Monday to Saturday (10 AM to 7 PM).</p>
           <div className="pt-2 flex justify-center gap-4">

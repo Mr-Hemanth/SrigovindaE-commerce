@@ -218,7 +218,7 @@ function TrackOrder() {
         )}
 
         {/* Customer Assistance Help Desk block */}
-        <div className="bg-[#fcfaf7] border border-brand-gold-500/20 rounded-3xl p-6 md:p-8 text-center space-y-4">
+        <div className="bg-brand-cream-100 border border-brand-gold-500/20 rounded-3xl p-6 md:p-8 text-center space-y-4">
           <h3 className="text-base md:text-lg font-bold text-gray-800 font-serif">Need Help with Your Delivery?</h3>
           <p className="text-xs text-gray-500 max-w-xl mx-auto leading-relaxed">If you experience delay, package damage, or incorrect shipping address records, chat directly with our helpdesk agent via WhatsApp.</p>
           <div className="pt-2 flex justify-center gap-4">

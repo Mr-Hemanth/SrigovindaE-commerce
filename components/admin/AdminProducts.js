@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase/client';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { categories } from '@/lib/data/products';
 import { useNotification } from '@/contexts/NotificationContext';
+import { uploadProductImage } from '@/lib/image-upload';
 
 function AdminProducts() {
   const { showNotification } = useNotification();
@@ -29,6 +30,8 @@ function AdminProducts() {
     isActive: true
   });
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
 
   const emptyForm = {
     name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '',
@@ -59,6 +62,42 @@ function AdminProducts() {
     };
     loadInitialProducts();
   }, []);
+
+  const getImageList = (f) =>
+    f.images ? f.images.split(',').map((s) => s.trim()).filter(Boolean) : (f.image.trim() ? [f.image.trim()] : []);
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    const uploadedUrls = [];
+    try {
+      for (let i = 0; i < files.length; i++) {
+        setUploadProgress(`Compressing & uploading ${i + 1} of ${files.length}...`);
+        uploadedUrls.push(await uploadProductImage(files[i]));
+      }
+      setForm((prev) => {
+        const merged = [...getImageList(prev), ...uploadedUrls];
+        return { ...prev, images: merged.join(', '), image: prev.image.trim() || merged[0] || '' };
+      });
+      showNotification(`${uploadedUrls.length} image(s) compressed and uploaded successfully.`, 'success');
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      showNotification(err.message || 'Failed to upload image(s).', 'error');
+    } finally {
+      setUploading(false);
+      setUploadProgress('');
+      e.target.value = '';
+    }
+  };
+
+  const removeImage = (urlToRemove) => {
+    setForm((prev) => {
+      const remaining = getImageList(prev).filter((u) => u !== urlToRemove);
+      return { ...prev, images: remaining.join(', '), image: prev.image === urlToRemove ? (remaining[0] || '') : prev.image };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -411,7 +450,43 @@ function AdminProducts() {
                 </div>
 
                 <div>
-                  <label htmlFor="product-image" className="block text-sm font-semibold text-gray-700 mb-3">Image URL</label>
+                  <label htmlFor="product-file-upload" className="block text-sm font-semibold text-gray-700 mb-3">Upload Product Photos</label>
+                  <input
+                    id="product-file-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    disabled={uploading}
+                    onChange={handleFileUpload}
+                    className="w-full px-5 py-4 border-2 border-dashed border-gray-200 rounded-xl text-gray-700 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-brand-navy-900 file:text-white hover:file:bg-brand-navy-800 disabled:opacity-50"
+                  />
+                  <p className="text-xs text-gray-400 mt-2">
+                    {uploading ? uploadProgress : 'Photos are automatically compressed and resized for fast loading. First uploaded photo becomes the primary image.'}
+                  </p>
+
+                  {getImageList(form).length > 0 && (
+                    <div className="flex flex-wrap gap-3 mt-4">
+                      {getImageList(form).map((url) => (
+                        <div key={url} className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 group">
+                          <Image src={url} alt="Product preview" fill sizes="80px" className="object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(url)}
+                            className="absolute inset-0 bg-black/50 text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          >
+                            Remove
+                          </button>
+                          {url === form.image.trim() && (
+                            <span className="absolute bottom-0 inset-x-0 bg-brand-navy-900/90 text-white text-[9px] font-bold text-center py-0.5">Primary</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="product-image" className="block text-sm font-semibold text-gray-700 mb-3">Or Paste Image URL</label>
                   <input
                     id="product-image"
                     type="url"
@@ -463,10 +538,10 @@ function AdminProducts() {
                   </button>
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || uploading}
                     className="flex-1 bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg disabled:opacity-50"
                   >
-                    {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+                    {loading ? 'Saving...' : uploading ? 'Uploading...' : (editingProduct ? 'Update Product' : 'Add Product')}
                   </button>
                 </div>
               </form>

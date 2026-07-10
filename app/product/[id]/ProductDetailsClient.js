@@ -516,7 +516,7 @@ function ProductDetails({ params }) {
                   <button
                     onClick={handleAddToCart}
                     disabled={addingState}
-                    className="flex-1 bg-brand-cream-100 hover:bg-[#e4effa] text-brand-navy-900 py-4 rounded-xl transition-all duration-300 font-bold text-sm shadow-sm border border-gray-200/50"
+                    className="flex-1 bg-brand-cream-100 hover:bg-brand-cream-200 text-brand-navy-900 py-4 rounded-xl transition-all duration-300 font-bold text-sm shadow-sm border border-gray-200/50"
                   >
                     {addingState ? 'Adding...' : 'Add to Cart'}
                   </button>
