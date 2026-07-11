@@ -46,7 +46,7 @@ async function getAuthoritativePrice(itemId) {
       ? data.discountedPrice
       : data.price
   );
-  return { price, name: data.name, active: data.isActive !== false };
+  return { price, name: data.name, category: data.category || '', active: data.isActive !== false };
 }
 
 async function getValidCoupon(code) {
@@ -88,6 +88,7 @@ export async function POST(request) {
     resolvedItems.push({
       id: item.id,
       name: authoritative.name,
+      category: authoritative.category,
       price: authoritative.price,
       quantity: Math.max(1, Number(item.quantity) || 1),
     });

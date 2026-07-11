@@ -11,6 +11,17 @@ import RevenueBreakdown from '@/components/admin/dashboard/RevenueBreakdown';
 import RecentOrders from '@/components/admin/dashboard/RecentOrders';
 import PromoSettingsForm from '@/components/admin/dashboard/PromoSettingsForm';
 import RestockAlerts from '@/components/admin/dashboard/RestockAlerts';
+import SalesTrend from '@/components/admin/dashboard/SalesTrend';
+import BestSellers from '@/components/admin/dashboard/BestSellers';
+import LowStockAlerts from '@/components/admin/dashboard/LowStockAlerts';
+
+const SALES_TREND_DAYS = 14;
+const LOW_STOCK_THRESHOLD = 5;
+
+function toDateKey(value) {
+  const d = value?.toDate ? value.toDate() : new Date(value);
+  return isNaN(d) ? null : d.toISOString().slice(0, 10);
+}
 
 function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, coupons: 0, revenue: 0 });
@@ -43,11 +54,26 @@ function AdminDashboard() {
           .map(doc => ({ id: doc.id, ...doc.data() }))
           .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
+        // Build the last N days as a fixed set first so days with zero orders still show as 0.
+        const revenueByDay = {};
+        for (let i = SALES_TREND_DAYS - 1; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          revenueByDay[d.toISOString().slice(0, 10)] = 0;
+        }
+        const revenueByProduct = {};
+
         ordersSnap.docs.forEach(d => {
           const data = d.data();
           if (data.status?.toLowerCase() !== 'cancelled') {
             const val = Number(data.finalTotal || data.total || 0);
             totalRev += val;
+
+            const dayKey = toDateKey(data.createdAt);
+            if (dayKey && dayKey in revenueByDay) {
+              revenueByDay[dayKey] += val;
+            }
+
             (data.items || []).forEach(item => {
               const cat = item.category?.toLowerCase() || '';
               const price = Number(item.discountedPrice || item.price || 0);
@@ -57,9 +83,23 @@ function AdminDashboard() {
               else if (cat.includes('silver')) silverRevenue += cost;
               else if (cat.includes('panchaloha')) panchalohaRevenue += cost;
               else giftsRevenue += cost;
+
+              if (item.id) {
+                if (!revenueByProduct[item.id]) revenueByProduct[item.id] = { id: item.id, name: item.name, revenue: 0, units: 0 };
+                revenueByProduct[item.id].revenue += cost;
+                revenueByProduct[item.id].units += qty;
+              }
             });
           }
         });
+
+        const dailyRevenue = Object.entries(revenueByDay).map(([date, revenue]) => ({ date, revenue }));
+        const topProducts = Object.values(revenueByProduct).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+        const lowStockProducts = productsSnap.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(p => p.isActive !== false && Number(p.stock) <= LOW_STOCK_THRESHOLD)
+          .sort((a, b) => Number(a.stock) - Number(b.stock))
+          .slice(0, 8);
 
         const newStats = {
           products: productsSnap.size,
@@ -71,7 +111,10 @@ function AdminDashboard() {
           silverRev: silverRevenue,
           panchaRev: panchalohaRevenue,
           giftsRev: giftsRevenue,
-          recentOrders: sortedOrders.slice(0, 5)
+          recentOrders: sortedOrders.slice(0, 5),
+          dailyRevenue,
+          topProducts,
+          lowStockProducts,
         };
         setStats(newStats);
         localStorage.setItem('admin_dashboard_stats', JSON.stringify(newStats));
@@ -180,10 +223,19 @@ function AdminDashboard() {
             <p className="text-gray-600 text-sm">Manage your jewellery store efficiently. Add products, track orders, and create coupon codes for your Instagram followers!</p>
           </div>
 
+          <div className="mb-8">
+            <SalesTrend dailyRevenue={stats.dailyRevenue || []} />
+          </div>
+
           {/* Dynamic Sales Analytics Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <RevenueBreakdown stats={stats} />
             <RecentOrders recentOrders={stats.recentOrders} />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <BestSellers topProducts={stats.topProducts || []} />
+            <LowStockAlerts lowStockProducts={stats.lowStockProducts || []} />
           </div>
 
           <PromoSettingsForm
