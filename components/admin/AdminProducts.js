@@ -27,7 +27,8 @@ function AdminProducts() {
     image: '',
     images: '',
     stock: '',
-    isActive: true
+    isActive: true,
+    variants: []
   });
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -35,7 +36,27 @@ function AdminProducts() {
 
   const emptyForm = {
     name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '',
-    material: '', occasion: '', color: '', giftingTier: '', image: '', images: '', stock: '', isActive: true
+    material: '', occasion: '', color: '', giftingTier: '', image: '', images: '', stock: '', isActive: true,
+    variants: []
+  };
+
+  // Variants are optional (e.g. ring size, bangle size). Each row is { id, label, priceDelta, stock }.
+  const addVariantRow = () => {
+    setForm((prev) => ({
+      ...prev,
+      variants: [...prev.variants, { id: `v_${Date.now()}_${prev.variants.length}`, label: '', priceDelta: '', stock: '' }],
+    }));
+  };
+
+  const updateVariantRow = (index, field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      variants: prev.variants.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
+    }));
+  };
+
+  const removeVariantRow = (index) => {
+    setForm((prev) => ({ ...prev, variants: prev.variants.filter((_, i) => i !== index) }));
   };
 
   async function fetchProducts() {
@@ -116,6 +137,16 @@ function AdminProducts() {
 
     const primaryImg = imagesArray[0] || form.image.trim();
 
+    // Drop incomplete rows (no label typed yet) rather than saving a blank variant option.
+    const variants = form.variants
+      .filter((v) => v.label.trim())
+      .map((v) => ({
+        id: v.id,
+        label: v.label.trim(),
+        priceDelta: v.priceDelta === '' ? 0 : Number(v.priceDelta),
+        stock: v.stock === '' ? 0 : Number(v.stock),
+      }));
+
     try {
       const payload = {
         name: form.name.trim(),
@@ -131,7 +162,8 @@ function AdminProducts() {
         image: primaryImg,
         images: imagesArray,
         stock: Number(form.stock),
-        isActive: form.isActive !== undefined ? form.isActive : true
+        isActive: form.isActive !== undefined ? form.isActive : true,
+        variants
       };
 
       if (editingProduct) {
@@ -175,7 +207,8 @@ function AdminProducts() {
       image: product.image || '',
       images: product.images ? product.images.join(', ') : (product.image || ''),
       stock: product.stock || '',
-      isActive: product.isActive !== undefined ? product.isActive : true
+      isActive: product.isActive !== undefined ? product.isActive : true,
+      variants: (product.variants || []).map((v) => ({ ...v, priceDelta: String(v.priceDelta ?? ''), stock: String(v.stock ?? '') }))
     });
     setShowModal(true);
   };
@@ -447,6 +480,59 @@ function AdminProducts() {
                       <option value="Luxury">Luxury</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-semibold text-gray-700">Variants (Optional)</label>
+                    <button
+                      type="button"
+                      onClick={addVariantRow}
+                      className="text-xs font-bold text-brand-navy-900 hover:underline"
+                    >
+                      + Add Variant
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-400 mb-3">
+                    E.g. ring or bangle sizes. Leave empty for a single-option product. Price adjustment is added to (or subtracted from) the base price above.
+                  </p>
+                  {form.variants.length > 0 && (
+                    <div className="space-y-3">
+                      {form.variants.map((variant, index) => (
+                        <div key={variant.id} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 items-center">
+                          <input
+                            type="text"
+                            value={variant.label}
+                            onChange={(e) => updateVariantRow(index, 'label', e.target.value)}
+                            placeholder="Label (e.g. Size 8)"
+                            className="px-3 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-brand-navy-900"
+                          />
+                          <input
+                            type="number"
+                            value={variant.priceDelta}
+                            onChange={(e) => updateVariantRow(index, 'priceDelta', e.target.value)}
+                            placeholder="Price +/- (₹)"
+                            className="px-3 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-brand-navy-900"
+                          />
+                          <input
+                            type="number"
+                            value={variant.stock}
+                            onChange={(e) => updateVariantRow(index, 'stock', e.target.value)}
+                            placeholder="Stock"
+                            className="px-3 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-brand-navy-900"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeVariantRow(index)}
+                            aria-label={`Remove variant ${index + 1}`}
+                            className="text-red-500 hover:text-red-700 font-bold px-2"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>

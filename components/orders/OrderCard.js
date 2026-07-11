@@ -146,7 +146,7 @@ function OrderCard({
                     className="w-16 h-16 object-cover rounded-xl border border-gray-100 shadow-sm flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}</h4>
+                    <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}{item.variantLabel ? ` — ${item.variantLabel}` : ''}</h4>
                     <p className="text-xs text-gray-500 capitalize">{item.category?.replace('-', ' ')} • Qty: <span className="font-semibold text-gray-700">{item.quantity}</span></p>
                   </div>
                   <div className="text-right flex-shrink-0">

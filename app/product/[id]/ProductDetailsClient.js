@@ -28,6 +28,7 @@ function ProductDetails({ params, initialProduct = null }) {
   const [loading, setLoading] = useState(!initialProduct);
   const [quantity, setQuantity] = useState(1);
   const [addingState, setAddingState] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(initialProduct?.variants?.[0] || null);
 
   // Reviews State
   const [reviews, setReviews] = useState([]);
@@ -169,6 +170,15 @@ function ProductDetails({ params, initialProduct = null }) {
     if (product) trackViewItem(product);
   }, [product]);
 
+  // Default to the first variant once the product (and its variants) are known — covers the
+  // fallback client-fetch path where product isn't available on the very first render.
+  useEffect(() => {
+    if (product?.variants?.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time default selection once variant data arrives
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [product]);
+
   // Log viewed product to localStorage for "Recently Viewed" section
   useEffect(() => {
     if (!product) return;
@@ -277,14 +287,20 @@ function ProductDetails({ params, initialProduct = null }) {
       router.push('/login');
       return;
     }
+    if (product.variants?.length > 0 && !selectedVariant) {
+      showNotification('Please select an option before adding to cart.', 'error');
+      return;
+    }
 
     setAddingState(true);
-    const existingCartItem = cart.find(item => item.id === product.id);
+    const variant = product.variants?.length > 0 ? selectedVariant : null;
+    const variantId = variant?.id || null;
+    const existingCartItem = cart.find(item => item.id === product.id && (item.variantId || null) === variantId);
     if (existingCartItem) {
-      updateQuantity(product.id, existingCartItem.quantity + quantity);
+      updateQuantity(product.id, existingCartItem.quantity + quantity, variantId);
     } else {
       for (let i = 0; i < quantity; i++) {
-        addToCart(product);
+        addToCart(product, variant);
       }
     }
 
@@ -299,12 +315,20 @@ function ProductDetails({ params, initialProduct = null }) {
       router.push('/login');
       return;
     }
+    if (product.variants?.length > 0 && !selectedVariant) {
+      showNotification('Please select an option before adding to cart.', 'error');
+      return;
+    }
 
-    const existingCartItem = cart.find(item => item.id === product.id);
+    const variant = product.variants?.length > 0 ? selectedVariant : null;
+    const variantId = variant?.id || null;
+    const existingCartItem = cart.find(item => item.id === product.id && (item.variantId || null) === variantId);
     if (existingCartItem) {
-      updateQuantity(product.id, existingCartItem.quantity + quantity);
+      updateQuantity(product.id, existingCartItem.quantity + quantity, variantId);
     } else {
-      addToCart({ ...product, quantity });
+      for (let i = 0; i < quantity; i++) {
+        addToCart(product, variant);
+      }
     }
 
     if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
@@ -318,7 +342,8 @@ function ProductDetails({ params, initialProduct = null }) {
   // Review submission is handled separately after purchase.
 
   const incrementQty = () => {
-    if (quantity < (product.stock || 10)) {
+    const stockCap = product.variants?.length > 0 ? (selectedVariant?.stock || 0) : (product.stock || 10);
+    if (quantity < stockCap) {
       setQuantity(prev => prev + 1);
     }
   };
@@ -354,6 +379,15 @@ function ProductDetails({ params, initialProduct = null }) {
   }
 
   const isFavorite = isInWishlist(product.id);
+
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+  const basePrice = product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0
+    ? Number(product.discountedPrice)
+    : Number(product.price);
+  const effectivePrice = basePrice + (hasVariants ? (selectedVariant?.priceDelta || 0) : 0);
+  const effectiveStock = hasVariants
+    ? (selectedVariant?.stock !== undefined && selectedVariant?.stock !== null ? Number(selectedVariant.stock) : 0)
+    : (product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -467,9 +501,35 @@ function ProductDetails({ params, initialProduct = null }) {
               </span>
             </div>
 
+            {/* Variant Selector */}
+            {hasVariants && (
+              <div className="space-y-2 pt-1">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Options</span>
+                <div className="flex flex-wrap gap-2">
+                  {product.variants.map((variant) => (
+                    <button
+                      key={variant.id}
+                      type="button"
+                      onClick={() => setSelectedVariant(variant)}
+                      aria-pressed={selectedVariant?.id === variant.id}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${
+                        selectedVariant?.id === variant.id
+                          ? 'border-brand-navy-900 bg-brand-navy-900 text-white'
+                          : 'border-gray-200 text-gray-700 hover:border-brand-navy-900/50'
+                      }`}
+                    >
+                      {variant.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Pricing / Stock */}
             <div className="flex items-baseline gap-4 pt-2">
-              {product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0 ? (
+              {hasVariants ? (
+                <span className="text-3xl font-black text-brand-navy-900">₹{effectivePrice.toFixed(0)}</span>
+              ) : product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0 ? (
                 <>
                   <span className="text-3xl font-black text-brand-navy-900">₹{product.discountedPrice}</span>
                   <span className="text-gray-400 line-through text-lg">₹{product.price}</span>
@@ -478,9 +538,9 @@ function ProductDetails({ params, initialProduct = null }) {
                 <span className="text-3xl font-black text-brand-navy-900">₹{product.price}</span>
               )}
               <span className={`px-3 py-1 rounded-full text-xxs font-bold uppercase tracking-wider ${
-                (product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                effectiveStock > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
               }`}>
-                {(product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? 'In Stock' : 'Out of Stock'}
+                {effectiveStock > 0 ? 'In Stock' : 'Out of Stock'}
               </span>
             </div>
 
@@ -490,7 +550,7 @@ function ProductDetails({ params, initialProduct = null }) {
           </div>
 
           <div className="space-y-6 pt-4 border-t border-gray-100">
-            {(product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10) > 0 ? (
+            {effectiveStock > 0 ? (
               <>
                 {/* Quantity Selector Counter */}
                 <div className="flex items-center gap-4">

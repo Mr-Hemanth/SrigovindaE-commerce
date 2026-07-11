@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase/client';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { computeCartTotals } from '@/lib/cart-math';
+import { computeCartTotals, getItemActivePrice } from '@/lib/cart-math';
 import { isCouponValid } from '@/lib/coupon-validation';
 import { trackAddToCart } from '@/lib/analytics';
 
@@ -47,15 +47,31 @@ export function CartProvider({ children }) {
     fetchCart();
   }, [currentUser]);
 
-  const addToCart = async (product) => {
-    const existingItem = cart.find(item => item.id === product.id);
+  // variant is optional: { id, label, priceDelta, stock }. Two cart lines for the same product
+  // with different variants are kept separate (e.g. "Ring - Size 6" vs "Ring - Size 8").
+  const addToCart = async (product, variant = null) => {
+    const variantId = variant?.id || null;
+    const existingItem = cart.find(item => item.id === product.id && (item.variantId || null) === variantId);
     let newCart;
     if (existingItem) {
       newCart = cart.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        (item.id === product.id && (item.variantId || null) === variantId) ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
-      newCart = [...cart, { ...product, quantity: 1 }];
+      // Only normalize price/discountedPrice when a variant is selected (its priceDelta needs
+      // baking in) — otherwise keep the exact existing item shape so strikethrough discount
+      // pricing elsewhere (cart drawer, cart page) keeps working unchanged.
+      const newItem = variant
+        ? {
+            ...product,
+            price: getItemActivePrice(product) + (variant.priceDelta || 0),
+            discountedPrice: null,
+            variantId,
+            variantLabel: variant.label,
+            quantity: 1,
+          }
+        : { ...product, quantity: 1 };
+      newCart = [...cart, newItem];
     }
     setCart(newCart);
     setCartOpen(true);
@@ -76,8 +92,8 @@ export function CartProvider({ children }) {
     }
   };
 
-  const removeFromCart = async (productId) => {
-    const newCart = cart.filter(item => item.id !== productId);
+  const removeFromCart = async (productId, variantId = null) => {
+    const newCart = cart.filter(item => !(item.id === productId && (item.variantId || null) === variantId));
     setCart(newCart);
     if (currentUser) {
       localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(newCart));
@@ -93,13 +109,13 @@ export function CartProvider({ children }) {
     }
   };
 
-  const updateQuantity = async (productId, quantity) => {
+  const updateQuantity = async (productId, quantity, variantId = null) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, variantId);
       return;
     }
     const newCart = cart.map(item =>
-      item.id === productId ? { ...item, quantity } : item
+      (item.id === productId && (item.variantId || null) === variantId) ? { ...item, quantity } : item
     );
     setCart(newCart);
     if (currentUser) {

@@ -262,7 +262,7 @@ function AdminOrders() {
                           className="w-14 h-14 object-cover rounded-xl elegant-shadow"
                         />
                         <div>
-                          <p className="text-base font-semibold text-gray-800">{item.name}</p>
+                          <p className="text-base font-semibold text-gray-800">{item.name}{item.variantLabel ? ` — ${item.variantLabel}` : ''}</p>
                           <p className="text-sm text-gray-500">Qty: {item.quantity} • ₹{Number(item.discountedPrice || item.price || 0).toFixed(0)}</p>
                         </div>
                       </div>

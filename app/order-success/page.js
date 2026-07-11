@@ -135,7 +135,7 @@ function OrderSuccessContent() {
                             />
                           )}
                           <div className="text-left">
-                            <span className="font-semibold text-gray-800 block leading-tight">{item.name}</span>
+                            <span className="font-semibold text-gray-800 block leading-tight">{item.name}{item.variantLabel ? ` — ${item.variantLabel}` : ''}</span>
                             <span className="text-xs text-gray-500 mt-1 block">Qty: {item.quantity} • ₹{item.price}</span>
                           </div>
                         </div>

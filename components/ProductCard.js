@@ -56,13 +56,20 @@ function ProductCard({ product, ratingOverride }) {
     }
   };
 
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+
   const handleAddToCart = () => {
     if (!currentUser) {
       router.push('/login');
-    } else {
-      addToCart(product);
-      showNotification(`${product.name} added to your cart successfully!`, 'success');
+      return;
     }
+    if (hasVariants) {
+      // Quick-add from the grid can't know which size/option the shopper wants.
+      router.push(`/product/${product.id}`);
+      return;
+    }
+    addToCart(product);
+    showNotification(`${product.name} added to your cart successfully!`, 'success');
   };
 
   const hasDiscount = product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0;
@@ -146,7 +153,7 @@ function ProductCard({ product, ratingOverride }) {
             onClick={handleAddToCart}
             className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-3 py-2 md:px-4 md:py-2.5 rounded-lg md:rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold text-[10px] md:text-xs shadow-md hover:shadow-lg"
           >
-            Add to Cart
+            {hasVariants ? 'Select Options' : 'Add to Cart'}
           </button>
         </div>
       </div>

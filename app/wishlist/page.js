@@ -42,6 +42,7 @@ function Wishlist() {
           {wishlist.map(product => {
             const isOutOfStock = product.stock === 0 || product.stockStatus === 'out-of-stock';
             const hasDiscount = product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0;
+            const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
 
             return (
               <div key={product.id} className="bg-white rounded-3xl elegant-shadow border border-gray-50 flex flex-col justify-between overflow-hidden relative group">
@@ -89,13 +90,17 @@ function Wishlist() {
                   <button
                     disabled={isOutOfStock}
                     onClick={() => {
+                      if (hasVariants) {
+                        router.push(`/product/${product.id}`);
+                        return;
+                      }
                       addToCart(product);
                       removeFromWishlist(product.id);
                       showNotification(`"${product.name}" moved to cart!`, 'success');
                     }}
                     className="w-full bg-brand-navy-900 hover:bg-brand-navy-800 text-white py-2 px-3 rounded-xl transition-all font-bold text-[10px] shadow-sm hover:shadow text-center disabled:opacity-50"
                   >
-                    Move to Cart
+                    {hasVariants ? 'Select Options' : 'Move to Cart'}
                   </button>
                 </div>
               </div>

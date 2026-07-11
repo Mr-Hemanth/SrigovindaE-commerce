@@ -97,7 +97,7 @@ function Cart() {
           <div className="lg:col-span-2 space-y-4 md:space-y-6 animate-fade-in">
             {cart.map(item => (
               <div
-                key={item.id}
+                key={`${item.id}-${item.variantId || 'base'}`}
                 className="bg-white rounded-3xl elegant-shadow p-4 md:p-6 flex flex-row items-center gap-4 md:gap-6 border border-gray-50/50 hover:scale-[1.01] transition-all duration-300 relative"
               >
                 {/* Image */}
@@ -119,6 +119,9 @@ function Cart() {
                 <div className="flex-1 min-w-0 pr-6 md:pr-0 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-6">
                   <div>
                     <h3 className="text-sm md:text-lg font-bold text-gray-800 font-serif leading-snug truncate">{item.name}</h3>
+                    {item.variantLabel && (
+                      <p className="text-[10px] md:text-xs text-gray-500 font-semibold mt-0.5">{item.variantLabel}</p>
+                    )}
                     <div className="mt-1 flex items-baseline gap-2">
                       {item.discountedPrice !== undefined && item.discountedPrice !== null && item.discountedPrice !== '' && Number(item.discountedPrice) > 0 ? (
                         <>
@@ -134,14 +137,14 @@ function Cart() {
                   {/* Quantity selectors */}
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity - 1, item.variantId)}
                       className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-brand-cream-100 hover:border-brand-navy-900 transition-all text-sm font-semibold"
                     >
                       -
                     </button>
                     <span className="w-6 text-center font-bold text-sm md:text-base font-mono">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + 1, item.variantId)}
                       className="w-8 h-8 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:bg-brand-cream-100 hover:border-brand-navy-900 transition-all text-sm font-semibold"
                     >
                       +
@@ -162,7 +165,7 @@ function Cart() {
 
                 {/* Absolute trash removal button */}
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item.id, item.variantId)}
                   className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
                   aria-label="Remove item"
                 >

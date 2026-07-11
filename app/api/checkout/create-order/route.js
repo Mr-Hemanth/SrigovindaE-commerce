@@ -38,16 +38,26 @@ async function verifyUser(request) {
 // Real orders may only be placed against real Firestore-backed products — never fall back to
 // the static demo/offline catalog here, or a customer could complete a real payment against a
 // placeholder product that was never actually for sale.
-async function getAuthoritativePrice(itemId) {
+async function getAuthoritativePrice(itemId, variantId) {
   const snap = await adminDb().collection('products').doc(itemId).get();
   if (!snap.exists) return null;
   const data = snap.data();
-  const price = Number(
+  const basePrice = Number(
     data.discountedPrice !== undefined && data.discountedPrice !== null && data.discountedPrice !== '' && Number(data.discountedPrice) > 0
       ? data.discountedPrice
       : data.price
   );
-  return { price, name: data.name, category: data.category || '', active: data.isActive !== false };
+
+  let price = basePrice;
+  let variantLabel = null;
+  if (variantId) {
+    const variant = (data.variants || []).find((v) => v.id === variantId);
+    if (!variant) return null; // client sent a variant that doesn't exist on this product
+    price = basePrice + (Number(variant.priceDelta) || 0);
+    variantLabel = variant.label;
+  }
+
+  return { price, name: data.name, category: data.category || '', active: data.isActive !== false, variantLabel };
 }
 
 async function getValidCoupon(code) {
@@ -80,7 +90,7 @@ export async function POST(request) {
   // Recompute every price server-side — never trust client-sent amounts.
   const resolvedItems = [];
   for (const item of items) {
-    const authoritative = await getAuthoritativePrice(item.id);
+    const authoritative = await getAuthoritativePrice(item.id, item.variantId || null);
     if (!authoritative || !authoritative.active) {
       return NextResponse.json({ error: `Product unavailable: ${item.name || item.id}` }, { status: 400 });
     }
@@ -90,6 +100,7 @@ export async function POST(request) {
       category: authoritative.category,
       price: authoritative.price,
       quantity: Math.max(1, Number(item.quantity) || 1),
+      ...(item.variantId ? { variantId: item.variantId, variantLabel: authoritative.variantLabel } : {}),
     });
   }
 

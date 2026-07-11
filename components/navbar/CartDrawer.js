@@ -86,7 +86,7 @@ function CartDrawer() {
               </div>
             ) : (
               cart.map((item) => (
-                <div key={item.id} className="flex gap-4 bg-white p-4 rounded-2xl border border-gray-150/50 hover:shadow-md transition-shadow duration-300">
+                <div key={`${item.id}-${item.variantId || 'base'}`} className="flex gap-4 bg-white p-4 rounded-2xl border border-gray-150/50 hover:shadow-md transition-shadow duration-300">
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -97,7 +97,7 @@ function CartDrawer() {
                   <div className="flex-grow min-w-0 flex flex-col justify-between">
                     <div>
                       <p className="text-xs font-bold text-gray-800 truncate">{item.name}</p>
-                      <p className="text-[10px] text-gray-400 capitalize mt-0.5">{item.category?.replace('-', ' ')}</p>
+                      <p className="text-[10px] text-gray-400 capitalize mt-0.5">{item.variantLabel || item.category?.replace('-', ' ')}</p>
                     </div>
 
                     <div className="flex justify-between items-center mt-2">
@@ -106,7 +106,7 @@ function CartDrawer() {
                         <button
                           onClick={() => {
                             if (item.quantity > 1) {
-                              updateQuantity(item.id, item.quantity - 1);
+                              updateQuantity(item.id, item.quantity - 1, item.variantId);
                             }
                           }}
                           className="px-2 py-0.5 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-xs"
@@ -117,7 +117,7 @@ function CartDrawer() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity + 1, item.variantId)}
                           className="px-2 py-0.5 bg-gray-50 hover:bg-gray-100 font-bold transition-colors text-gray-600 text-xs"
                         >
                           +
@@ -129,7 +129,7 @@ function CartDrawer() {
 
                   {/* Delete button */}
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeFromCart(item.id, item.variantId)}
                     className="text-gray-300 hover:text-red-600 transition-colors self-start p-1"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
