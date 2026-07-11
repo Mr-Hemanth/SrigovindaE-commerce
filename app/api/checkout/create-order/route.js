@@ -4,6 +4,7 @@ import { adminDb, adminAuth } from '@/lib/firebase/admin';
 import { sendOrderWhatsAppAlert, formatOrderAlertMessage } from '@/lib/notify/whatsapp';
 import { sendOrderConfirmationEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
+import { isCouponValid } from '@/lib/coupon-validation';
 
 // Best-effort: shipment creation should never block order confirmation. Failures are logged so
 // an admin can still enter tracking info manually via the Orders panel.
@@ -54,9 +55,7 @@ async function getValidCoupon(code) {
   const snap = await adminDb().collection('coupons').where('code', '==', code.toUpperCase()).limit(1).get();
   if (snap.empty) return null;
   const coupon = snap.docs[0].data();
-  const expiry = coupon.expiryDate?.toDate ? coupon.expiryDate.toDate() : new Date(coupon.expiryDate);
-  if (expiry < new Date()) return null;
-  return coupon;
+  return isCouponValid(coupon) ? coupon : null;
 }
 
 export async function POST(request) {

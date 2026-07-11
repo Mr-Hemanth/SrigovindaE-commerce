@@ -9,6 +9,7 @@ import { useNotification } from '@/contexts/NotificationContext';
 import { auth, db } from '@/lib/firebase/client';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { trackBeginCheckout } from '@/lib/analytics';
+import { validateAddressForm } from '@/lib/shipping-validation';
 
 // Helper to dynamically load the Razorpay Checkout script
 const loadRazorpayScript = () => {
@@ -153,11 +154,8 @@ function Checkout() {
     }
 
     // Input Validations
-    if (!addressForm.area.trim()) return setModalValidationError('Area / Street is required.');
-    if (!addressForm.city.trim()) return setModalValidationError('City or Town is required.');
-    if (!addressForm.state.trim()) return setModalValidationError('State is required.');
-    if (!/^\d{6}$/.test(addressForm.pincode.trim())) return setModalValidationError('Pincode must be exactly 6 digits.');
-    if (!/^\d{10}$/.test(addressForm.phone.trim())) return setModalValidationError('Phone number must be exactly 10 digits.');
+    const addressError = validateAddressForm(addressForm);
+    if (addressError) return setModalValidationError(addressError);
 
     const newAddressId = `addr_${Date.now()}`;
     const newAddress = {

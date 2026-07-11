@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase/client';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { computeCartTotals } from '@/lib/cart-math';
+import { isCouponValid } from '@/lib/coupon-validation';
 import { trackAddToCart } from '@/lib/analytics';
 
 const CartContext = createContext();
@@ -136,9 +137,7 @@ export function CartProvider({ children }) {
       if (!snap.empty) {
         const couponDoc = snap.docs[0];
         const couponData = couponDoc.data();
-        const now = new Date();
-        const expiryDate = couponData.expiryDate.toDate ? couponData.expiryDate.toDate() : new Date(couponData.expiryDate);
-        if (now <= expiryDate) {
+        if (isCouponValid(couponData)) {
           setCoupon(couponData);
           setDiscount(couponData.discountPercentage);
           return { success: true, message: 'Coupon applied successfully!' };
