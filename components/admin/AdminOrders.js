@@ -7,6 +7,8 @@ import { collection, getDocs } from 'firebase/firestore';
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
+  const [trackingDrafts, setTrackingDrafts] = useState({});
+  const [savingTrackingId, setSavingTrackingId] = useState(null);
 
   const fetchOrders = async () => {
     try {
@@ -53,6 +55,31 @@ function AdminOrders() {
   const updateOrderStatus = async (orderId, newStatus) => {
     await callUpdateOrderStatus({ orderId, status: newStatus });
     fetchOrders();
+  };
+
+  const getTrackingDraft = (order) => trackingDrafts[order.id] ?? {
+    courierName: order.courierName || '',
+    trackingNumber: order.trackingNumber || '',
+    trackingUrl: order.trackingUrl || '',
+  };
+
+  const setTrackingField = (orderId, order, field, value) => {
+    setTrackingDrafts((prev) => ({
+      ...prev,
+      [orderId]: { ...getTrackingDraft(order), ...prev[orderId], [field]: value },
+    }));
+  };
+
+  const saveTracking = async (orderId, order) => {
+    const draft = getTrackingDraft(order);
+    setSavingTrackingId(orderId);
+    try {
+      await callUpdateOrderStatus({ orderId, ...draft });
+      await fetchOrders();
+    } catch (err) {
+      console.error('Failed to save tracking info:', err);
+    }
+    setSavingTrackingId(null);
   };
 
   const handleRequestDecision = async (orderId, nextStatus, decision) => {
@@ -182,6 +209,39 @@ function AdminOrders() {
 
                     <div className="text-base text-gray-500 font-medium">
                       Items: {order.items.length}
+                    </div>
+
+                    <div className="w-full lg:w-72 bg-brand-cream-100/60 border border-gray-200 rounded-2xl p-4 space-y-2.5 text-left">
+                      <p className="text-xxs font-black text-gray-500 uppercase tracking-wider">Shipment Tracking</p>
+                      <input
+                        type="text"
+                        value={getTrackingDraft(order).courierName}
+                        onChange={(e) => setTrackingField(order.id, order, 'courierName', e.target.value)}
+                        placeholder="Courier name (e.g. Delhivery)"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-navy-900"
+                      />
+                      <input
+                        type="text"
+                        value={getTrackingDraft(order).trackingNumber}
+                        onChange={(e) => setTrackingField(order.id, order, 'trackingNumber', e.target.value)}
+                        placeholder="Tracking / AWB number"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-navy-900"
+                      />
+                      <input
+                        type="url"
+                        value={getTrackingDraft(order).trackingUrl}
+                        onChange={(e) => setTrackingField(order.id, order, 'trackingUrl', e.target.value)}
+                        placeholder="Tracking URL (optional)"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand-navy-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => saveTracking(order.id, order)}
+                        disabled={savingTrackingId === order.id}
+                        className="w-full bg-brand-navy-900 hover:bg-brand-navy-800 text-white py-2 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                      >
+                        {savingTrackingId === order.id ? 'Saving...' : 'Save Tracking Info'}
+                      </button>
                     </div>
                   </div>
                 </div>

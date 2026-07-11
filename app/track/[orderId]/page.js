@@ -104,10 +104,12 @@ function TrackOrder() {
   const steps = [
     { label: 'Order Placed', desc: 'Srigovinda received your order request.' },
     { label: 'Packed & Sealed', desc: 'Your jewellery items are quality checked & sealed.' },
-    { label: 'Shipped Courier', desc: 'Handed over to Delhivery logistics hubs.' },
+    { label: 'Shipped Courier', desc: 'Handed over to our courier partner.' },
     { label: 'Out For Delivery', desc: 'Assigned to courier agent near your address.' },
     { label: 'Delivered', desc: 'Successfully received and verified by customer.' }
   ];
+
+  const hasTrackingInfo = Boolean(order.courierName || order.trackingNumber);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 select-none text-left">
@@ -140,30 +142,46 @@ function TrackOrder() {
           </div>
         </div>
 
-        {/* Courier details */}
-        {!isCancelled && !isReturned && (
+        {/* Courier details — only shown once the admin has actually assigned a real shipment */}
+        {!isCancelled && !isReturned && hasTrackingInfo && (
           <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 border border-gray-50 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Shipping Agent</span>
-              <span className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
-                🚚 Delhivery Express
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tracking ID</span>
-              <span className="text-sm font-mono font-bold text-gray-800">SG-DEL-{orderId.slice(-6).toUpperCase()}</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Logistic Website</span>
-              <a
-                href="https://www.delhivery.com"
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs font-extrabold text-blue-500 hover:underline"
-              >
-                Track on Delhivery.com →
-              </a>
-            </div>
+            {order.courierName && (
+              <div>
+                <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Shipping Agent</span>
+                <span className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                  🚚 {order.courierName}
+                </span>
+              </div>
+            )}
+            {order.trackingNumber && (
+              <div>
+                <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Tracking ID</span>
+                <span className="text-sm font-mono font-bold text-gray-800">{order.trackingNumber}</span>
+              </div>
+            )}
+            {order.trackingUrl && (
+              <div>
+                <span className="text-[10px] text-gray-400 uppercase font-bold block mb-1">Live Tracking</span>
+                <a
+                  href={order.trackingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-extrabold text-blue-500 hover:underline"
+                >
+                  Track Shipment →
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!isCancelled && !isReturned && !hasTrackingInfo && (
+          <div className="bg-white rounded-3xl elegant-shadow p-6 md:p-8 border border-gray-50 text-center">
+            <p className="text-sm text-gray-500">
+              {order.status === 'shipped' || order.status === 'delivered'
+                ? 'Shipment details are being finalized and will appear here shortly.'
+                : 'Courier and tracking details will appear here once your order ships.'}
+            </p>
           </div>
         )}
 

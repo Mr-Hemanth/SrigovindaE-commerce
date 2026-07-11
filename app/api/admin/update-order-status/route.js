@@ -28,7 +28,7 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const { orderId, status, paymentStatus, requestStatus } = await request.json();
+  const { orderId, status, paymentStatus, requestStatus, courierName, trackingNumber, trackingUrl } = await request.json();
   if (!orderId) {
     return NextResponse.json({ error: 'orderId is required' }, { status: 400 });
   }
@@ -51,6 +51,24 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid requestStatus' }, { status: 400 });
     }
     updates.requestStatus = requestStatus;
+  }
+  if (courierName !== undefined) {
+    if (typeof courierName !== 'string' || courierName.length > 100) {
+      return NextResponse.json({ error: 'Invalid courierName' }, { status: 400 });
+    }
+    updates.courierName = courierName.trim();
+  }
+  if (trackingNumber !== undefined) {
+    if (typeof trackingNumber !== 'string' || trackingNumber.length > 100) {
+      return NextResponse.json({ error: 'Invalid trackingNumber' }, { status: 400 });
+    }
+    updates.trackingNumber = trackingNumber.trim();
+  }
+  if (trackingUrl !== undefined) {
+    if (typeof trackingUrl !== 'string' || trackingUrl.length > 500) {
+      return NextResponse.json({ error: 'Invalid trackingUrl' }, { status: 400 });
+    }
+    updates.trackingUrl = trackingUrl.trim();
   }
 
   if (Object.keys(updates).length === 0) {
