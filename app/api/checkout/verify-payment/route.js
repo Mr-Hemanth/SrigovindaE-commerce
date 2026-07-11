@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
-import { sendOrderWhatsAppAlert, formatOrderAlertMessage } from '@/lib/notify/whatsapp';
 import { sendOrderConfirmationEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
 
@@ -86,7 +85,6 @@ export async function POST(request) {
 
   const paidOrder = { ...order, paymentStatus: 'Paid', paymentMethod: 'Razorpay Online' };
   await Promise.all([
-    sendOrderWhatsAppAlert(formatOrderAlertMessage(paidOrder)),
     sendOrderConfirmationEmail(paidOrder),
     tryCreateShipment(orderRef, paidOrder),
   ]);

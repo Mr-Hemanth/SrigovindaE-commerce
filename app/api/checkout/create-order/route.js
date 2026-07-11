@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
-import { sendOrderWhatsAppAlert, formatOrderAlertMessage } from '@/lib/notify/whatsapp';
 import { sendOrderConfirmationEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
 import { isCouponValid } from '@/lib/coupon-validation';
@@ -144,7 +143,6 @@ export async function POST(request) {
     const orderRef = adminDb().collection('orders').doc(orderId);
     await orderRef.set(order);
     await Promise.all([
-      sendOrderWhatsAppAlert(formatOrderAlertMessage(order)),
       sendOrderConfirmationEmail(order),
       tryCreateShipment(orderRef, order),
     ]);
