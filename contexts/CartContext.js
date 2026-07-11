@@ -62,7 +62,13 @@ export function CartProvider({ children }) {
     if (currentUser) {
       localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(newCart));
       try {
-        await setDoc(doc(db, 'carts', currentUser.uid), { items: newCart }, { merge: true });
+        await setDoc(doc(db, 'carts', currentUser.uid), {
+          items: newCart,
+          updatedAt: new Date(),
+          abandonedEmailSentAt: null,
+          userEmail: currentUser.email || null,
+          userName: currentUser.name || currentUser.displayName || null,
+        }, { merge: true });
       } catch (err) {
         console.warn('Firestore addToCart offline. Saved locally:', err);
       }
@@ -75,7 +81,11 @@ export function CartProvider({ children }) {
     if (currentUser) {
       localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(newCart));
       try {
-        await setDoc(doc(db, 'carts', currentUser.uid), { items: newCart });
+        await setDoc(doc(db, 'carts', currentUser.uid), {
+          items: newCart,
+          updatedAt: new Date(),
+          abandonedEmailSentAt: null,
+        }, { merge: true });
       } catch (err) {
         console.warn('Firestore removeFromCart offline. Saved locally:', err);
       }
@@ -94,7 +104,11 @@ export function CartProvider({ children }) {
     if (currentUser) {
       localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(newCart));
       try {
-        await setDoc(doc(db, 'carts', currentUser.uid), { items: newCart });
+        await setDoc(doc(db, 'carts', currentUser.uid), {
+          items: newCart,
+          updatedAt: new Date(),
+          abandonedEmailSentAt: null,
+        }, { merge: true });
       } catch (err) {
         console.warn('Firestore updateQuantity offline. Saved locally:', err);
       }
