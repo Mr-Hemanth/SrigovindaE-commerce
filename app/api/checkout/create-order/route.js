@@ -3,6 +3,25 @@ import Razorpay from 'razorpay';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
 import { sendOrderWhatsAppAlert, formatOrderAlertMessage } from '@/lib/notify/whatsapp';
 import { sendOrderConfirmationEmail } from '@/lib/notify/email';
+import { createShiprocketShipment } from '@/lib/shiprocket';
+
+// Best-effort: shipment creation should never block order confirmation. Failures are logged so
+// an admin can still enter tracking info manually via the Orders panel.
+async function tryCreateShipment(orderRef, order) {
+  try {
+    const shipment = await createShiprocketShipment(order);
+    if (shipment.trackingNumber) {
+      await orderRef.update({
+        courierName: shipment.courierName || '',
+        trackingNumber: shipment.trackingNumber,
+        trackingUrl: shipment.trackingUrl || '',
+        shiprocketShipmentId: shipment.shipmentId,
+      });
+    }
+  } catch (err) {
+    console.error('Shiprocket shipment creation failed for order', order.orderId, err);
+  }
+}
 
 async function verifyUser(request) {
   const authHeader = request.headers.get('authorization') || '';
@@ -47,7 +66,10 @@ export async function POST(request) {
   }
 
   const body = await request.json();
-  const { items, couponCode, shippingAddress, phone, userName, userEmail, paymentMethod, shippingCost = 0 } = body;
+  const {
+    items, couponCode, shippingAddress, phone, userName, userEmail, paymentMethod, shippingCost = 0,
+    shippingArea = '', shippingLandmark = '', shippingCity = '', shippingState = '', shippingPincode = '',
+  } = body;
 
   if (!Array.isArray(items) || items.length === 0) {
     return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -88,6 +110,11 @@ export async function POST(request) {
     userName: userName || 'Customer',
     userEmail: userEmail || decoded.email,
     shippingAddress,
+    shippingArea,
+    shippingLandmark,
+    shippingCity,
+    shippingState,
+    shippingPincode,
     phone,
     items: resolvedItems,
     subtotal,
@@ -103,10 +130,12 @@ export async function POST(request) {
       paymentStatus: 'COD',
       status: 'processing',
     };
-    await adminDb().collection('orders').doc(orderId).set(order);
+    const orderRef = adminDb().collection('orders').doc(orderId);
+    await orderRef.set(order);
     await Promise.all([
       sendOrderWhatsAppAlert(formatOrderAlertMessage(order)),
       sendOrderConfirmationEmail(order),
+      tryCreateShipment(orderRef, order),
     ]);
     return NextResponse.json({ orderId, method: 'cod', finalTotal });
   }

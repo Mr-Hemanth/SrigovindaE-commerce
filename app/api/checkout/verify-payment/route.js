@@ -3,6 +3,25 @@ import crypto from 'crypto';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
 import { sendOrderWhatsAppAlert, formatOrderAlertMessage } from '@/lib/notify/whatsapp';
 import { sendOrderConfirmationEmail } from '@/lib/notify/email';
+import { createShiprocketShipment } from '@/lib/shiprocket';
+
+// Best-effort: shipment creation should never block payment confirmation. Failures are logged
+// so an admin can still enter tracking info manually via the Orders panel.
+async function tryCreateShipment(orderRef, order) {
+  try {
+    const shipment = await createShiprocketShipment(order);
+    if (shipment.trackingNumber) {
+      await orderRef.update({
+        courierName: shipment.courierName || '',
+        trackingNumber: shipment.trackingNumber,
+        trackingUrl: shipment.trackingUrl || '',
+        shiprocketShipmentId: shipment.shipmentId,
+      });
+    }
+  } catch (err) {
+    console.error('Shiprocket shipment creation failed for order', order.orderId, err);
+  }
+}
 
 async function verifyUser(request) {
   const authHeader = request.headers.get('authorization') || '';
@@ -69,6 +88,7 @@ export async function POST(request) {
   await Promise.all([
     sendOrderWhatsAppAlert(formatOrderAlertMessage(paidOrder)),
     sendOrderConfirmationEmail(paidOrder),
+    tryCreateShipment(orderRef, paidOrder),
   ]);
 
   return NextResponse.json({ verified: true, orderId, finalTotal: order.finalTotal });
