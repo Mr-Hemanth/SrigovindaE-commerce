@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
+import NewsletterSignup from './NewsletterSignup';
 
 function Footer() {
   return (
     <footer className="bg-gradient-to-r from-brand-navy-950 to-brand-navy-900 text-brand-cream-50 pt-12 pb-8 border-t-4 border-brand-gold-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-10 mb-12">
           
           {/* Column 1: Store Intro */}
           <div className="col-span-2 md:col-span-1 space-y-4">
@@ -80,6 +81,11 @@ function Footer() {
                 <Link href="/shipping-policy" className="hover:text-white hover:underline transition-all">Shipping Policy</Link>
               </li>
             </ul>
+          </div>
+
+          {/* Column 5: Newsletter */}
+          <div className="col-span-2 md:col-span-1">
+            <NewsletterSignup />
           </div>
 
         </div>

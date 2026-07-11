@@ -30,15 +30,20 @@ const links = [
     label: 'Reviews',
     icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
   },
+  {
+    href: '/admin/subscribers',
+    label: 'Subscribers',
+    icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 hidden lg:block bg-white shadow-lg">
-      <div className="p-6 sticky top-16">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Admin Panel</h2>
+    <aside className="w-64 hidden lg:block flex-shrink-0">
+      <div className="bg-white rounded-3xl elegant-shadow p-8 sticky top-28 m-6">
+        <h2 className="text-xl font-bold text-brand-navy-900 mb-6 font-serif">Admin Panel</h2>
         <nav className="space-y-2">
           {links.map((link) => {
             const isActive = pathname === link.href;
@@ -46,8 +51,8 @@ export default function AdminSidebar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-                  isActive ? 'bg-gray-100 text-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-100'
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  isActive ? 'bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white shadow-lg' : 'text-gray-700 hover:bg-brand-cream-100'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

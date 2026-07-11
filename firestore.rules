@@ -95,5 +95,13 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
+    // Newsletter signups - anyone (including guests) can subscribe with just an email; only
+    // admins can view/manage the resulting list.
+    match /newsletter_subscribers/{subscriberId} {
+      allow create: if request.resource.data.email is string &&
+        request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+      allow read, delete: if isAdmin();
+    }
+
   }
 }
