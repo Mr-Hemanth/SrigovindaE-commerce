@@ -173,7 +173,7 @@ function Home({ initialFeaturedProducts = [] }) {
             href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I'm%20interested%20in%20viewing%20your%20jewellery%20catalog."
             target="_blank"
             rel="noreferrer"
-            className="bg-white text-green-600 hover:bg-green-50 px-6 py-3.5 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-md flex items-center gap-2 hover:scale-[1.03]"
+            className="bg-white text-green-700 hover:bg-green-50 px-6 py-3.5 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-md flex items-center gap-2 hover:scale-[1.03]"
           >
             <span>Open WhatsApp Catalog</span>
             <span>→</span>

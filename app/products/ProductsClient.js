@@ -175,7 +175,7 @@ function Products({ initialProducts = [] }) {
         </div>
         <div className="flex-1 flex flex-col justify-between py-1 space-y-4">
           <div>
-            <span className="text-[10px] font-bold text-brand-gold-500 tracking-wider uppercase">{product.category?.replace('-', ' ')}</span>
+            <span className="text-[10px] font-bold text-brand-gold-700 tracking-wider uppercase">{product.category?.replace('-', ' ')}</span>
             <h3 className="text-lg font-bold text-gray-800 font-serif leading-tight mt-1 hover:text-brand-navy-900 cursor-pointer" onClick={() => router.push(`/product/${product.id}`)}>{product.name}</h3>
             <p className="text-xs text-gray-500 line-clamp-2 mt-2 leading-relaxed">{product.description}</p>
             <div className="mt-3 flex items-center gap-3 text-xs">
@@ -272,7 +272,7 @@ function Products({ initialProducts = [] }) {
               <h3 className="text-lg font-bold text-brand-navy-900 font-serif">Filters</h3>
               <button
                 onClick={() => setShowFilters(false)}
-                className="text-xs font-semibold text-gray-400 hover:text-red-500"
+                className="text-xs font-semibold text-gray-500 hover:text-red-600"
               >
                 Close ✕
               </button>
@@ -352,8 +352,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Price Slider */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Price: ₹{priceRange}</h4>
+              <label htmlFor="filter-price" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Price: ₹{priceRange}</label>
               <input
+                id="filter-price"
                 type="range"
                 min="100"
                 max="20000"
@@ -365,8 +366,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Material */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Material</h4>
+              <label htmlFor="filter-material" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Material</label>
               <select
+                id="filter-material"
                 value={selectedMaterial}
                 onChange={(e) => { setSelectedMaterial(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
@@ -381,8 +383,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Occasion */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Occasion</h4>
+              <label htmlFor="filter-occasion" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Occasion</label>
               <select
+                id="filter-occasion"
                 value={selectedOccasion}
                 onChange={(e) => { setSelectedOccasion(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
@@ -397,8 +400,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Color */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Color</h4>
+              <label htmlFor="filter-color" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Color</label>
               <select
+                id="filter-color"
                 value={selectedColor}
                 onChange={(e) => { setSelectedColor(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
@@ -413,8 +417,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Gifting Tier */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Gifting Tier</h4>
+              <label htmlFor="filter-gifting-tier" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Gifting Tier</label>
               <select
+                id="filter-gifting-tier"
                 value={selectedGiftingTier}
                 onChange={(e) => { setSelectedGiftingTier(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 bg-white text-gray-700"
@@ -428,8 +433,9 @@ function Products({ initialProducts = [] }) {
 
             {/* Sort */}
             <div>
-              <h4 className="font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Sort By</h4>
+              <label htmlFor="filter-sort" className="block font-bold mb-2 text-gray-800 text-xs md:text-sm uppercase tracking-wider">Sort By</label>
               <select
+                id="filter-sort"
                 value={sortBy}
                 onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/5 bg-white text-gray-700"

@@ -8,7 +8,7 @@ function StatsGrid({ stats }) {
       {/* Total Products */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Products</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Total Products</p>
           <p className="text-2xl font-bold text-gray-800 mt-1">{stats.products}</p>
         </div>
         <span className="text-xl p-2 bg-gray-50 rounded-xl">📦</span>
@@ -17,7 +17,7 @@ function StatsGrid({ stats }) {
       {/* Total Orders */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Orders</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Total Orders</p>
           <p className="text-2xl font-bold text-gray-800 mt-1">{stats.orders}</p>
         </div>
         <span className="text-xl p-2 bg-green-50 rounded-xl">🛒</span>
@@ -26,7 +26,7 @@ function StatsGrid({ stats }) {
       {/* Total Users */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Users</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Total Users</p>
           <p className="text-2xl font-bold text-gray-800 mt-1">{stats.users}</p>
         </div>
         <span className="text-xl p-2 bg-purple-50 rounded-xl">👤</span>
@@ -35,7 +35,7 @@ function StatsGrid({ stats }) {
       {/* Active Coupons */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Active Coupons</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Active Coupons</p>
           <p className="text-2xl font-bold text-gray-800 mt-1">{stats.coupons}</p>
         </div>
         <span className="text-xl p-2 bg-amber-50 rounded-xl">🎫</span>
@@ -44,7 +44,7 @@ function StatsGrid({ stats }) {
       {/* Average Order Value */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Avg Order Value</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Avg Order Value</p>
           <p className="text-xl font-bold text-gray-800 mt-1">₹{Number((stats.revenue || 0) / (stats.orders || 1)).toFixed(0)}</p>
         </div>
         <span className="text-xl p-2 bg-brand-gold-500/15 rounded-xl">📈</span>
@@ -53,8 +53,8 @@ function StatsGrid({ stats }) {
       {/* Total Revenue */}
       <div className="bg-white rounded-2xl elegant-shadow p-5 border border-gray-50 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Total Revenue</p>
-          <p className="text-xl font-black text-brand-gold-500 font-serif mt-1">₹{Number(stats.revenue || 0).toFixed(0)}</p>
+          <p className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Total Revenue</p>
+          <p className="text-xl font-black text-brand-gold-600 font-serif mt-1">₹{Number(stats.revenue || 0).toFixed(0)}</p>
         </div>
         <span className="text-xl p-2 bg-yellow-50 rounded-xl">💸</span>
       </div>

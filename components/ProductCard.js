@@ -92,6 +92,8 @@ function ProductCard({ product, ratingOverride }) {
             e.stopPropagation();
             handleWishlistClick();
           }}
+          aria-label={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={isInWishlist(product.id)}
           className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
         >
           {isInWishlist(product.id) ? (
@@ -119,9 +121,9 @@ function ProductCard({ product, ratingOverride }) {
           {/* Star Rating Badge */}
           {displayedRating.count > 0 && (
             <div className="flex items-center gap-1 mt-1 select-none">
-              <span className="text-brand-gold-500 text-[11px]">★</span>
+              <span className="text-brand-gold-700 text-[11px]">★</span>
               <span className="text-[11px] font-bold text-gray-700">{displayedRating.avg}</span>
-              <span className="text-[9px] text-gray-400">({displayedRating.count})</span>
+              <span className="text-[9px] text-gray-500">({displayedRating.count})</span>
             </div>
           )}
 

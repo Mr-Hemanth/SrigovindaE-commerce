@@ -7,6 +7,9 @@
   --color-brand-navy-800: #333333;
   --color-brand-gold-500: #b8860b;
   --color-brand-gold-600: #9c7220;
+  /* gold-600 passes contrast for large/bold text (>=3:1) but not small text (needs >=4.5:1) —
+     use gold-700 for small labels/captions on white or cream backgrounds. */
+  --color-brand-gold-700: #7a5a10;
   --color-brand-cream-50: #fafaf8;
   --color-brand-cream-100: #f5f4f1;
   --color-brand-cream-200: #efede7;

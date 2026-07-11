@@ -168,7 +168,7 @@ function AdminOrders() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleRequestDecision(order.id, order.requestType === 'cancel' ? 'cancelled' : 'returned', 'approved')}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
+                                className="bg-green-700 hover:bg-green-800 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
                               >
                                 Approve
                               </button>

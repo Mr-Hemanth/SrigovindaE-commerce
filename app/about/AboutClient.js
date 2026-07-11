@@ -18,7 +18,7 @@ function About() {
 
         {/* Hero Section */}
         <section className="text-center space-y-4 max-w-3xl mx-auto">
-          <span className="text-xs font-bold text-brand-gold-500 uppercase tracking-widest block mb-2">Our Heritage & Story</span>
+          <span className="text-xs font-bold text-brand-gold-700 uppercase tracking-widest block mb-2">Our Heritage & Story</span>
           <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 font-serif leading-tight">Sri Govinda Collections</h1>
           <p className="text-sm md:text-lg text-gray-600 leading-relaxed font-medium">
             Preserving South Indian jewellery traditions with premium German Silver, One Gram Gold & Panchaloha masterpieces.
@@ -94,7 +94,7 @@ function About() {
               H
             </div>
             <h4 className="font-bold text-gray-800 text-sm">Hemanth</h4>
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Founder & Visionary</span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">Founder & Visionary</span>
           </div>
 
           <div className="md:col-span-2 text-left space-y-4 relative pl-4 md:border-l border-gray-100">

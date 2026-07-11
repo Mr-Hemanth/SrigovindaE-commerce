@@ -70,7 +70,7 @@ function Wishlist() {
                 {/* Content details */}
                 <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
                   <div className="text-left">
-                    <span className="text-[9px] font-bold text-brand-gold-500 tracking-widest uppercase">{product.category?.replace('-', ' ')}</span>
+                    <span className="text-[9px] font-bold text-brand-gold-700 tracking-widest uppercase">{product.category?.replace('-', ' ')}</span>
                     <h3 className="text-xs md:text-sm font-bold text-gray-800 font-serif line-clamp-1 mt-0.5 cursor-pointer hover:text-brand-navy-900" onClick={() => router.push(`/product/${product.id}`)}>{product.name}</h3>
 
                     <div className="mt-1 flex items-baseline gap-1.5">

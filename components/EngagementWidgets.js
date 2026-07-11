@@ -166,7 +166,7 @@ export default function EngagementWidgets() {
         {isChatOpen && (
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden w-80 max-w-[90vw] mb-4 animate-slide-up flex flex-col">
             {/* Header */}
-            <div className="bg-[#25D366] text-white p-4 flex items-center justify-between">
+            <div className="bg-[#0f7a37] text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-lg">
@@ -176,11 +176,12 @@ export default function EngagementWidgets() {
                 </div>
                 <div>
                   <h4 className="text-xs font-black">Sri Govinda Collections</h4>
-                  <p className="text-[10px] text-white/80">Support • Active Now</p>
+                  <p className="text-[10px] text-white/95">Support • Active Now</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsChatOpen(false)}
+                aria-label="Close chat"
                 className="text-white/80 hover:text-white text-xl font-bold leading-none"
               >
                 ✕
@@ -202,7 +203,7 @@ export default function EngagementWidgets() {
                 href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I%27m%20visiting%20your%20site%20and%20have%20a%20question%20about%20your%20jewellery%20collections."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-[#25D366] hover:bg-[#20ba56] text-white py-3 rounded-2xl font-bold text-center block text-xs shadow-md transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-[#0f7a37] hover:bg-[#0c6530] text-white py-3 rounded-2xl font-bold text-center block text-xs shadow-md transition-colors flex items-center justify-center gap-2"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                   <path d="M12.012 2C6.5 2 2.006 6.5 2.006 12c0 1.755.459 3.468 1.33 4.98L2.006 22l5.148-1.35C8.61 21.468 10.29 22 12.012 22 17.5 22 22 17.5 22 12S17.52 2 12.012 2zm6.6 13.911c-.27.765-1.35 1.395-2.07 1.485-.63.09-1.44.18-4.23-.99-3.555-1.53-5.85-5.13-6.03-5.355-.18-.225-1.44-1.935-1.44-3.69 0-1.755.9-2.61 1.215-2.97.27-.27.675-.405 1.08-.405.135 0 .27 0 .36.009.27.009.405.027.63.54.27.63.9 2.205.99 2.385.09.18.135.405.009.63-.135.225-.27.405-.405.585-.135.18-.27.36-.09.675.36.63 1.62 2.655 3.42 4.275 1.575 1.395 2.925 1.845 3.33 2.025.27.09.54.09.765-.135.27-.315 1.215-1.395 1.53-1.89.315-.45.63-.36 1.08-.18.45.18 2.835 1.35 3.33 1.575.495.225.81.36.945.54.135.225.135 1.26-.135 2.025z"/>
@@ -216,6 +217,8 @@ export default function EngagementWidgets() {
         {/* Floating whatsapp action bubble button */}
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
+          aria-label={isChatOpen ? 'Close WhatsApp chat' : 'Open WhatsApp chat'}
+          aria-expanded={isChatOpen}
           className="bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-transform duration-300 flex items-center justify-center relative border border-white/10"
         >
           <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">

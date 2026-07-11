@@ -54,7 +54,7 @@ function Contact() {
             <div>
               <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide mb-1">Email Support</h4>
               <p className="text-brand-navy-900 font-semibold text-base break-all">srigovindagermansilver@gmail.com</p>
-              <p className="text-xs text-gray-400 mt-1">We respond within 24 hours.</p>
+              <p className="text-xs text-gray-500 mt-1">We respond within 24 hours.</p>
             </div>
           </div>
 
@@ -63,7 +63,7 @@ function Contact() {
             <div>
               <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide mb-1">Call / WhatsApp</h4>
               <p className="text-brand-navy-900 font-semibold text-base">+91 95338 66777</p>
-              <p className="text-xs text-gray-400 mt-1">Mon - Sat: 10:00 AM - 7:00 PM</p>
+              <p className="text-xs text-gray-500 mt-1">Mon - Sat: 10:00 AM - 7:00 PM</p>
             </div>
           </div>
 
@@ -175,7 +175,7 @@ function Contact() {
                   href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I%20want%20to%20visit%20your%20physical%20store%20in%20Amalapuram."
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold text-xs px-5 py-3 rounded-xl hover:scale-[1.02] transition-transform shadow-md"
+                  className="inline-flex items-center gap-2 bg-[#0f7a37] text-white font-bold text-xs px-5 py-3 rounded-xl hover:scale-[1.02] transition-transform shadow-md"
                 >
                   💬 Chat on WhatsApp for Location
                 </a>
@@ -183,7 +183,7 @@ function Contact() {
 
               {/* Social links */}
               <div className="pt-4 space-y-2">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Connect on Socials</span>
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">Connect on Socials</span>
                 <div className="flex gap-3">
                   <a href="https://instagram.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-xs font-bold text-brand-navy-900 hover:underline bg-brand-cream-100 px-3.5 py-2 rounded-lg">📸 Instagram</a>
                   <a href="https://facebook.com/srigovindacollections" target="_blank" rel="noreferrer" className="text-xs font-bold text-brand-navy-900 hover:underline bg-brand-cream-100 px-3.5 py-2 rounded-lg">📘 Facebook</a>

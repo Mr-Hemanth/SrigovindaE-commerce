@@ -244,7 +244,7 @@ function TrackOrder() {
               href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I'm%20having%20an%20issue%20with%20delivery%20of%20my%20order."
               target="_blank"
               rel="noreferrer"
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
+              className="bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
             >
               💬 WhatsApp Chat
             </a>

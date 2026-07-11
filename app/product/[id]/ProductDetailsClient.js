@@ -396,6 +396,8 @@ function ProductDetails({ params, initialProduct = null }) {
 
             <button
               onClick={handleWishlistToggle}
+              aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-pressed={isFavorite}
               className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3.5 rounded-full shadow-lg hover:bg-white transition-all hover:scale-110 z-10"
             >
               {isFavorite ? (
@@ -579,7 +581,7 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
               <div>
                 <p className="text-[11px] font-black text-gray-800 leading-tight">Premium Artistry</p>
-                <p className="text-[9px] text-gray-400 mt-0.5">Authentic German Silver</p>
+                <p className="text-[9px] text-gray-500 mt-0.5">Authentic German Silver</p>
               </div>
             </div>
 
@@ -589,7 +591,7 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
               <div>
                 <p className="text-[11px] font-black text-gray-800 leading-tight">Free Express Shipping</p>
-                <p className="text-[9px] text-gray-400 mt-0.5">Delivery Across India</p>
+                <p className="text-[9px] text-gray-500 mt-0.5">Delivery Across India</p>
               </div>
             </div>
 
@@ -599,7 +601,7 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
               <div>
                 <p className="text-[11px] font-black text-gray-800 leading-tight">7-Day Guarantee</p>
-                <p className="text-[9px] text-gray-400 mt-0.5">Easy Exchanges & Returns</p>
+                <p className="text-[9px] text-gray-500 mt-0.5">Easy Exchanges & Returns</p>
               </div>
             </div>
 
@@ -609,7 +611,7 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
               <div>
                 <p className="text-[11px] font-black text-gray-800 leading-tight">Secured Payments</p>
-                <p className="text-[9px] text-gray-400 mt-0.5">SSL Encrypted Transactions</p>
+                <p className="text-[9px] text-gray-500 mt-0.5">SSL Encrypted Transactions</p>
               </div>
             </div>
           </div>

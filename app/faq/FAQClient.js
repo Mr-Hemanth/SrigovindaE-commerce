@@ -59,7 +59,7 @@ function FAQ() {
 
       <div className="space-y-12">
         <div className="text-center space-y-3">
-          <span className="text-xs font-bold text-brand-gold-500 uppercase tracking-widest block">Customer Assistance Hub</span>
+          <span className="text-xs font-bold text-brand-gold-700 uppercase tracking-widest block">Customer Assistance Hub</span>
           <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 font-serif">Frequently Asked Questions</h1>
           <p className="text-sm text-gray-500 max-w-lg mx-auto">Get quick answers regarding shipping times, return requests, and traditional jewelry metal care guidelines.</p>
         </div>
@@ -67,7 +67,7 @@ function FAQ() {
         <div className="space-y-8">
           {faqData.map((cat, catIdx) => (
             <div key={catIdx} className="space-y-4">
-              <h2 className="text-sm uppercase font-bold text-gray-400 tracking-wider pl-1">{cat.category}</h2>
+              <h2 className="text-sm uppercase font-bold text-gray-500 tracking-wider pl-1">{cat.category}</h2>
               <div className="space-y-3">
                 {cat.questions.map((faq, idx) => {
                   const globalIdx = `${catIdx}_${idx}`;
@@ -100,7 +100,7 @@ function FAQ() {
         {/* Support box */}
         <div className="bg-brand-cream-100 border border-brand-gold-500/20 rounded-3xl p-8 text-center space-y-4">
           <h3 className="text-lg font-bold text-gray-800 font-serif">Still Have Questions?</h3>
-          <p className="text-xs text-gray-500 leading-relaxed max-w-md mx-auto">Reach out to our customer support team directly. We are active Monday to Saturday (10 AM to 7 PM).</p>
+          <p className="text-xs text-gray-600 leading-relaxed max-w-md mx-auto">Reach out to our customer support team directly. We are active Monday to Saturday (10 AM to 7 PM).</p>
           <div className="pt-2 flex justify-center gap-4">
             <Link href="/contact" className="bg-brand-navy-900 text-white px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md">
               Send Support Query
@@ -109,7 +109,7 @@ function FAQ() {
               href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I%20have%20a%20question%20about%20policies."
               target="_blank"
               rel="noreferrer"
-              className="bg-green-600 text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-md flex items-center gap-1.5"
+              className="bg-green-700 text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-green-800 transition-all shadow-md flex items-center gap-1.5"
             >
               💬 WhatsApp Us
             </a>

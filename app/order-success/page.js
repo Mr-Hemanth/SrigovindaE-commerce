@@ -202,13 +202,13 @@ function OrderSuccessContent() {
           <div className="space-y-4 pt-4 border-t border-gray-100">
             {/* Share / Invite Friends */}
             <div className="py-4 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col items-center gap-3">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Share your purchase with friends! 📸</span>
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Share your purchase with friends! 📸</span>
               <div className="flex gap-4">
                 <a
                   href={`https://wa.me/?text=I%20just%20ordered%20exquisite%20jewellery%20pieces%20from%20Sri%20Govinda%20Collections!%20Check%20out%20their%20catalog%20here:%20https://srigovinda-collections.vercel.app`}
                   target="_blank"
                   rel="noreferrer"
-                  className="bg-[#25D366] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
+                  className="bg-[#0f7a37] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
                 >
                   WhatsApp Share
                 </a>
@@ -216,7 +216,7 @@ function OrderSuccessContent() {
                   href={`https://twitter.com/intent/tweet?text=I%20just%20ordered%20exquisite%20jewellery%20pieces%20from%20Sri%20Govinda%20Collections!%20Check%20out%20their%20catalog%20here:%20https://srigovinda-collections.vercel.app`}
                   target="_blank"
                   rel="noreferrer"
-                  className="bg-[#1DA1F2] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
+                  className="bg-[#0b6ea3] text-white p-2 rounded-full hover:scale-105 transition-transform text-xs font-bold px-4 flex items-center gap-1.5"
                 >
                   Tweet Share
                 </a>
@@ -227,7 +227,7 @@ function OrderSuccessContent() {
                 href={generateWhatsAppLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full text-center bg-[#25D366] hover:bg-[#20ba56] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                className="block w-full text-center bg-[#0f7a37] hover:bg-[#0c6530] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.012 2C6.5 2 2.006 6.5 2.006 12c0 1.755.459 3.468 1.33 4.98L2.006 22l5.148-1.35C8.61 21.468 10.29 22 12.012 22 17.52 22 22 17.5 22 12S17.52 2 12.012 2zm6.6 13.911c-.27.765-1.35 1.395-2.07 1.485-.63.09-1.44.18-4.23-.99-3.555-1.53-5.85-5.13-6.03-5.355-.18-.225-1.44-1.935-1.44-3.69 0-1.755.9-2.61 1.215-2.97.27-.27.675-.405 1.08-.405.135 0 .27 0 .36.009.27.009.405.027.63.54.27.63.9 2.205.99 2.385.09.18.135.405.009.63-.135.225-.27.405-.405.585-.135.18-.27.36-.09.675.36.63 1.62 2.655 3.42 4.275 1.575 1.395 2.925 1.845 3.33 2.025.27.09.54.09.765-.135.27-.315 1.215-1.395 1.53-1.89.315-.45.63-.36 1.08-.18.45.18 2.835 1.35 3.33 1.575.495.225.81.36.945.54.135.225.135 1.26-.135 2.025z"/>
