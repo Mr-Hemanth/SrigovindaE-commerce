@@ -7,7 +7,7 @@ function OrderCard({
   order,
   isExpanded,
   onToggleExpand,
-  onPrintInvoice,
+  onDownloadInvoice,
   onCancelOrder,
   onOpenRequestModal,
   getStatusBadgeClass
@@ -45,11 +45,11 @@ function OrderCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onPrintInvoice(order);
+              onDownloadInvoice(order);
             }}
             className="bg-gray-50 hover:bg-brand-navy-900 text-gray-600 hover:text-white px-3.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 focus:outline-none border border-gray-100"
           >
-            <span>📄</span>
+            <span>⬇️</span>
             <span>Invoice</span>
           </button>
 
@@ -222,13 +222,13 @@ function OrderCard({
                 </div>
               </div>
 
-              {/* Print Invoice Action Button */}
+              {/* Download Invoice Action Button */}
               <button
                 type="button"
-                onClick={() => onPrintInvoice(order)}
+                onClick={() => onDownloadInvoice(order)}
                 className="w-full bg-brand-navy-900 hover:bg-brand-navy-800 text-white font-bold py-2.5 rounded-xl transition-colors text-xs text-center focus:outline-none flex items-center justify-center gap-1.5 shadow-md mb-2"
               >
-                🖨️ Print Invoice Receipt
+                ⬇️ Download Invoice (PDF)
               </button>
 
               {/* Cancellation/Return Requests */}

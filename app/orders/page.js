@@ -9,7 +9,7 @@ import { db } from '@/lib/firebase/client';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 import OrderCard from '@/components/orders/OrderCard';
 import RequestModal from '@/components/orders/RequestModal';
-import { printOrderInvoice } from '@/lib/print-invoice';
+import { downloadOrderInvoice } from '@/lib/print-invoice';
 
 function Orders() {
   const { currentUser } = useAuth();
@@ -241,7 +241,7 @@ function Orders() {
                 order={order}
                 isExpanded={expandedOrderId === order.id}
                 onToggleExpand={toggleExpandOrder}
-                onPrintInvoice={printOrderInvoice}
+                onDownloadInvoice={downloadOrderInvoice}
                 onCancelOrder={handleCancelOrder}
                 onOpenRequestModal={handleOpenRequestModal}
                 getStatusBadgeClass={getStatusBadgeClass}
