@@ -58,7 +58,7 @@ export default function EngagementWidgets() {
       { text: "5% OFF", color: "#1a1a1a", textColor: "#ffffff" },
       { text: "Retry", color: "#b8860b", textColor: "#1a1a1a" },
       { text: "10% OFF", color: "#1a1a1a", textColor: "#ffffff" },
-      { text: "Free Ship", color: "#b8860b", textColor: "#1a1a1a" },
+      { text: "Retry", color: "#b8860b", textColor: "#1a1a1a" },
       { text: "Retry", color: "#1a1a1a", textColor: "#ffffff" },
       { text: "8% OFF", color: "#b8860b", textColor: "#1a1a1a" }
     ];
@@ -98,12 +98,12 @@ export default function EngagementWidgets() {
     if (isSpinning || hasSpun) return;
     setIsSpinning(true);
 
-    // Prizes matching: 0: 5% Off, 1: Retry, 2: 10% Off, 3: Free Shipping, 4: Retry, 5: 8% Off Gifts
+    // Prizes matching: 0: 5% Off, 1: Retry, 2: 10% Off, 3: Retry, 4: Retry, 5: 8% Off Gifts
     const prizes = [
       { text: "5% OFF", discount: 5, baseCode: "SRI5" },
       { text: "Try Again", discount: 0, baseCode: null },
       { text: "10% OFF", discount: 10, baseCode: "SRI10" },
-      { text: "Free Shipping", discount: 5, baseCode: "SHIPFREE" },
+      { text: "Try Again", discount: 0, baseCode: null },
       { text: "Better Luck Next Time", discount: 0, baseCode: null },
       { text: "8% OFF", discount: 8, baseCode: "GIFT8" }
     ];
