@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/firebase/client';
-import { collection, getDocs, addDoc, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
 import { buildCustomerDirectory, customersToCsv } from '@/lib/crm';
@@ -109,9 +109,13 @@ function AdminCustomers() {
     setNotes([]);
     setNotesLoading(true);
     try {
-      const q = query(collection(db, 'customer_notes'), where('userId', '==', customer.id), orderBy('createdAt', 'desc'));
+      // Sorted client-side (not via Firestore orderBy) to avoid needing a composite index for
+      // what's expected to be a low-volume per-customer collection.
+      const q = query(collection(db, 'customer_notes'), where('userId', '==', customer.id));
       const snap = await getDocs(q);
-      setNotes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      const fetched = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      fetched.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+      setNotes(fetched);
     } catch (err) {
       console.error('Error loading customer notes:', err);
     }
