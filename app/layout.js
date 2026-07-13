@@ -4,7 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import EngagementWidgets from '@/components/EngagementWidgets';
+import EngagementWidgets from '@/components/EngagementWidgetsLoader';
 import { safeJsonLd } from '@/lib/json-ld';
 
 // Weight lists are trimmed to what's actually referenced in className strings across the

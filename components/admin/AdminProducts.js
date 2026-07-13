@@ -7,6 +7,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase
 import { categories } from '@/lib/data/products';
 import { useNotification } from '@/contexts/NotificationContext';
 import { uploadProductImage } from '@/lib/image-upload';
+import { deriveGiftingTier, deriveMaterialFromCategory } from '@/lib/product-classification';
 
 function AdminProducts() {
   const { showNotification } = useNotification();
@@ -386,7 +387,13 @@ function AdminProducts() {
                       required
                       aria-required="true"
                       value={form.category}
-                      onChange={(e) => setForm({ ...form, category: e.target.value, subcategory: '' })}
+                      onChange={(e) => setForm((prev) => ({
+                        ...prev,
+                        category: e.target.value,
+                        subcategory: '',
+                        // Suggest a material from the category, but never clobber one the admin already picked.
+                        material: prev.material || deriveMaterialFromCategory(e.target.value),
+                      }))}
                       className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
                     >
                       <option value="">Select Category</option>
@@ -420,7 +427,11 @@ function AdminProducts() {
                       required
                       aria-required="true"
                       value={form.price}
-                      onChange={(e) => setForm({ ...form, price: e.target.value })}
+                      onChange={(e) => setForm((prev) => ({
+                        ...prev,
+                        price: e.target.value,
+                        giftingTier: deriveGiftingTier(e.target.value, prev.discountedPrice),
+                      }))}
                       className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
                     />
                   </div>
@@ -430,7 +441,11 @@ function AdminProducts() {
                       id="product-discounted-price"
                       type="number"
                       value={form.discountedPrice}
-                      onChange={(e) => setForm({ ...form, discountedPrice: e.target.value })}
+                      onChange={(e) => setForm((prev) => ({
+                        ...prev,
+                        discountedPrice: e.target.value,
+                        giftingTier: deriveGiftingTier(prev.price, e.target.value),
+                      }))}
                       placeholder="Optional price"
                       className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
                     />
