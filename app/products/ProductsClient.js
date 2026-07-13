@@ -26,7 +26,7 @@ function Products({ initialProducts = [] }) {
 
   const [sortBy, setSortBy] = useState('default');
   const [priceRange, setPriceRange] = useState(20000);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchParams = useSearchParams();
 
