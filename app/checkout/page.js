@@ -10,7 +10,6 @@ import { auth, db } from '@/lib/firebase/client';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { trackBeginCheckout } from '@/lib/analytics';
 import { validateAddressForm } from '@/lib/shipping-validation';
-import { deriveTaxBreakup } from '@/lib/tax';
 
 // Helper to dynamically load the Razorpay Checkout script
 const loadRazorpayScript = () => {
@@ -346,9 +345,6 @@ function Checkout() {
 
   const shippingCost = shippingMethod === 'express' ? 150 : 0;
   const finalTotal = total * (1 - (discount / 100)) + shippingCost;
-  // Prices are already tax-inclusive — this only splits the existing total for display/invoice
-  // purposes and never changes what's charged.
-  const taxBreakup = deriveTaxBreakup(finalTotal);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-28 md:pb-32 animate-fade-in">
@@ -601,19 +597,10 @@ function Checkout() {
                 <span>Shipping Delivery</span>
                 <span className="font-semibold text-gray-800">{shippingMethod === 'express' ? '₹150 (Express)' : 'FREE (Standard)'}</span>
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>Taxable Value</span>
-                <span>₹{taxBreakup.taxableValue.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>GST ({(taxBreakup.rate * 100).toFixed(0)}%, included)</span>
-                <span>₹{taxBreakup.taxAmount.toFixed(2)}</span>
-              </div>
               <div className="flex justify-between text-base font-bold text-brand-navy-900 pt-1">
                 <span>Grand Total</span>
                 <span className="text-xl">₹{finalTotal.toFixed(0)}</span>
               </div>
-              <p className="text-[11px] text-gray-400 pt-1">Inclusive of all taxes.</p>
             </div>
 
             <label className="flex items-start gap-2.5 text-xs text-gray-600 mb-4 cursor-pointer select-none">

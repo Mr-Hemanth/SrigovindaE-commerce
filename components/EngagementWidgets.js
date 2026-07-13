@@ -56,11 +56,11 @@ export default function EngagementWidgets() {
     const ctx = canvas.getContext('2d');
     const segments = [
       { text: "5% OFF", color: "#1a1a1a", textColor: "#ffffff" },
-      { text: "Retry", color: "#b8860b", textColor: "#1a1a1a" },
+      { text: "8% OFF", color: "#b8860b", textColor: "#1a1a1a" },
       { text: "10% OFF", color: "#1a1a1a", textColor: "#ffffff" },
-      { text: "Retry", color: "#b8860b", textColor: "#1a1a1a" },
-      { text: "Retry", color: "#1a1a1a", textColor: "#ffffff" },
-      { text: "8% OFF", color: "#b8860b", textColor: "#1a1a1a" }
+      { text: "6% OFF", color: "#b8860b", textColor: "#1a1a1a" },
+      { text: "8% OFF", color: "#1a1a1a", textColor: "#ffffff" },
+      { text: "12% OFF", color: "#b8860b", textColor: "#1a1a1a" }
     ];
     
     const numSegments = segments.length;
@@ -98,18 +98,19 @@ export default function EngagementWidgets() {
     if (isSpinning || hasSpun) return;
     setIsSpinning(true);
 
-    // Prizes matching: 0: 5% Off, 1: Retry, 2: 10% Off, 3: Retry, 4: Retry, 5: 8% Off Gifts
+    // Prizes matching: 0: 5% Off, 1: 8% Off, 2: 10% Off, 3: 6% Off, 4: 8% Off, 5: 12% Off
+    // Every segment is a genuine prize now — no "Retry"/dead slots — so the spin picks
+    // uniformly across all six instead of being steered toward a fixed pair.
     const prizes = [
       { text: "5% OFF", discount: 5, baseCode: "SRI5" },
-      { text: "Try Again", discount: 0, baseCode: null },
+      { text: "8% OFF", discount: 8, baseCode: "GIFT8" },
       { text: "10% OFF", discount: 10, baseCode: "SRI10" },
-      { text: "Try Again", discount: 0, baseCode: null },
-      { text: "Better Luck Next Time", discount: 0, baseCode: null },
-      { text: "8% OFF", discount: 8, baseCode: "GIFT8" }
+      { text: "6% OFF", discount: 6, baseCode: "SRI6" },
+      { text: "8% OFF", discount: 8, baseCode: "GIFT8" },
+      { text: "12% OFF", discount: 12, baseCode: "SRI12" }
     ];
 
-    // Force selection of a winning prize (e.g. 10% off at index 2, or 8% off at index 5)
-    const winIdx = Math.random() > 0.5 ? 2 : 5;
+    const winIdx = Math.floor(Math.random() * prizes.length);
     const degPerSegment = 60;
     const targetAngle = 360 * 5 + (360 - winIdx * degPerSegment - 30); // 5 full spins + offset to land in middle
 
