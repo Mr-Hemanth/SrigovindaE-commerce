@@ -18,6 +18,21 @@ export default function EngagementWidgets() {
 
   const canvasRef = useRef(null);
 
+  // The floating spin-wheel/WhatsApp buttons are position:fixed in the bottom corners, so once
+  // the footer scrolls into view they sit on top of its contact info and legal links. Fade them
+  // out whenever the footer is visible rather than permanently covering site content.
+  const [footerVisible, setFooterVisible] = useState(false);
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setFooterVisible(entry.isIntersecting),
+      { rootMargin: '0px 0px -10px 0px' }
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
   // Check if user already spun in the last 30 days. This must stay an effect
   // (not a useState lazy initializer) so the server-rendered and first client
   // paint match before localStorage is consulted, avoiding a hydration mismatch.
@@ -143,7 +158,7 @@ export default function EngagementWidgets() {
   return (
     <>
       {/* 1. FLOATING ACTION CONTAINER (BOTTOM LEFT) - SPIN WHEEL ONLY */}
-      <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans">
+      <div className={`fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans transition-opacity duration-300 ${footerVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         {/* Spin to Win Gift Wheel Button */}
         <button
           onClick={() => setIsWheelOpen(true)}
@@ -161,7 +176,7 @@ export default function EngagementWidgets() {
       </div>
 
       {/* 2. FLOATING WHATSAPP CUSTOM CHAT WIDGET (BOTTOM RIGHT) */}
-      <div className="fixed bottom-6 right-6 z-40 select-none font-sans text-left">
+      <div className={`fixed bottom-6 right-6 z-40 select-none font-sans text-left transition-opacity duration-300 ${footerVisible && !isChatOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         {/* Chat window panel */}
         {isChatOpen && (
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden w-80 max-w-[90vw] mb-4 animate-slide-up flex flex-col">

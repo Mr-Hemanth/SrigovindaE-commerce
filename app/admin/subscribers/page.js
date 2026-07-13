@@ -9,7 +9,7 @@ export default function AdminSubscribersPage() {
     <AdminGuard>
       <div className="flex">
         <AdminSidebar />
-        <main className="flex-1 p-8">
+        <main className="flex-1 min-w-0 p-8">
           <AdminSubscribers />
         </main>
       </div>

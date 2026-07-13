@@ -86,7 +86,7 @@ function AdminCoupons() {
         <p className="text-gray-600">Create coupon codes and share them on your Instagram posts/stories! Your followers can apply these codes at checkout to get discounts.</p>
       </div>
 
-      <div className="bg-white rounded-2xl elegant-shadow overflow-hidden">
+      <div className="bg-white rounded-2xl elegant-shadow overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-brand-cream-100 to-brand-cream-200">
             <tr>

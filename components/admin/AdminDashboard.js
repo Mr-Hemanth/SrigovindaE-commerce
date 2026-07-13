@@ -214,7 +214,7 @@ function AdminDashboard() {
       <div className="flex flex-col lg:flex-row gap-10">
         <DashboardSidebar />
 
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           <StatsGrid stats={stats} />
 
           {/* Welcome Intro Section */}

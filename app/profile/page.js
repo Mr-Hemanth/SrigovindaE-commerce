@@ -245,7 +245,7 @@ function Profile() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-28 md:pb-32">
       <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-6 md:mb-8 font-serif">My Account</h1>
 
       {message && (

@@ -347,7 +347,7 @@ function Checkout() {
   const finalTotal = total * (1 - (discount / 100)) + shippingCost;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-28 md:pb-32 animate-fade-in">
       <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-6 font-serif">Checkout</h1>
 
       {validationError && (

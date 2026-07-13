@@ -191,6 +191,19 @@ function AdminProducts() {
     }
   };
 
+  const toggleActive = async (product) => {
+    const nextActive = !(product.isActive !== false);
+    setProducts((prev) => prev.map((p) => (p.id === product.id ? { ...p, isActive: nextActive } : p)));
+    try {
+      await updateDoc(doc(db, 'products', product.id), { isActive: nextActive });
+      showNotification(`"${product.name}" is now ${nextActive ? 'visible' : 'hidden'} on the storefront.`, 'success');
+    } catch (err) {
+      console.error('Error toggling product visibility:', err);
+      setProducts((prev) => prev.map((p) => (p.id === product.id ? { ...p, isActive: !nextActive } : p)));
+      showNotification('Could not update visibility. Please try again.', 'error');
+    }
+  };
+
   const handleEdit = (product) => {
     setEditingProduct(product);
     setForm({
@@ -234,7 +247,7 @@ function AdminProducts() {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl elegant-shadow overflow-hidden">
+      <div className="bg-white rounded-3xl elegant-shadow overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-brand-cream-100 to-brand-cream-200">
             <tr>
@@ -285,13 +298,29 @@ function AdminProducts() {
                   </span>
                 </td>
                 <td className="px-8 py-5">
-                  <span className={`px-3 py-1 rounded-full text-xxs font-bold uppercase tracking-wider border ${
-                    product.isActive !== false
-                      ? 'bg-green-50 text-green-700 border-green-200'
-                      : 'bg-gray-50 text-gray-400 border-gray-200'
-                  }`}>
-                    {product.isActive !== false ? 'Enabled' : 'Disabled'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => toggleActive(product)}
+                    aria-pressed={product.isActive !== false}
+                    aria-label={product.isActive !== false ? `Hide ${product.name} from storefront` : `Show ${product.name} on storefront`}
+                    title={product.isActive !== false ? 'Visible to customers — click to hide' : 'Hidden from customers — click to show'}
+                    className="flex items-center gap-2.5 group"
+                  >
+                    <span
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ${
+                        product.isActive !== false ? 'bg-brand-navy-900' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-[18px] w-[18px] transform rounded-full bg-white shadow transition-transform duration-200 ${
+                          product.isActive !== false ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </span>
+                    <span className={`text-xxs font-bold uppercase tracking-wider ${product.isActive !== false ? 'text-brand-navy-900' : 'text-gray-400'}`}>
+                      {product.isActive !== false ? 'Visible' : 'Hidden'}
+                    </span>
+                  </button>
                 </td>
                 <td className="px-8 py-5">
                   <div className="flex gap-3 text-sm">

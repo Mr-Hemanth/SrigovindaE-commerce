@@ -1,5 +1,6 @@
 import ProductDetails from './ProductDetailsClient';
 import { adminDb } from '@/lib/firebase/admin';
+import { safeJsonLd } from '@/lib/json-ld';
 
 export const revalidate = 60;
 
@@ -89,7 +90,7 @@ export default async function Page({ params }) {
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       )}
       <ProductDetails params={params} initialProduct={product} />

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { escapeHtml } from '@/lib/notify/escape-html';
 
 const OWNER_EMAIL = 'srigovindagermansilver@gmail.com';
 const FROM_ADDRESS = 'Sri Govinda Collections Website <orders@srigovindacollections.com>';
@@ -26,10 +27,10 @@ export async function POST(request) {
       subject: `[Website Contact] ${subject.trim()}`,
       html: `
         <div style="font-family: sans-serif; max-width: 480px;">
-          <p><strong>From:</strong> ${name.trim()} (${email.trim()})</p>
-          <p><strong>Subject:</strong> ${subject.trim()}</p>
+          <p><strong>From:</strong> ${escapeHtml(name.trim())} (${escapeHtml(email.trim())})</p>
+          <p><strong>Subject:</strong> ${escapeHtml(subject.trim())}</p>
           <p><strong>Message:</strong></p>
-          <p>${message.trim().replace(/\n/g, '<br/>')}</p>
+          <p>${escapeHtml(message.trim()).replace(/\n/g, '<br/>')}</p>
         </div>
       `,
     });

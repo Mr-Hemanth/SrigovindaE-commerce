@@ -5,6 +5,7 @@ import { Providers } from './providers';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import EngagementWidgets from '@/components/EngagementWidgets';
+import { safeJsonLd } from '@/lib/json-ld';
 
 // Weight lists are trimmed to what's actually referenced in className strings across the
 // app (checked via grep) — every unused weight is a separate font file the browser would
@@ -69,7 +70,7 @@ export default function RootLayout({ children }) {
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
         <Providers>
           <div className="min-h-screen bg-brand-cream-50">
