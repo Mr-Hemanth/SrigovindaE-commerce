@@ -103,5 +103,10 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
+    // Admin CRM notes on a customer - internal-only, never visible to the customer themselves.
+    match /customer_notes/{noteId} {
+      allow read, write: if isAdmin();
+    }
+
   }
 }
