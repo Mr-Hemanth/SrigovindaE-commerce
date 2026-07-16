@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
-import { sendOrderConfirmationEmail } from '@/lib/notify/email';
+import { sendOrderConfirmationEmail, sendAdminOrderAlertEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
 import { isCouponValid } from '@/lib/coupon-validation';
 
@@ -145,6 +145,7 @@ export async function POST(request) {
     await orderRef.set(order);
     await Promise.all([
       sendOrderConfirmationEmail(order),
+      sendAdminOrderAlertEmail(order),
       tryCreateShipment(orderRef, order),
     ]);
     return NextResponse.json({ orderId, method: 'cod', finalTotal });

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
-import { sendOrderConfirmationEmail } from '@/lib/notify/email';
+import { sendOrderConfirmationEmail, sendAdminOrderAlertEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
 
 // Best-effort: shipment creation should never block payment confirmation. Failures are logged
@@ -86,6 +86,7 @@ export async function POST(request) {
   const paidOrder = { ...order, paymentStatus: 'Paid', paymentMethod: 'Razorpay Online' };
   await Promise.all([
     sendOrderConfirmationEmail(paidOrder),
+    sendAdminOrderAlertEmail(paidOrder),
     tryCreateShipment(orderRef, paidOrder),
   ]);
 
