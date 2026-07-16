@@ -28,7 +28,7 @@ const loadRazorpayScript = () => {
 };
 
 function Checkout() {
-  const { cart, total, clearCart, discount, applyCoupon, coupon } = useCart();
+  const { cart, subtotal, clearCart, discount, applyCoupon, coupon } = useCart();
   const { currentUser } = useAuth();
   const router = useRouter();
   const { showNotification } = useNotification();
@@ -208,7 +208,7 @@ function Checkout() {
     }
 
     const shippingCost = shippingMethod === 'express' ? 150 : 0;
-    trackBeginCheckout(cart, total * (1 - discount / 100) + shippingCost);
+    trackBeginCheckout(cart, subtotal * (1 - discount / 100) + shippingCost);
 
     if (paymentMethod === 'cod') {
       setLoading(true);
@@ -344,7 +344,7 @@ function Checkout() {
   }
 
   const shippingCost = shippingMethod === 'express' ? 150 : 0;
-  const finalTotal = total * (1 - (discount / 100)) + shippingCost;
+  const finalTotal = subtotal * (1 - (discount / 100)) + shippingCost;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-28 md:pb-32 animate-fade-in">
@@ -585,12 +585,12 @@ function Checkout() {
             <div className="space-y-3 border-b border-gray-50 pb-4 text-sm text-gray-600">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-semibold text-gray-800">₹{total.toFixed(0)}</span>
+                <span className="font-semibold text-gray-800">₹{subtotal.toFixed(0)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600 font-medium">
                   <span>Discount ({discount}%)</span>
-                  <span>-₹{(total * (discount / 100)).toFixed(0)}</span>
+                  <span>-₹{(subtotal * (discount / 100)).toFixed(0)}</span>
                 </div>
               )}
               <div className="flex justify-between text-xs text-gray-500">
