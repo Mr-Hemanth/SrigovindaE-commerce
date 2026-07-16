@@ -56,7 +56,7 @@ async function getAuthoritativePrice(itemId, variantId) {
     variantLabel = variant.label;
   }
 
-  return { price, name: data.name, category: data.category || '', active: data.isActive !== false, variantLabel };
+  return { price, name: data.name, category: data.category || '', active: data.isActive !== false, variantLabel, image: data.image || '' };
 }
 
 async function getValidCoupon(code) {
@@ -99,6 +99,7 @@ export async function POST(request) {
       category: authoritative.category,
       price: authoritative.price,
       quantity: Math.max(1, Number(item.quantity) || 1),
+      image: authoritative.image,
       ...(item.variantId ? { variantId: item.variantId, variantLabel: authoritative.variantLabel } : {}),
     });
   }
