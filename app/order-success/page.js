@@ -68,13 +68,6 @@ function OrderSuccessContent() {
     }
   };
 
-  const generateWhatsAppLink = () => {
-    const formattedId = orderId ? orderId.slice(-6).toUpperCase() : 'N/A';
-    const itemsList = items ? items.map(i => `- ${i.name} (x${i.quantity})`).join('%0A') : '';
-    const text = `Hi Srigovinda Collections, I just placed an order!%0A%0A*Order Reference:* %23${formattedId}%0A*Total Amount:* ₹${finalTotal?.toFixed ? finalTotal.toFixed(0) : finalTotal}%0A*Payment Method:* ${getPaymentMethodLabel(paymentMethod)}%0A*Items Purchased:*%0A${itemsList}%0A%0APlease verify my order details. Thank you!`;
-    return `https://wa.me/919533866777?text=${text}`;
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 select-none">
@@ -222,19 +215,6 @@ function OrderSuccessContent() {
                 </a>
               </div>
             </div>
-            {orderId && (
-              <a
-                href={generateWhatsAppLink()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center bg-[#0f7a37] hover:bg-[#0c6530] text-white py-4 px-6 rounded-xl transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M12.012 2C6.5 2 2.006 6.5 2.006 12c0 1.755.459 3.468 1.33 4.98L2.006 22l5.148-1.35C8.61 21.468 10.29 22 12.012 22 17.52 22 22 17.5 22 12S17.52 2 12.012 2zm6.6 13.911c-.27.765-1.35 1.395-2.07 1.485-.63.09-1.44.18-4.23-.99-3.555-1.53-5.85-5.13-6.03-5.355-.18-.225-1.44-1.935-1.44-3.69 0-1.755.9-2.61 1.215-2.97.27-.27.675-.405 1.08-.405.135 0 .27 0 .36.009.27.009.405.027.63.54.27.63.9 2.205.99 2.385.09.18.135.405.009.63-.135.225-.27.405-.405.585-.135.18-.27.36-.09.675.36.63 1.62 2.655 3.42 4.275 1.575 1.395 2.925 1.845 3.33 2.025.27.09.54.09.765-.135.27-.315 1.215-1.395 1.53-1.89.315-.45.63-.36 1.08-.18.45.18 2.835 1.35 3.33 1.575.495.225.81.36.945.54.135.225.135 1.26-.135 2.025z"/>
-                </svg>
-                Confirm Order via WhatsApp
-              </a>
-            )}
             <Link
               href="/"
               className="block w-full text-center bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 px-6 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"

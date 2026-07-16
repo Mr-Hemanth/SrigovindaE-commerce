@@ -162,25 +162,6 @@ function Home({ initialFeaturedProducts = [] }) {
 
 
 
-      {/* WhatsApp Chat & Catalog Callout Banner */}
-      <section className="py-8 bg-gradient-to-r from-green-500 to-green-600 text-white select-none text-left">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-6">
-          <div className="text-center lg:text-left">
-            <h3 className="text-xl md:text-2xl font-extrabold">💬 Order Direct on WhatsApp</h3>
-            <p className="text-xs md:text-sm text-green-50 mt-1 max-w-2xl">Prefer ordering through messaging? Chat directly with us, request real-time video clips of jewelry, or share screenshots of items you love!</p>
-          </div>
-          <a
-            href="https://wa.me/919533866777?text=Hi%20Srigovinda%20Collections,%20I'm%20interested%20in%20viewing%20your%20jewellery%20catalog."
-            target="_blank"
-            rel="noreferrer"
-            className="bg-white text-green-700 hover:bg-green-50 px-6 py-3.5 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-md flex items-center gap-2 hover:scale-[1.03]"
-          >
-            <span>Open WhatsApp Catalog</span>
-            <span>→</span>
-          </a>
-        </div>
-      </section>
-
       {/* Featured Pieces Grid */}
       <section className="py-12 md:py-20 bg-gradient-to-b from-brand-cream-200 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
