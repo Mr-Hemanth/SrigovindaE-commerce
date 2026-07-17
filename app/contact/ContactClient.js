@@ -63,7 +63,7 @@ function Contact() {
             <div>
               <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide mb-1">Call / WhatsApp</h4>
               <p className="text-brand-navy-900 font-semibold text-base">+91 95338 66777</p>
-              <p className="text-xs text-gray-500 mt-1">Mon - Sat: 10:00 AM - 7:00 PM</p>
+              <p className="text-xs text-gray-500 mt-1">10:00 AM - 9:00 PM (Closed Tuesdays)</p>
             </div>
           </div>
 
