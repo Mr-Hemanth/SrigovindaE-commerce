@@ -1,10 +1,22 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { db } from '@/lib/firebase/client';
 import { collection, addDoc } from 'firebase/firestore';
 
+// The spin-wheel promo is only relevant on shopping pages — showing it on FAQ, legal, and
+// account pages just adds clutter and risks the fixed-position button overlapping page content
+// (e.g. FAQ accordion items) that a promotional widget has no business sitting on top of.
+const SPIN_WHEEL_PATHS = ['/', '/products', '/cart', '/wishlist'];
+function isSpinWheelEligible(pathname) {
+  return SPIN_WHEEL_PATHS.includes(pathname) || pathname.startsWith('/product/');
+}
+
 export default function EngagementWidgets() {
+  const pathname = usePathname();
+  const showSpinWheel = isSpinWheelEligible(pathname);
+
   // WhatsApp State
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -159,22 +171,24 @@ export default function EngagementWidgets() {
   return (
     <>
       {/* 1. FLOATING ACTION CONTAINER (BOTTOM LEFT) - SPIN WHEEL ONLY */}
-      <div className={`fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans transition-opacity duration-300 ${footerVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        {/* Spin to Win Gift Wheel Button */}
-        <button
-          onClick={() => setIsWheelOpen(true)}
-          className="bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-brand-navy-950 p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2 border border-white/20 text-xs font-extrabold"
-          title="Spin the Lucky Wheel"
-        >
-          <span className="animate-bounce">🎁</span>
-          <span className="hidden sm:inline">Spin to Win!</span>
-          {wonCoupon && (
-            <span className="bg-red-600 text-white px-2 py-0.5 rounded-full text-[9px] uppercase font-mono animate-pulse">
-              Won!
-            </span>
-          )}
-        </button>
-      </div>
+      {showSpinWheel && (
+        <div className={`fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans transition-opacity duration-300 ${footerVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          {/* Spin to Win Gift Wheel Button */}
+          <button
+            onClick={() => setIsWheelOpen(true)}
+            className="bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-brand-navy-950 p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2 border border-white/20 text-xs font-extrabold"
+            title="Spin the Lucky Wheel"
+          >
+            <span className="animate-bounce">🎁</span>
+            <span className="hidden sm:inline">Spin to Win!</span>
+            {wonCoupon && (
+              <span className="bg-red-600 text-white px-2 py-0.5 rounded-full text-[9px] uppercase font-mono animate-pulse">
+                Won!
+              </span>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* 2. FLOATING WHATSAPP CUSTOM CHAT WIDGET (BOTTOM RIGHT) */}
       <div className={`fixed bottom-6 right-6 z-40 select-none font-sans text-left transition-opacity duration-300 ${footerVisible && !isChatOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
