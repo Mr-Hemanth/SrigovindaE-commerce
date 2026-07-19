@@ -1,94 +1,110 @@
-# ✨ Sri Govinda Collections - E-Commerce App
+# Sri Govinda Collections
 
-A complete jewellery e-commerce application built with React, Firebase, and Tailwind CSS.
+A production e-commerce storefront and admin platform for a jewellery business (German Silver, One Gram Gold, Panchaloha, and Gift Articles), built with Next.js and Firebase.
 
-## 🛍️ Features
+Live at **[srigovindacollections.com](https://www.srigovindacollections.com)**.
 
-### For Customers
-1. 🛡️ Authentication - Signup/Login with Firebase Auth
-2. 📦 Product Browsing - 3 main categories (German Silver, One Gram Gold, Panchaloha) with subcategories
-3. 🔍 Advanced Filtering/Sorting - Filter by category, subcategory, price, sort by price
-4. ❤️ Wishlist - Save items for later
-5. 🛒 Shopping Cart - Add/remove/update quantities, Apply Instagram coupons!
-6. 💳 Checkout - Multiple payment options (Card, UPI, COD)
-7. 👤 Profile Management - Update user details
+## Tech stack
 
-### For Admins
-1. 📊 Dashboard - Overview of products, orders, users, coupons
-2. 🛠️ Product Management - Add, edit, delete jewelry items
-3. 📦 Order Management - View and update order statuses
-4. 🎟️ Coupon Management - Create discount codes for Instagram followers!
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack), React 19 |
+| Styling | Tailwind CSS v4 |
+| Database & Auth | Firebase (Firestore, Firebase Auth — email/password + Google OAuth) |
+| Payments | Razorpay (online) + Cash on Delivery |
+| Shipping | Shiprocket (real shipment creation + tracking) |
+| Email | Resend (transactional) |
+| Images | Cloudinary (admin uploads) + `next/image` |
+| PDF generation | jsPDF (client-side invoice download) |
+| Testing | Jest |
 
-## 🎨 Elegant Design
+## Features
 
-- Premium brown/gold color scheme perfect for jewelry store
-- Playfair Display & Poppins Google Fonts
-- Beautiful animations and transitions
-- Responsive design for all devices
+### Customer-facing
 
-## 🛠️ Tech Stack
+- Email/password and Google sign-in
+- Product catalog: categories, subcategories, search, filters (material, occasion, color, gifting tier, price range), sort, grid/list view
+- Product variants (size/option) with independent pricing and stock per variant
+- Wishlist, cart, coupon codes
+- Checkout: Razorpay online payment or COD (with a security-code confirmation step), server-side price/stock re-validation on every order
+- Real shipment creation and tracking via Shiprocket, with an honest order-tracking page (no fake courier data)
+- Product reviews and star ratings
+- Newsletter signup
+- Abandoned-cart recovery emails (daily cron)
+- "Spin to Win" coupon wheel (once per customer per 30 days)
+- One-click downloadable PDF invoices
+- Profile management with up to 4 saved addresses
 
-- Frontend: React 18 + React Router + Tailwind CSS
-- Backend: Firebase (Authentication + Firestore Database)
-- Styling: Tailwind CSS
+### Admin panel (`/admin`)
 
-## 🚀 Getting Started
+- Dashboard: revenue trend, sales by category, best sellers, low-stock alerts, promo banner control
+- Product management: full CRUD, variants, Cloudinary photo upload, one-click visibility toggle, auto-derived gifting tier (from price) and material (from category)
+- Order management: status updates, manual tracking-number entry
+- Coupon management
+- Review moderation
+- Newsletter subscriber list
+- **Customer CRM**: directory of every customer with lifetime stats (orders, spend, avg order value), auto-segmentation (VIP / Repeat / Active / New / At Risk / No Orders), full order history per customer, admin notes, CSV export
 
-### Step 1: Install Dependencies
+### Security
+
+- Firestore security rules enforce ownership and admin checks on every collection — orders can only ever be created server-side after payment verification
+- Prices and stock are always recomputed server-side at checkout; the client is never trusted
+- CSP, HSTS, and standard security headers on every response
+- User-supplied text is escaped before going into transactional emails or JSON-LD (no HTML/script injection)
+
+### SEO
+
+- Per-page and per-product metadata (dynamic, pulled from real product data)
+- JSON-LD structured data: `Organization` sitewide, `Product` (with price/availability/`AggregateRating`) on every product page
+- Dynamic `sitemap.xml` (auto-includes every active product) and `robots.txt`
+
+## Getting started
 
 ```bash
-cd /Users/apple/Desktop/E-Commerce
 npm install
+cp .env.example .env.local   # fill in real values, see below
+npm run dev
 ```
 
-### Step 2: Set Up Firebase (IMPORTANT!)
+Open [http://localhost:3000](http://localhost:3000).
 
-This is required for signup/login to work!
+### Environment variables
 
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Click **Add Project** and follow the steps
-3. Once project is created, **Enable Email/Password Authentication**:
-   - In left sidebar → **Authentication** → **Sign-in method**
-   - Enable **Email/Password** → Save
-4. Create **Firestore Database**:
-   - Left sidebar → **Firestore Database** → **Create Database**
-   - Choose **Start in Test Mode** → Next
-   - Choose location → Enable
-5. Register a **Web App**:
-   - Click the Settings (⚙️) → Project Settings → Scroll down → Your apps → Add app (</>)
-   - Give a nickname → Check "Also set up Firebase Hosting" → Register app
-   - Copy the firebaseConfig it gives you!
-6. Update `src/firebase.js` with your real config!
+See `.env.example` for the full list with setup notes for each. You'll need accounts with: Firebase, Razorpay, Resend, Cloudinary, and Shiprocket. None of these are optional for a full production setup, but the app degrades gracefully in local dev if some are missing (e.g. emails just get skipped with a console warning instead of the app crashing).
 
-### Step 3: Set Up Firestore Collections (Optional but Recommended)
+### Creating an admin account
 
-You can add these collections manually, or let app create them automatically!
+1. Sign up normally through the app
+2. In Firebase Console → Firestore → `users` → find your user document → add a field `isAdmin: true` (boolean)
+3. Log out and back in — you'll now see the Admin Panel link in the account menu
 
-### Step 4: Create an Admin Account
-
-1. Signup an account via app
-2. Go back to Firebase Console → Firestore Database
-3. Find your user document in `users` collection
-4. Add a field named `isAdmin` and set to `true`
-
-### Step 5: Run the App
+## Scripts
 
 ```bash
-npm start
+npm run dev      # local dev server
+npm run build    # production build
+npm start        # run a production build locally
+npm run lint     # ESLint
+npm test         # Jest unit tests
 ```
 
-Open http://localhost:3000 in your browser!
+## Deployment
 
-## 📦 Building for Production
+Deployed on Vercel. Firestore security rules are deployed separately (not via `vercel deploy`) — see `firestore.rules` and deploy via the Firebase CLI or console. A Vercel Cron job (`vercel.json`) triggers the abandoned-cart email job daily; it authenticates via the `CRON_SECRET` env var.
 
-```bash
-npm run build
+## Project structure
+
 ```
-
-## 📝 Notes
-
-- Remember to update Firestore security rules before launching to production
-- App uses sample product data initially, replace with your actual inventory via admin panel!
-- Consider adding Firebase Storage for product images!
-
-Enjoy your Sri Govinda Collections e-commerce app! 🛍️✨
+app/                    Next.js App Router pages + API routes
+  admin/                 Admin panel pages
+  api/                    Server routes (checkout, admin actions, cron, contact)
+  product/[id]/           Product detail page
+  ...                     Static/customer pages
+components/              React components (admin/, navbar/, orders/, ...)
+contexts/                React context providers (Auth, Cart, Wishlist, Notification)
+lib/                     Pure business logic + integrations, most with matching *.test.js
+  notify/                  Email templates (Resend)
+  firebase/                Client + Admin SDK setup
+  data/                    Static category list
+firestore.rules          Firestore security rules (source of truth, deploy separately)
+```
