@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { categories } from '@/lib/data/products';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 import ProductCard from '@/components/ProductCard';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
@@ -166,7 +167,7 @@ function Products({ initialProducts = [] }) {
     return (
       <div key={product.id} className="bg-white rounded-3xl elegant-shadow p-5 flex flex-col md:flex-row items-center gap-6 border border-gray-50/50 hover:border-brand-navy-900/20 transition-all duration-300 select-none text-left">
         <div className="relative w-full md:w-48 h-48 rounded-2xl overflow-hidden cursor-pointer flex-shrink-0" onClick={() => router.push(`/product/${product.id}`)}>
-          <Image src={product.image} alt={product.name} fill sizes="(max-width: 768px) 100vw, 192px" className="object-cover" />
+          <Image src={optimizeCloudinaryUrl(product.image, { width: 400 })} alt={product.name} fill sizes="(max-width: 768px) 100vw, 192px" className="object-cover" />
           {hasDiscount && (
             <span className="absolute top-3 left-3 bg-brand-gold-500 text-brand-navy-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow">
               SAVE {discountPercentage}%

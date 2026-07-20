@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { auth, db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -253,7 +254,7 @@ function AdminOrders() {
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4 bg-brand-cream-100 px-5 py-4 rounded-2xl">
                         <Image
-                          src={item.image}
+                          src={optimizeCloudinaryUrl(item.image, { width: 112 })}
                           alt={item.name}
                           width={56}
                           height={56}

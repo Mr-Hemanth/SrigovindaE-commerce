@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { db } from '@/lib/firebase/client';
 import { doc, getDoc } from 'firebase/firestore';
 import { trackPurchase } from '@/lib/analytics';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
@@ -116,7 +117,7 @@ function OrderSuccessContent() {
                         <div className="flex items-center gap-4">
                           {item.image && (
                             <Image
-                              src={item.image}
+                              src={optimizeCloudinaryUrl(item.image, { width: 96 })}
                               alt={item.name}
                               width={48}
                               height={48}

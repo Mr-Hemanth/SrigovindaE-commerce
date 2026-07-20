@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
 import { db } from '@/lib/firebase/client';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function ProductCard({ product, ratingOverride }) {
   const { addToCart } = useCart();
@@ -17,7 +18,7 @@ function ProductCard({ product, ratingOverride }) {
   const { showNotification } = useNotification();
   const router = useRouter();
   const [ratingStats, setRatingStats] = useState({ avg: '5.0', count: 0 });
-  const [imgSrc, setImgSrc] = useState(product.image);
+  const [imgSrc, setImgSrc] = useState(optimizeCloudinaryUrl(product.image, { width: 500 }));
 
   // If a parent already fetched ratings in bulk (see useProductRatings), use that instead of
   // this card running its own Firestore query — avoids an N+1 query per grid of cards.

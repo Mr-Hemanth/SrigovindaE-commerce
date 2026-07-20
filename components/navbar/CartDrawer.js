@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useNotification } from '@/contexts/NotificationContext';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function CartDrawer() {
   const { currentUser } = useAuth();
@@ -88,7 +89,7 @@ function CartDrawer() {
               cart.map((item) => (
                 <div key={`${item.id}-${item.variantId || 'base'}`} className="flex gap-4 bg-white p-4 rounded-2xl border border-gray-150/50 hover:shadow-md transition-shadow duration-300">
                   <Image
-                    src={item.image}
+                    src={optimizeCloudinaryUrl(item.image, { width: 160 })}
                     alt={item.name}
                     width={80}
                     height={80}

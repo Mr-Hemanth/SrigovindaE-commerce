@@ -14,6 +14,7 @@ import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase
 import ProductCard from '@/components/ProductCard';
 import { trackViewItem } from '@/lib/analytics';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function ProductDetails({ params, initialProduct = null }) {
   const { id } = use(params);
@@ -458,7 +459,7 @@ function ProductDetails({ params, initialProduct = null }) {
             className="relative h-80 sm:h-[400px] md:h-[480px] overflow-hidden rounded-2xl border border-gray-100/60 bg-gray-50 flex items-center justify-center cursor-zoom-in"
           >
             <Image
-              src={activeImage || product.image}
+              src={optimizeCloudinaryUrl(activeImage || product.image, { width: 900 })}
               alt={product.name}
               fill
               priority
@@ -505,7 +506,7 @@ function ProductDetails({ params, initialProduct = null }) {
                   }`}
                 >
                   <Image
-                    src={img}
+                    src={optimizeCloudinaryUrl(img, { width: 128 })}
                     alt={`Preview ${idx + 1}`}
                     width={64}
                     height={64}
@@ -542,7 +543,7 @@ function ProductDetails({ params, initialProduct = null }) {
             <div className="relative w-full h-full max-w-4xl max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
               {lightboxMounted && (
                 <Image
-                  src={activeImage || product.image}
+                  src={optimizeCloudinaryUrl(activeImage || product.image, { width: 1600 })}
                   alt={product.name}
                   fill
                   sizes="100vw"

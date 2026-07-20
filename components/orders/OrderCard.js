@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function OrderCard({
   order,
@@ -136,7 +137,7 @@ function OrderCard({
               {order.items.map((item) => (
                 <div key={item.id} className="p-4 flex items-center gap-4 hover:bg-gray-50/50 transition-colors">
                   <Image
-                    src={item.image}
+                    src={optimizeCloudinaryUrl(item.image, { width: 128 })}
                     alt={item.name}
                     width={64}
                     height={64}

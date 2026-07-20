@@ -8,6 +8,7 @@ import { categories } from '@/lib/data/products';
 import { useNotification } from '@/contexts/NotificationContext';
 import { uploadProductImage } from '@/lib/image-upload';
 import { deriveGiftingTier, deriveMaterialFromCategory } from '@/lib/product-classification';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function AdminProducts() {
   const { showNotification } = useNotification();
@@ -266,7 +267,7 @@ function AdminProducts() {
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-5">
                     <Image
-                      src={product.image}
+                      src={optimizeCloudinaryUrl(product.image, { width: 160 })}
                       alt={product.name}
                       width={80}
                       height={80}
@@ -598,7 +599,7 @@ function AdminProducts() {
                     <div className="flex flex-wrap gap-3 mt-4">
                       {getImageList(form).map((url) => (
                         <div key={url} className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 group">
-                          <Image src={url} alt="Product preview" fill sizes="80px" className="object-cover" />
+                          <Image src={optimizeCloudinaryUrl(url, { width: 160 })} alt="Product preview" fill sizes="80px" className="object-cover" />
                           <button
                             type="button"
                             onClick={() => removeImage(url)}

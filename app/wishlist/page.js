@@ -8,6 +8,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useNotification } from '@/contexts/NotificationContext';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function Wishlist() {
   const { wishlist, removeFromWishlist } = useWishlist();
@@ -60,7 +61,7 @@ function Wishlist() {
 
                 {/* Image */}
                 <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={() => router.push(`/product/${product.id}`)}>
-                  <Image src={product.image} alt={product.name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-103" />
+                  <Image src={optimizeCloudinaryUrl(product.image, { width: 500 })} alt={product.name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-103" />
 
                   {/* Stock Status Label */}
                   <span className={`absolute bottom-3 left-3 px-2 py-0.5 rounded text-[8px] font-bold shadow uppercase ${isOutOfStock ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>

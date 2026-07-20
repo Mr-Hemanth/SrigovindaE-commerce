@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function SearchBar() {
   // Global search autocomplete states
@@ -69,7 +70,7 @@ function SearchBar() {
               className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
             >
               <Image
-                src={prod.image}
+                src={optimizeCloudinaryUrl(prod.image, { width: 64 })}
                 alt={prod.name}
                 width={32}
                 height={32}

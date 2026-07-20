@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs, limit, query } from 'firebase/firestore';
+import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function Cart() {
   const { cart, addToCart, removeFromCart, updateQuantity, subtotal, discountAmount, total, applyCoupon, removeCoupon, coupon, discount } = useCart();
@@ -103,7 +104,7 @@ function Cart() {
                 {/* Image */}
                 <div className="relative w-20 h-20 md:w-32 md:h-32 rounded-2xl elegant-shadow border border-gray-100 flex-shrink-0 overflow-hidden">
                   <Image
-                    src={item.image}
+                    src={optimizeCloudinaryUrl(item.image, { width: 256 })}
                     alt={item.name}
                     fill
                     sizes="(max-width: 768px) 80px, 128px"
@@ -306,7 +307,7 @@ function Cart() {
                   <div key={item.id} className="bg-white rounded-3xl elegant-shadow p-4 border border-gray-100 flex flex-row sm:flex-col gap-4 justify-between items-center sm:items-stretch text-left">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={item.image}
+                        src={optimizeCloudinaryUrl(item.image, { width: 112 })}
                         alt={item.name}
                         width={56}
                         height={56}
