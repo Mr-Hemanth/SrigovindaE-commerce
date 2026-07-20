@@ -540,7 +540,7 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
             </button>
             <div className="relative w-full h-full max-w-4xl max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
-              {isLightboxOpen && (
+              {lightboxMounted && (
                 <Image
                   src={activeImage || product.image}
                   alt={product.name}
