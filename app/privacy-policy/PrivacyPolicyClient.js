@@ -48,7 +48,7 @@ function PrivacyPolicy() {
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">5. Contact Information</h2>
           <p>
-            If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <strong>srigovindagermansilver@gmail.com</strong>.
+            If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <strong>support@srigovindacollections.com</strong>.
           </p>
         </div>
       </div>

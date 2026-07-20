@@ -19,7 +19,7 @@ function Footer() {
             <div className="text-[11px] text-brand-cream-50/80 space-y-1 pt-1 font-medium">
               <p>📍 Devangula Street, Amalapuram, AP, India</p>
               <p>📞 +91 9533866777</p>
-              <p>✉️ srigovindagermansilver@gmail.com</p>
+              <p>✉️ support@srigovindacollections.com</p>
             </div>
             <div className="pt-1 text-xs font-semibold text-brand-gold-500">
               📸 <a href="https://www.instagram.com/srigovindacollections" target="_blank" rel="noopener noreferrer" className="hover:underline">Check Instagram for coupon codes!</a>

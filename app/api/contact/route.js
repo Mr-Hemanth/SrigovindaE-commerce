@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { escapeHtml } from '@/lib/notify/escape-html';
 
-const OWNER_EMAIL = 'srigovindagermansilver@gmail.com';
+const OWNER_EMAIL = 'support@srigovindacollections.com';
 const FROM_ADDRESS = 'Sri Govinda Collections Website <orders@srigovindacollections.com>';
 
 export async function POST(request) {

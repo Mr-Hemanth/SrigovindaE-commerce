@@ -50,12 +50,12 @@ function Terms() {
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">7. Dispute Resolution</h2>
           <p>
-            If a dispute arises, we encourage you to first contact us directly at <strong>srigovindagermansilver@gmail.com</strong> or via the Contact page so we can work towards a resolution informally. If a dispute cannot be resolved informally within 30 days, either party may pursue the matter through the courts referenced in Section 6, or through consumer dispute redressal mechanisms available under Indian law (including the Consumer Protection Act, 2019 and the National Consumer Helpline).
+            If a dispute arises, we encourage you to first contact us directly at <strong>support@srigovindacollections.com</strong> or via the Contact page so we can work towards a resolution informally. If a dispute cannot be resolved informally within 30 days, either party may pursue the matter through the courts referenced in Section 6, or through consumer dispute redressal mechanisms available under Indian law (including the Consumer Protection Act, 2019 and the National Consumer Helpline).
           </p>
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">8. Customer Support Contact</h2>
           <p>
-            If you need clarification or wish to resolve user disputes, please submit support queries through our Contact page or email us directly at <strong>srigovindagermansilver@gmail.com</strong>.
+            If you need clarification or wish to resolve user disputes, please submit support queries through our Contact page or email us directly at <strong>support@srigovindacollections.com</strong>.
           </p>
         </div>
       </div>

@@ -53,7 +53,7 @@ function Contact() {
             <span className="text-3xl">📧</span>
             <div>
               <h4 className="font-bold text-gray-800 text-sm uppercase tracking-wide mb-1">Email Support</h4>
-              <p className="text-brand-navy-900 font-semibold text-base break-all">srigovindagermansilver@gmail.com</p>
+              <p className="text-brand-navy-900 font-semibold text-base break-all">support@srigovindacollections.com</p>
               <p className="text-xs text-gray-500 mt-1">We respond within 24 hours.</p>
             </div>
           </div>
