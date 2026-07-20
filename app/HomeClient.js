@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { categories } from '@/lib/data/products';
 import { db } from '@/lib/firebase/client';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
 
 function Home({ initialFeaturedProducts = [] }) {
@@ -14,27 +14,47 @@ function Home({ initialFeaturedProducts = [] }) {
   const [activeFaq, setActiveFaq] = useState(null);
   const ratingsById = useProductRatings();
 
-  // Flash Sale Countdown State
-  const [countdown, setCountdown] = useState({ hours: 24, minutes: 0, seconds: 0 });
+  // Flash Sale banner — fully admin-controlled (Dashboard > Festive Flash Sale Banner Control).
+  // Off by default; only shows once an admin explicitly enables it and sets a future end date.
+  const [promoSettings, setPromoSettings] = useState(null);
+  const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
-      const diff = endOfDay.getTime() - now.getTime();
-      if (diff <= 0) {
-        setCountdown({ hours: 24, minutes: 0, seconds: 0 });
-      } else {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setCountdown({ hours, minutes, seconds });
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'promo'));
+        setPromoSettings(snap.exists() ? snap.data() : { enabled: false });
+      } catch (err) {
+        console.warn('Failed to load promo settings:', err);
+        setPromoSettings({ enabled: false });
       }
-    }, 1000);
-    return () => clearInterval(interval);
+    })();
   }, []);
+
+  const promoEndTime = promoSettings?.enabled && promoSettings?.endDate ? new Date(promoSettings.endDate).getTime() : null;
+  const promoEndValid = promoEndTime !== null && !Number.isNaN(promoEndTime);
+  const showPromoBanner = promoEndValid && countdown !== null && !countdown.expired;
+
+  useEffect(() => {
+    // countdown starts out null and this effect only ever runs once promoSettings has loaded
+    // (promoEndTime doesn't flip from valid back to invalid within a session), so there's
+    // nothing to reset here — just skip starting the ticking timer when there's no valid target.
+    if (!promoEndValid) return;
+    const tick = () => {
+      const diff = promoEndTime - Date.now();
+      if (diff <= 0) {
+        setCountdown({ expired: true, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      setCountdown({ expired: false, hours, minutes, seconds });
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [promoEndTime, promoEndValid]);
 
   useEffect(() => {
     try {
@@ -83,27 +103,32 @@ function Home({ initialFeaturedProducts = [] }) {
         </div>
       </section>
 
-      {/* Flash Sale Countdown Timer Announcement */}
-      <section className="bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-brand-navy-950 py-4 shadow-inner relative z-10 select-none text-left">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">⚡</span>
-            <span className="font-extrabold text-sm md:text-base uppercase tracking-wider text-brand-navy-950">
-              Flash Sale: 10% OFF site-wide! Code: <span className="bg-brand-navy-950 text-white px-2.5 py-1 rounded font-mono select-all text-xs font-black">FLASH10</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-brand-navy-950/85 mr-2">ENDS IN:</span>
-            <div className="flex gap-1.5 font-mono text-sm">
-              <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.hours).padStart(2, '0')}h</span>
-              <span className="font-bold text-brand-navy-950 self-center">:</span>
-              <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.minutes).padStart(2, '0')}m</span>
-              <span className="font-bold text-brand-navy-950 self-center">:</span>
-              <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.seconds).padStart(2, '0')}s</span>
+      {/* Flash Sale Countdown Timer Announcement — admin-controlled, hidden unless enabled */}
+      {showPromoBanner && (
+        <section className="bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-brand-navy-950 py-4 shadow-inner relative z-10 select-none text-left">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">⚡</span>
+              <span className="font-extrabold text-sm md:text-base uppercase tracking-wider text-brand-navy-950">
+                {promoSettings.text}
+                {promoSettings.couponCode && (
+                  <span className="ml-2 bg-brand-navy-950 text-white px-2.5 py-1 rounded font-mono select-all text-xs font-black normal-case">{promoSettings.couponCode}</span>
+                )}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-brand-navy-950/85 mr-2">ENDS IN:</span>
+              <div className="flex gap-1.5 font-mono text-sm">
+                <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.hours).padStart(2, '0')}h</span>
+                <span className="font-bold text-brand-navy-950 self-center">:</span>
+                <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.minutes).padStart(2, '0')}m</span>
+                <span className="font-bold text-brand-navy-950 self-center">:</span>
+                <span className="bg-brand-navy-950 text-white px-3 py-1.5 rounded-xl font-bold">{String(countdown.seconds).padStart(2, '0')}s</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Shop by Category Grid */}
       <section className="py-12 md:py-20">
