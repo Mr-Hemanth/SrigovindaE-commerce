@@ -48,7 +48,7 @@ const nextConfig = {
       {
         // Static brand assets rarely change; a day-long cache skips repeat conditional
         // GETs on every page load without risking a long-lived stale asset.
-        source: '/(logo.jpg|icon.svg|manifest.json)',
+        source: '/(logo.jpg|icon.svg|icon-192.png|icon-512.png|manifest.json)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=86400, must-revalidate' },
         ],
