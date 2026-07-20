@@ -57,6 +57,36 @@ function ProductDetails({ params, initialProduct = null }) {
     });
   };
 
+  // Touch devices don't have hover, so the zoom only makes sense while a finger is actually
+  // on the image — zoom to the touch point while held, and snap back the instant it's released.
+  const handleTouchMove = (e) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((touch.clientX - left) / width) * 100;
+    const y = ((touch.clientY - top) / height) * 100;
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: 'scale(1.8)'
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setZoomStyle({
+      transformOrigin: 'center center',
+      transform: 'scale(1)'
+    });
+  };
+
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const onKeyDown = (e) => { if (e.key === 'Escape') setIsLightboxOpen(false); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isLightboxOpen]);
+
   const [notifyContact, setNotifyContact] = useState('');
   const [isNotifiedSubmitted, setIsNotifiedSubmitted] = useState(false);
   const [notifyLoading, setNotifyLoading] = useState(false);
@@ -409,6 +439,13 @@ function ProductDetails({ params, initialProduct = null }) {
           <div
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onClick={() => setIsLightboxOpen(true)}
+            role="button"
+            tabIndex={0}
+            aria-label="Open full-size product image"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setIsLightboxOpen(true); } }}
             className="relative h-80 sm:h-[400px] md:h-[480px] overflow-hidden rounded-2xl border border-gray-100/60 bg-gray-50 flex items-center justify-center cursor-zoom-in"
           >
             <Image
@@ -429,7 +466,7 @@ function ProductDetails({ params, initialProduct = null }) {
             />
 
             <button
-              onClick={handleWishlistToggle}
+              onClick={(e) => { e.stopPropagation(); handleWishlistToggle(); }}
               aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}
               aria-pressed={isFavorite}
               className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-3.5 rounded-full shadow-lg hover:bg-white transition-all hover:scale-110 z-10"
@@ -470,6 +507,39 @@ function ProductDetails({ params, initialProduct = null }) {
             </div>
           )}
         </div>
+
+        {isLightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-8"
+            onClick={() => setIsLightboxOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Full-size product image"
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
+              aria-label="Close full-size image"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-full transition-colors z-10"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="relative w-full h-full max-w-4xl max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+              <Image
+                src={activeImage || product.image}
+                alt={product.name}
+                fill
+                sizes="100vw"
+                className="object-contain"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Right Column: Spec / Cart Actions */}
         <div className="flex flex-col justify-between space-y-6">
