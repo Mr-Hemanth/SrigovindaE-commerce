@@ -4,7 +4,7 @@ import { sendOrderStatusEmail } from '@/lib/notify/email';
 
 // Only these fields may ever be set through this route — an explicit allowlist rather than
 // trusting an arbitrary "updates" object from the client.
-const ALLOWED_STATUS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned'];
+const ALLOWED_STATUS = ['pending', 'processing', 'packed', 'shipped', 'delivered', 'cancelled', 'returned'];
 const ALLOWED_PAYMENT_STATUS = ['Cancelled', 'Refunded'];
 const ALLOWED_REQUEST_STATUS = ['approved', 'rejected'];
 

@@ -40,6 +40,11 @@ const links = [
     label: 'Subscribers',
     icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
   },
+  {
+    href: '/admin/reports',
+    label: 'Reports',
+    icon: 'M9 17V9m4 8V5m4 12v-6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z',
+  },
 ];
 
 export default function AdminSidebar() {

@@ -75,6 +75,15 @@ function DashboardSidebar() {
             </svg>
             Subscribers
           </Link>
+          <Link
+            href="/admin/reports"
+            className={`flex items-center gap-4 px-6 py-4 rounded-xl transition-all duration-300 ${pathname === '/admin/reports' ? 'bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white shadow-lg' : 'text-gray-700 hover:bg-brand-cream-100'}`}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V9m4 8V5m4 12v-6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            Reports
+          </Link>
         </nav>
       </div>
     </aside>

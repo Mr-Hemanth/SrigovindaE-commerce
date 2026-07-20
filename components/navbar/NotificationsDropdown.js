@@ -78,6 +78,9 @@ function NotificationsDropdown({ mobile = false }) {
           } else if (order.status === 'processing') {
             title = '⚙️ Order Processing';
             message = `Order #${formattedId} is currently being packaged with care.`;
+          } else if (order.status === 'packed') {
+            title = '📦 Order Packed';
+            message = `Order #${formattedId} has been packed and is ready to ship.`;
           } else if (order.status === 'shipped') {
             title = '🚚 Order Shipped';
             message = `Good news! Order #${formattedId} has been shipped. It will arrive soon.`;

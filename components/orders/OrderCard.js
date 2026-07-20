@@ -85,11 +85,12 @@ function OrderCard({
                 </div>
               );
             }
-            const steps = ['Placed', 'Processing', 'Shipped', 'Delivered'];
+            const steps = ['Placed', 'Processing', 'Packed', 'Shipped', 'Delivered'];
             let activeIdx = 0;
             if (s === 'processing') activeIdx = 1;
-            if (s === 'shipped') activeIdx = 2;
-            if (s === 'delivered') activeIdx = 3;
+            if (s === 'packed') activeIdx = 2;
+            if (s === 'shipped') activeIdx = 3;
+            if (s === 'delivered') activeIdx = 4;
 
             return (
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm select-none">
@@ -257,7 +258,7 @@ function OrderCard({
                       Cancel Order
                     </button>
                   )}
-                  {['processing', 'shipped'].includes(order.status?.toLowerCase()) && (
+                  {['processing', 'packed', 'shipped'].includes(order.status?.toLowerCase()) && (
                     <button
                       type="button"
                       onClick={() => onOpenRequestModal(order.id, 'cancel')}
