@@ -15,6 +15,8 @@ import ProductCard from '@/components/ProductCard';
 import { trackViewItem } from '@/lib/analytics';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
+import { recordProductView } from '@/lib/recently-viewed';
+import RecentlyViewed from '@/components/RecentlyViewed';
 
 function ProductDetails({ params, initialProduct = null }) {
   const { id } = use(params);
@@ -207,7 +209,10 @@ function ProductDetails({ params, initialProduct = null }) {
   }, [id, initialProduct]);
 
   useEffect(() => {
-    if (product) trackViewItem(product);
+    if (product) {
+      trackViewItem(product);
+      recordProductView(product.id);
+    }
   }, [product]);
 
   // Default to the first variant once the product (and its variants) are known — covers the
@@ -878,6 +883,7 @@ function ProductDetails({ params, initialProduct = null }) {
         </div>
       )}
 
+      <RecentlyViewed excludeId={product.id} />
     </div>
   );
 }
