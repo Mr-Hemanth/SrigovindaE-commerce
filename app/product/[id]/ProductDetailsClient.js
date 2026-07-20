@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -399,6 +399,26 @@ function ProductDetails({ params, initialProduct = null }) {
     }
   };
 
+  // Sticky mobile Add-to-Cart bar: only relevant once the shopper has scrolled the main CTA
+  // out of view above them — not while it's still below (they haven't reached it yet) or
+  // still visible (it'd just be a redundant duplicate right next to the real one).
+  const mainCtaRef = useRef(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    const el = mainCtaRef.current;
+    if (!el) {
+      setShowStickyCta(false);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyCta(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [product, selectedVariant]);
+
   if (loading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
@@ -670,7 +690,7 @@ function ProductDetails({ params, initialProduct = null }) {
                 </div>
 
                 {/* Double checkout buttons grid */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div ref={mainCtaRef} className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={handleAddToCart}
                     disabled={addingState}
@@ -884,6 +904,25 @@ function ProductDetails({ params, initialProduct = null }) {
       )}
 
       <RecentlyViewed excludeId={product.id} />
+
+      {showStickyCta && effectiveStock > 0 && (
+        <div
+          className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-4 py-3 flex items-center gap-3 animate-fade-in"
+          style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold truncate">{product.name}</p>
+            <p className="text-lg font-black text-brand-navy-900">₹{effectivePrice.toFixed(0)}</p>
+          </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={addingState}
+            className="flex-shrink-0 bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg disabled:opacity-60"
+          >
+            {addingState ? 'Adding...' : 'Add to Cart'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
