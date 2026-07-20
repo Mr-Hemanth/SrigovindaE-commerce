@@ -520,7 +520,7 @@ function ProductDetails({ params, initialProduct = null }) {
         {lightboxMounted && createPortal(
           <div
             className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ${
-              isLightboxOpen ? 'opacity-100' : 'opacity-0 pointer-events-none invisible'
+              isLightboxOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}
             onClick={() => setIsLightboxOpen(false)}
