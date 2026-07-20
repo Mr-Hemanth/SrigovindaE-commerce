@@ -80,6 +80,14 @@ function ProductDetails({ params, initialProduct = null }) {
   };
 
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  // Portal target must only resolve on the client (SSR has no document); mounting it once here
+  // rather than conditionally creating the portal node each open avoids a first-paint issue where
+  // a freshly-inserted fixed-position node's background can be skipped on its very first frame.
+  const [lightboxMounted, setLightboxMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time client-mount flag, no cascading update
+    setLightboxMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -509,18 +517,22 @@ function ProductDetails({ params, initialProduct = null }) {
           )}
         </div>
 
-        {isLightboxOpen && typeof document !== 'undefined' && createPortal(
+        {lightboxMounted && createPortal(
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 transition-opacity duration-150 ${
+              isLightboxOpen ? 'opacity-100' : 'opacity-0 pointer-events-none invisible'
+            }`}
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}
             onClick={() => setIsLightboxOpen(false)}
             role="dialog"
             aria-modal="true"
             aria-label="Full-size product image"
+            aria-hidden={!isLightboxOpen}
           >
             <button
               onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
               aria-label="Close full-size image"
+              tabIndex={isLightboxOpen ? 0 : -1}
               className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-full transition-colors z-10"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -528,17 +540,19 @@ function ProductDetails({ params, initialProduct = null }) {
               </svg>
             </button>
             <div className="relative w-full h-full max-w-4xl max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
-              <Image
-                src={activeImage || product.image}
-                alt={product.name}
-                fill
-                sizes="100vw"
-                className="object-contain"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
-                }}
-              />
+              {isLightboxOpen && (
+                <Image
+                  src={activeImage || product.image}
+                  alt={product.name}
+                  fill
+                  sizes="100vw"
+                  className="object-contain"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
+                  }}
+                />
+              )}
             </div>
           </div>,
           document.body
