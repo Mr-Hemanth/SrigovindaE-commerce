@@ -45,6 +45,18 @@ export default function EngagementWidgets() {
     return () => observer.disconnect();
   }, []);
 
+  // Product pages can show a sticky mobile Add-to-Cart bar along this same bottom edge — these
+  // widgets would otherwise render right on top of its price/button. Listened for instead of a
+  // shared context since the two live in unrelated parts of the component tree and this is the
+  // only thing they need to coordinate.
+  const [stickyCtaVisible, setStickyCtaVisible] = useState(false);
+  useEffect(() => {
+    const onStickyCtaChange = (e) => setStickyCtaVisible(!!e.detail?.visible);
+    window.addEventListener('sgc:sticky-cta-visibility', onStickyCtaChange);
+    return () => window.removeEventListener('sgc:sticky-cta-visibility', onStickyCtaChange);
+  }, []);
+  const hideForBottomBar = footerVisible || stickyCtaVisible;
+
   // Check if user already spun in the last 30 days. This must stay an effect
   // (not a useState lazy initializer) so the server-rendered and first client
   // paint match before localStorage is consulted, avoiding a hydration mismatch.
@@ -172,7 +184,7 @@ export default function EngagementWidgets() {
     <>
       {/* 1. FLOATING ACTION CONTAINER (BOTTOM LEFT) - SPIN WHEEL ONLY */}
       {showSpinWheel && (
-        <div className={`fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans transition-opacity duration-300 ${footerVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className={`fixed bottom-6 left-6 z-40 flex flex-col gap-3.5 select-none font-sans transition-opacity duration-300 ${hideForBottomBar ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           {/* Spin to Win Gift Wheel Button */}
           <button
             onClick={() => setIsWheelOpen(true)}
@@ -191,7 +203,7 @@ export default function EngagementWidgets() {
       )}
 
       {/* 2. FLOATING WHATSAPP CUSTOM CHAT WIDGET (BOTTOM RIGHT) */}
-      <div className={`fixed bottom-6 right-6 z-40 select-none font-sans text-left transition-opacity duration-300 ${footerVisible && !isChatOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`fixed bottom-6 right-6 z-40 select-none font-sans text-left transition-opacity duration-300 ${hideForBottomBar && !isChatOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         {/* Chat window panel */}
         {isChatOpen && (
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden w-80 max-w-[90vw] mb-4 animate-slide-up flex flex-col">

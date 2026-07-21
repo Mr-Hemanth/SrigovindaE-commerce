@@ -419,6 +419,13 @@ function ProductDetails({ params, initialProduct = null }) {
     return () => observer.disconnect();
   }, [product, selectedVariant]);
 
+  // Tell the floating WhatsApp/spin-wheel widgets (unrelated part of the tree, rendered in the
+  // root layout) to get out of the way while this bar occupies the same bottom edge.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('sgc:sticky-cta-visibility', { detail: { visible: showStickyCta } }));
+    return () => window.dispatchEvent(new CustomEvent('sgc:sticky-cta-visibility', { detail: { visible: false } }));
+  }, [showStickyCta]);
+
   if (loading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
