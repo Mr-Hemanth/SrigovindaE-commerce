@@ -39,6 +39,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
     updates.status = status;
+    // Drives the review-nudge cron's "N days after delivery" timing (see
+    // app/api/cron/review-nudge/route.js) — there was no per-status timestamp before this.
+    if (status === 'delivered') {
+      updates.deliveredAt = new Date();
+    }
   }
   if (paymentStatus !== undefined) {
     if (!ALLOWED_PAYMENT_STATUS.includes(paymentStatus)) {
