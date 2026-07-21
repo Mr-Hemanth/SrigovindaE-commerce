@@ -10,6 +10,7 @@ import ProductCard from '@/components/ProductCard';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 import { useProductRatings } from '@/lib/hooks/useProductRatings';
+import { searchProducts } from '@/lib/fuzzy-search';
 
 const UNSPECIFIED = 'Unspecified';
 
@@ -100,13 +101,10 @@ function Products({ initialProducts = [] }) {
   const filteredProducts = useMemo(() => {
     let temp = [...products];
 
-    // Filter by Search Query
+    // Filter by Search Query — exact substring matches first, then a typo-tolerant fuzzy
+    // fallback (e.g. "neklace" or "earings" still finds the right products).
     if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
-      temp = temp.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        (p.description && p.description.toLowerCase().includes(q))
-      );
+      temp = searchProducts(temp, searchQuery);
     }
 
     // Filter by Category

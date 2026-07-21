@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
+import { searchProducts } from '@/lib/fuzzy-search';
 
 function SearchBar() {
   // Global search autocomplete states
@@ -34,12 +35,7 @@ function SearchBar() {
       setSearchSuggestions([]);
       return;
     }
-    const q = val.toLowerCase();
-    const matches = allProducts.filter(p =>
-      p.name?.toLowerCase().includes(q) ||
-      p.category?.toLowerCase().includes(q) ||
-      p.subcategory?.toLowerCase().includes(q)
-    );
+    const matches = searchProducts(allProducts, val);
     setSearchSuggestions(matches.slice(0, 5));
   };
 
