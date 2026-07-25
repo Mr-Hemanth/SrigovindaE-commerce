@@ -376,12 +376,7 @@ function ProductDetails({ params, initialProduct = null }) {
       }
     }
 
-    if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
-      showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
-      router.push('/profile');
-    } else {
-      router.push('/checkout');
-    }
+    router.push('/checkout');
   };
 
   // Review submission is handled separately after purchase.
@@ -462,10 +457,10 @@ function ProductDetails({ params, initialProduct = null }) {
     : (product.stock !== undefined && product.stock !== null ? Number(product.stock) : 10);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
 
       {/* Breadcrumbs */}
-      <div className="mb-8 animate-fade-in">
+      <div className="mb-6 animate-fade-in">
         <Link
           href="/products"
           className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-brand-navy-900 transition-colors gap-2"
@@ -605,7 +600,7 @@ function ProductDetails({ params, initialProduct = null }) {
               )}
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 font-serif leading-tight">
+            <h1 className="text-2xl md:text-4xl font-extrabold text-gray-800 font-serif leading-tight">
               {product.name}
             </h1>
 
@@ -648,14 +643,14 @@ function ProductDetails({ params, initialProduct = null }) {
             {/* Pricing / Stock */}
             <div className="flex items-baseline gap-4 pt-2">
               {hasVariants ? (
-                <span className="text-3xl font-black text-brand-navy-900">₹{effectivePrice.toFixed(0)}</span>
+                <span className="text-2xl md:text-3xl font-black text-brand-navy-900">₹{effectivePrice.toFixed(0)}</span>
               ) : product.discountedPrice !== undefined && product.discountedPrice !== null && product.discountedPrice !== '' && Number(product.discountedPrice) > 0 ? (
                 <>
-                  <span className="text-3xl font-black text-brand-navy-900">₹{product.discountedPrice}</span>
-                  <span className="text-gray-400 line-through text-lg">₹{product.price}</span>
+                  <span className="text-2xl md:text-3xl font-black text-brand-navy-900">₹{product.discountedPrice}</span>
+                  <span className="text-gray-400 line-through text-base md:text-lg">₹{product.price}</span>
                 </>
               ) : (
-                <span className="text-3xl font-black text-brand-navy-900">₹{product.price}</span>
+                <span className="text-2xl md:text-3xl font-black text-brand-navy-900">₹{product.price}</span>
               )}
               <span className={`px-3 py-1 rounded-full text-xxs font-bold uppercase tracking-wider ${
                 effectiveStock > 0 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
@@ -701,13 +696,13 @@ function ProductDetails({ params, initialProduct = null }) {
                   <button
                     onClick={handleAddToCart}
                     disabled={addingState}
-                    className="flex-1 bg-brand-cream-100 hover:bg-brand-cream-200 text-brand-navy-900 py-4 rounded-xl transition-all duration-300 font-bold text-sm shadow-sm border border-gray-200/50"
+                    className="flex-1 bg-brand-cream-100 hover:bg-brand-cream-200 text-brand-navy-900 py-3.5 rounded-xl transition-all duration-300 font-bold text-sm shadow-sm border border-gray-200/50"
                   >
                     {addingState ? 'Adding...' : 'Add to Cart'}
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    className="flex-1 bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-bold text-sm shadow-lg hover:shadow-xl"
+                    className="flex-1 bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-3.5 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-bold text-sm shadow-lg hover:shadow-xl"
                   >
                     Buy Now
                   </button>
@@ -770,8 +765,8 @@ function ProductDetails({ params, initialProduct = null }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
               </svg>
               <div>
-                <p className="text-[11px] font-black text-gray-800 leading-tight">Free Express Shipping</p>
-                <p className="text-[9px] text-gray-500 mt-0.5">Delivery Across India</p>
+                <p className="text-[11px] font-black text-gray-800 leading-tight">Pan-India Shipping</p>
+                <p className="text-[9px] text-gray-500 mt-0.5">Free above ₹1000, else ₹49</p>
               </div>
             </div>
 

@@ -2,7 +2,7 @@
 
 function Terms() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
       <div className="bg-white rounded-3xl elegant-shadow p-8 md:p-12 border border-gray-100 space-y-8">
         <div className="border-b border-gray-100 pb-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-brand-navy-900 font-serif">Terms & Conditions</h1>

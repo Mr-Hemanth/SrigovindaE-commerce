@@ -4,9 +4,12 @@ const csp = [
   "default-src 'self'",
   // 'unsafe-eval' is required by Next.js/Turbopack's dev-mode Fast Refresh runtime (it never
   // runs in production builds) — without it every page crashes in `next dev`.
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://www.googletagmanager.com`,
-  "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://lumberjack.razorpay.com https://api.razorpay.com https://www.google-analytics.com https://www.google.com",
-  "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://www.google.com",
+  // https://*.firebaseapp.com serves signInWithPopup's auth-relay iframe/script; apis.google.com
+  // serves the gapi "iframes" loader Firebase's GoogleAuthProvider popup flow pulls in too — without
+  // both, Google sign-in fails instantly with auth/internal-error before the popup even opens.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com https://www.googletagmanager.com https://*.firebaseapp.com https://apis.google.com`,
+  "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://lumberjack.razorpay.com https://api.razorpay.com https://www.google-analytics.com https://www.google.com https://apis.google.com",
+  "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://www.google.com https://*.firebaseapp.com https://accounts.google.com",
   "img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos https://i.ibb.co https://res.cloudinary.com",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",

@@ -22,7 +22,7 @@ function NotFound() {
         {/* Animated header */}
         <div className="space-y-2">
           <span className="text-6xl md:text-8xl block animate-pulse">🧐</span>
-          <h1 className="text-4xl font-extrabold text-brand-navy-900 font-serif">404 - Misplaced!</h1>
+          <h1 className="text-2xl md:text-4xl font-extrabold text-brand-navy-900 font-serif">404 - Misplaced!</h1>
           <p className="text-xs text-gray-400">The jewellery article or page you requested cannot be found.</p>
         </div>
 

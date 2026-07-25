@@ -38,8 +38,8 @@ function Contact() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="text-center mb-16 space-y-3">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <div className="text-center mb-8 md:mb-12 space-y-3">
         <h1 className="text-4xl md:text-5xl font-bold text-brand-navy-900 font-serif">Contact Us</h1>
         <p className="text-gray-500 max-w-lg mx-auto text-base">Have questions about our jewellery collections or need assistance with your order? Reach out to us below!</p>
       </div>
@@ -154,7 +154,7 @@ function Contact() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all disabled:opacity-50"
             >
               {loading ? 'Submitting query...' : 'Send Support Request'}
             </button>

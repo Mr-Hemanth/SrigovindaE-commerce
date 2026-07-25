@@ -88,7 +88,7 @@ function OrderSuccessContent() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold font-serif mb-2">Order Confirmed! 🎉</h1>
+          <h1 className="text-2xl md:text-3xl font-bold font-serif mb-2">Order Confirmed! 🎉</h1>
           <p className="text-white/80 text-sm">Thank you for shopping with Srigovinda collections. Your order has been registered.</p>
         </div>
 
@@ -218,13 +218,13 @@ function OrderSuccessContent() {
             </div>
             <Link
               href="/"
-              className="block w-full text-center bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 px-6 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"
+              className="block w-full text-center bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-3.5 px-6 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-xl"
             >
               Continue Shopping
             </Link>
             <Link
               href="/profile"
-              className="block w-full text-center border-2 border-brand-navy-900 text-brand-navy-900 py-4 px-6 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold text-lg"
+              className="block w-full text-center border-2 border-brand-navy-900 text-brand-navy-900 py-3.5 px-6 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold text-sm"
             >
               View My Orders
             </Link>

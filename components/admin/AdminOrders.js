@@ -113,7 +113,7 @@ function AdminOrders() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-brand-navy-900 font-serif">Orders</h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Orders</h1>
 
       <div className="bg-white rounded-3xl elegant-shadow overflow-hidden">
         {orders.length === 0 ? (

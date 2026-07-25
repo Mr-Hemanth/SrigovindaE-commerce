@@ -2,7 +2,7 @@
 
 function ShippingPolicy() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
       <div className="bg-white rounded-3xl elegant-shadow p-8 md:p-12 border border-gray-100 space-y-8">
         <div className="border-b border-gray-100 pb-6 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-brand-navy-900 font-serif">Shipping & Delivery Policy</h1>
@@ -21,7 +21,7 @@ function ShippingPolicy() {
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">2. Shipping Charges</h2>
           <p>
-            We offer **Free Standard Shipping** on all orders placed across India! There are no hidden packaging or handling charges applied during checkout.
+            Standard Shipping is **free on orders of ₹1000 or more**; orders below that carry a flat ₹49 shipping fee. Express Courier Delivery is available for ₹150 on any order. There are no hidden packaging or handling charges applied during checkout.
           </p>
 
           <h2 className="text-lg font-bold text-gray-800 font-serif pt-4">3. Delivery Timelines</h2>

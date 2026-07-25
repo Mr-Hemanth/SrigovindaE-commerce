@@ -245,7 +245,7 @@ function Home({ initialFeaturedProducts = [] }) {
               },
               {
                 q: "What is your shipping schedule and return policy?",
-                a: "We offer Free Express shipping across all locations in India. Every order comes with a secure 7-Day return or exchange guarantee. If you receive a damaged article or wish to request replacements, contact us directly within 7 days."
+                a: "We ship pan-India via Standard (free on orders ₹1000+, ₹49 below that) or Express Courier (₹150). Every order comes with a secure 7-Day return or exchange guarantee. If you receive a damaged article or wish to request replacements, contact us directly within 7 days."
               },
               {
                 q: "Are the custom star ratings based on actual data?",

@@ -16,6 +16,7 @@ export function useCart() {
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const [cartLoading, setCartLoading] = useState(true);
   const [coupon, setCoupon] = useState(null);
   const [discount, setDiscount] = useState(0);
   const [isCartOpen, setCartOpen] = useState(false);
@@ -23,6 +24,7 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     const fetchCart = async () => {
+      setCartLoading(true);
       if (currentUser) {
         try {
           const cartDoc = await getDoc(doc(db, 'carts', currentUser.uid));
@@ -43,6 +45,7 @@ export function CartProvider({ children }) {
       } else {
         setCart([]);
       }
+      setCartLoading(false);
     };
     fetchCart();
   }, [currentUser]);
@@ -176,6 +179,7 @@ export function CartProvider({ children }) {
 
   const value = {
     cart,
+    cartLoading,
     addToCart,
     removeFromCart,
     updateQuantity,

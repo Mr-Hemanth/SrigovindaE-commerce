@@ -5,12 +5,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { useNotification } from '@/contexts/NotificationContext';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
 function CartDrawer() {
   const { currentUser } = useAuth();
-  const { showNotification } = useNotification();
   const router = useRouter();
   const {
     cart,
@@ -167,9 +165,6 @@ function CartDrawer() {
                   setCartOpen(false);
                   if (!currentUser) {
                     router.push('/login');
-                  } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
-                    showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
-                    router.push('/profile');
                   } else {
                     router.push('/checkout');
                   }

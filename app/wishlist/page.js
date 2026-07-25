@@ -26,8 +26,8 @@ function Wishlist() {
   if (!currentUser) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 select-none text-left">
-      <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-10 font-serif">My Wishlist</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 select-none text-left">
+      <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-6 font-serif">My Wishlist</h1>
       {wishlist.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl elegant-shadow border border-gray-100 animate-fade-in">
           <svg className="w-24 h-24 mx-auto text-brand-navy-900 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

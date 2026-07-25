@@ -99,13 +99,6 @@ function Navbar() {
         </div>
       )}
 
-      {/* Floating Incomplete Profile Warning Banner */}
-      {currentUser && (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) && (
-        <div className="bg-[#e74c3c] text-white text-center py-2.5 px-4 text-xs font-bold flex justify-center items-center gap-2 select-none relative z-40 animate-fade-in shadow-inner border-b border-red-700/20">
-          <span>⚠️ Profile Incomplete: Please add your 10-digit contact mobile number in your <Link href="/profile" className="underline text-amber-200 hover:text-white font-extrabold ml-1">Profile Settings</Link> to unlock checkout capabilities.</span>
-        </div>
-      )}
-
       <nav className="bg-gradient-to-r from-brand-navy-950 to-brand-navy-900 shadow-xl sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">

@@ -152,7 +152,7 @@ function AdminCustomers() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold text-brand-navy-900 font-serif">Customers</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Customers</h1>
         <button
           onClick={exportCsv}
           className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-6 py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl text-sm"

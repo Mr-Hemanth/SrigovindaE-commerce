@@ -49,7 +49,7 @@ function FAQ() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 select-none text-left">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 select-none text-left">
       {/* Breadcrumbs */}
       <nav className="text-[10px] text-gray-500 mb-6 flex items-center gap-1.5 font-bold uppercase tracking-wider">
         <Link href="/" className="hover:text-brand-navy-900 transition-colors">Home</Link>

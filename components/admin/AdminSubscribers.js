@@ -59,7 +59,7 @@ function AdminSubscribers() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-brand-navy-900 font-serif">Newsletter Subscribers</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Newsletter Subscribers</h1>
         {subscribers.length > 0 && (
           <button
             onClick={handleExportCsv}

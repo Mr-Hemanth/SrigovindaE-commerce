@@ -80,7 +80,7 @@ function AdminReports() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-brand-navy-900 font-serif">Reports</h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Reports</h1>
 
       <div className="flex gap-3 border-b border-gray-100">
         <button

@@ -78,7 +78,7 @@ function ProductCard({ product, ratingOverride }) {
 
   return (
     <div className="bg-white rounded-3xl elegant-shadow overflow-hidden hover:scale-[1.02] transition-all duration-300 ease-out border border-gray-50/50 hover:border-brand-navy-900/20 relative group animate-fade-in flex flex-col justify-between h-full">
-      <div className="relative h-48 md:h-64 cursor-pointer overflow-hidden" onClick={() => router.push(`/product/${product.id}`)}>
+      <div className="relative h-48 md:h-64 cursor-pointer overflow-hidden bg-gray-50" onClick={() => router.push(`/product/${product.id}`)}>
         <Image
           src={imgSrc}
           alt={product.name}

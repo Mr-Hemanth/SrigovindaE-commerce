@@ -80,7 +80,7 @@ function Login() {
                 aria-required="true"
                 aria-invalid={error ? 'true' : 'false'}
                 aria-describedby={error ? 'login-error' : undefined}
-                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-base"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-sm"
                 placeholder="your-email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -97,7 +97,7 @@ function Login() {
                   aria-required="true"
                   aria-invalid={error ? 'true' : 'false'}
                   aria-describedby={error ? 'login-error' : undefined}
-                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-base"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -130,7 +130,7 @@ function Login() {
               disabled={loading}
               aria-label={loading ? 'Signing in...' : 'Sign In'}
               aria-busy={loading}
-              className="w-full bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="w-full bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-3.5 px-6 rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

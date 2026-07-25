@@ -176,8 +176,8 @@ function Orders() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 border-b border-gray-100 pb-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-gray-100 pb-6">
         <div>
           <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 font-serif">Order History</h1>
           <p className="text-sm text-gray-500 mt-1">Review all your previous orders, invoices, and shipment tracking.</p>
@@ -202,7 +202,7 @@ function Orders() {
           <p className="text-gray-500 mb-8 max-w-sm mx-auto text-sm">You haven&apos;t placed any orders yet. Explore our exquisite jewellery collections and check out your first order!</p>
           <Link
             href="/products"
-            className="inline-block bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-8 py-4 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-bold shadow-md hover:shadow-lg"
+            className="inline-block bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-8 py-3.5 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-bold text-sm shadow-md hover:shadow-lg"
           >
             Browse Products
           </Link>

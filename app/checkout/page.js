@@ -10,6 +10,7 @@ import { auth, db } from '@/lib/firebase/client';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { trackBeginCheckout } from '@/lib/analytics';
 import { validateAddressForm } from '@/lib/shipping-validation';
+import { calculateShippingCost } from '@/lib/cart-math';
 
 // Helper to dynamically load the Razorpay Checkout script
 const loadRazorpayScript = () => {
@@ -28,7 +29,7 @@ const loadRazorpayScript = () => {
 };
 
 function Checkout() {
-  const { cart, subtotal, clearCart, discount, applyCoupon, coupon } = useCart();
+  const { cart, cartLoading, subtotal, clearCart, discount, applyCoupon, coupon } = useCart();
   const { currentUser } = useAuth();
   const router = useRouter();
   const { showNotification } = useNotification();
@@ -92,11 +93,8 @@ function Checkout() {
   useEffect(() => {
     if (!currentUser) {
       router.push('/login');
-    } else if (!currentUser.phone || !/^\d{10}$/.test(currentUser.phone)) {
-      showNotification('Please complete your profile by providing your primary 10-digit contact mobile number before proceeding to checkout.', 'error');
-      router.push('/profile');
     }
-  }, [currentUser, router, showNotification]);
+  }, [currentUser, router]);
 
   // Load user's saved addresses
   useEffect(() => {
@@ -207,7 +205,7 @@ function Checkout() {
       }
     }
 
-    const shippingCost = shippingMethod === 'express' ? 150 : 0;
+    const shippingCost = calculateShippingCost(subtotal, shippingMethod);
     trackBeginCheckout(cart, subtotal * (1 - discount / 100) + shippingCost);
 
     if (paymentMethod === 'cod') {
@@ -338,20 +336,29 @@ function Checkout() {
     }
   };
 
+  if (cartLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-brand-navy-900" />
+      </div>
+    );
+  }
+
   if (cart.length === 0) {
     router.push('/cart');
     return null;
   }
 
-  const shippingCost = shippingMethod === 'express' ? 150 : 0;
+  const shippingCost = calculateShippingCost(subtotal, shippingMethod);
+  const standardShippingCost = calculateShippingCost(subtotal, 'standard');
   const finalTotal = subtotal * (1 - (discount / 100)) + shippingCost;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-28 md:pb-32 animate-fade-in">
-      <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-6 font-serif">Checkout</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 animate-fade-in">
+      <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-4 font-serif">Checkout</h1>
 
       {validationError && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold flex items-center gap-3 animate-fade-in">
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold flex items-center gap-3 animate-fade-in">
           <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
@@ -359,14 +366,14 @@ function Checkout() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
 
         {/* Left Side: Address selector + Payment choices */}
-        <div className="lg:col-span-2 space-y-8 animate-fade-in">
+        <div className="lg:col-span-2 space-y-5 md:space-y-6 animate-fade-in">
 
           {/* Address Management */}
-          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100">
-            <div className="flex justify-between items-center mb-6">
+          <div className="bg-white rounded-3xl elegant-shadow p-4 md:p-6 border border-gray-100">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg md:text-2xl font-bold text-gray-800 font-serif">Shipping Address</h2>
               <button
                 type="button"
@@ -382,7 +389,7 @@ function Checkout() {
             </div>
 
             {addresses.length === 0 ? (
-              <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-2xl">
+              <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-2xl">
                 <span className="text-3xl block mb-2">📍</span>
                 <p className="text-gray-500 font-medium">No saved addresses found.</p>
                 <p className="text-xs text-gray-400 mt-1">Please add a shipping address to proceed.</p>
@@ -393,7 +400,7 @@ function Checkout() {
                   <div
                     key={addr.id}
                     onClick={() => setSelectedAddressId(addr.id)}
-                    className={`border-2 rounded-2xl p-5 cursor-pointer relative transition-all duration-300 ${
+                    className={`border-2 rounded-2xl p-4 cursor-pointer relative transition-all duration-300 ${
                       selectedAddressId === addr.id
                         ? 'border-brand-navy-900 bg-brand-cream-100/20 shadow-sm'
                         : 'border-gray-100 hover:border-gray-200 bg-white'
@@ -420,9 +427,9 @@ function Checkout() {
           </div>
 
           {/* Delivery Method and Estimated Date */}
-          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100 select-none text-left">
-            <h2 className="text-lg md:text-2xl font-bold mb-2 text-gray-800 font-serif">Delivery Method</h2>
-            <p className="text-xs text-gray-400 mb-6">Choose how fast you want your exquisite jewellery items delivered</p>
+          <div className="bg-white rounded-3xl elegant-shadow p-4 md:p-6 border border-gray-100 select-none text-left">
+            <h2 className="text-lg md:text-2xl font-bold mb-1 text-gray-800 font-serif">Delivery Method</h2>
+            <p className="text-xs text-gray-400 mb-4">Choose how fast you want your exquisite jewellery items delivered</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* Standard */}
@@ -435,9 +442,14 @@ function Checkout() {
                   onChange={(e) => setShippingMethod(e.target.value)}
                   className="w-4 h-4 text-brand-navy-900 accent-brand-navy-900"
                 />
-                <div>
-                  <span className="font-bold text-gray-800 text-sm block">Standard Free Shipping</span>
-                  <span className="text-[10px] text-gray-400 font-mono">Est: {getEstimatedDates('standard')}</span>
+                <div className="flex-1 flex justify-between items-center">
+                  <div>
+                    <span className="font-bold text-gray-800 text-sm block">Standard Shipping</span>
+                    <span className="text-[10px] text-gray-400 font-mono">Est: {getEstimatedDates('standard')}</span>
+                  </div>
+                  <span className="bg-brand-navy-950 text-white font-bold text-xs px-2.5 py-1 rounded-lg">
+                    {standardShippingCost === 0 ? 'FREE' : `₹${standardShippingCost}`}
+                  </span>
                 </div>
               </label>
 
@@ -464,12 +476,12 @@ function Checkout() {
           </div>
 
           {/* Payment Methods */}
-          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-100">
-            <h2 className="text-lg md:text-2xl font-bold mb-6 text-gray-800 font-serif">Payment Method</h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-3xl elegant-shadow p-4 md:p-6 border border-gray-100">
+            <h2 className="text-lg md:text-2xl font-bold mb-4 text-gray-800 font-serif">Payment Method</h2>
+            <div className="space-y-3">
 
               {/* Razorpay Online */}
-              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-brand-navy-900 bg-brand-cream-100/40' : 'border-gray-100 hover:border-brand-navy-800'}`}>
+              <label className={`flex items-center gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'online' ? 'border-brand-navy-900 bg-brand-cream-100/40' : 'border-gray-100 hover:border-brand-navy-800'}`}>
                 <input
                   type="radio"
                   name="payment"
@@ -488,7 +500,7 @@ function Checkout() {
               </label>
 
               {/* COD */}
-              <label className={`flex items-center gap-4 p-4 md:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-brand-navy-900 bg-brand-cream-100/40' : 'border-gray-100 hover:border-brand-navy-800'}`}>
+              <label className={`flex items-center gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'cod' ? 'border-brand-navy-900 bg-brand-cream-100/40' : 'border-gray-100 hover:border-brand-navy-800'}`}>
                 <input
                   type="radio"
                   name="payment"
@@ -504,10 +516,10 @@ function Checkout() {
               </label>
 
               {paymentMethod === 'cod' && (
-                <div className="mt-6 p-6 bg-brand-cream-100/50 border border-dashed border-brand-navy-900/30 rounded-2xl animate-fade-in">
+                <div className="mt-4 p-4 bg-brand-cream-100/50 border border-dashed border-brand-navy-900/30 rounded-2xl animate-fade-in">
                   <h3 className="text-sm font-bold text-gray-800 mb-2 font-serif">Security Verification</h3>
-                  <p className="text-xs text-gray-500 mb-4">Please input the security code shown below to confirm your COD checkout order.</p>
-                  <div className="flex items-center gap-4 mb-4">
+                  <p className="text-xs text-gray-500 mb-3">Please input the security code shown below to confirm your COD checkout order.</p>
+                  <div className="flex items-center gap-4 mb-3">
                     <div className="select-none tracking-widest bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-5 py-2.5 rounded-xl font-mono text-lg font-bold italic line-through shadow-md">
                       {captchaCode}
                     </div>
@@ -536,11 +548,11 @@ function Checkout() {
 
         {/* Right Side: Order Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-3xl elegant-shadow p-8 border border-gray-100 sticky top-28 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800 font-serif border-b border-gray-50 pb-4">Order Summary</h2>
+          <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-6 border border-gray-100 sticky top-28 space-y-4">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 font-serif border-b border-gray-50 pb-3">Order Summary</h2>
 
             {/* Coupon Code Block */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <form onSubmit={handleApplyCoupon} className="flex gap-2">
                 <input
                   type="text"
@@ -566,7 +578,7 @@ function Checkout() {
             </div>
 
             {/* Shopping cart products items breakdown */}
-            <div className="space-y-3.5 max-h-48 overflow-y-auto pr-1 border-b border-gray-50 pb-4">
+            <div className="space-y-2.5 max-h-40 overflow-y-auto pr-1 border-b border-gray-50 pb-3">
               {cart.map(item => (
                 <div key={item.id} className="flex justify-between text-xs text-gray-600">
                   <span className="truncate pr-2">{item.name} <span className="font-bold">x {item.quantity}</span></span>
@@ -582,7 +594,7 @@ function Checkout() {
             </div>
 
             {/* Invoice Math */}
-            <div className="space-y-3 border-b border-gray-50 pb-4 text-sm text-gray-600">
+            <div className="space-y-2 border-b border-gray-50 pb-3 text-sm text-gray-600">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span className="font-semibold text-gray-800">₹{subtotal.toFixed(0)}</span>
@@ -595,7 +607,11 @@ function Checkout() {
               )}
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Shipping Delivery</span>
-                <span className="font-semibold text-gray-800">{shippingMethod === 'express' ? '₹150 (Express)' : 'FREE (Standard)'}</span>
+                <span className="font-semibold text-gray-800">
+                  {shippingMethod === 'express'
+                    ? '₹150 (Express)'
+                    : shippingCost === 0 ? 'FREE (Standard)' : `₹${shippingCost} (Standard)`}
+                </span>
               </div>
               <div className="flex justify-between text-base font-bold text-brand-navy-900 pt-1">
                 <span>Grand Total</span>
@@ -603,7 +619,7 @@ function Checkout() {
               </div>
             </div>
 
-            <label className="flex items-start gap-2.5 text-xs text-gray-600 mb-4 cursor-pointer select-none">
+            <label className="flex items-start gap-2.5 text-xs text-gray-600 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={agreedToPolicies}
@@ -625,13 +641,13 @@ function Checkout() {
             <button
               onClick={handlePlaceOrder}
               disabled={loading || !agreedToPolicies}
-              className="w-full bg-brand-navy-900 hover:bg-brand-navy-800 text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm mb-4"
+              className="w-full bg-brand-navy-900 hover:bg-brand-navy-800 text-white py-3.5 rounded-xl font-bold transition-all shadow-md hover:shadow-lg disabled:opacity-50 text-sm"
             >
               {loading ? 'Processing Order...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Proceed to Payment'}
             </button>
 
             {/* Trust Badges */}
-            <div className="pt-4 flex flex-col items-center gap-2 border-t border-gray-50 text-[10px] text-gray-400 font-bold select-none uppercase tracking-wider">
+            <div className="pt-3 flex flex-col items-center gap-2 border-t border-gray-50 text-[10px] text-gray-400 font-bold select-none uppercase tracking-wider">
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1">🔒 SSL Secure</span>
                 <span className="flex items-center gap-1">🛡️ Razorpay Safe</span>

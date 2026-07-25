@@ -164,7 +164,7 @@ function Products({ initialProducts = [] }) {
 
     return (
       <div key={product.id} className="bg-white rounded-3xl elegant-shadow p-5 flex flex-col md:flex-row items-center gap-6 border border-gray-50/50 hover:border-brand-navy-900/20 transition-all duration-300 select-none text-left">
-        <div className="relative w-full md:w-48 h-48 rounded-2xl overflow-hidden cursor-pointer flex-shrink-0" onClick={() => router.push(`/product/${product.id}`)}>
+        <div className="relative w-full md:w-48 h-48 rounded-2xl overflow-hidden cursor-pointer flex-shrink-0 bg-gray-50" onClick={() => router.push(`/product/${product.id}`)}>
           <Image src={optimizeCloudinaryUrl(product.image, { width: 400 })} alt={product.name} fill sizes="(max-width: 768px) 100vw, 192px" className="object-cover" />
           {hasDiscount && (
             <span className="absolute top-3 left-3 bg-brand-gold-500 text-brand-navy-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow">
@@ -214,10 +214,10 @@ function Products({ initialProducts = [] }) {
   const availableSubcategories = currentCategory?.subcategories || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
 
       {/* Breadcrumb Navigation */}
-      <nav className="text-[10px] text-gray-500 mb-4 flex items-center gap-1.5 select-none font-bold uppercase tracking-wider">
+      <nav className="text-[10px] text-gray-500 mb-3 flex items-center gap-1.5 select-none font-bold uppercase tracking-wider">
         <Link href="/" className="hover:text-brand-navy-900 transition-colors">Home</Link>
         <span>/</span>
         <Link href="/products" className="hover:text-brand-navy-900 transition-colors">Products</Link>
@@ -230,39 +230,67 @@ function Products({ initialProducts = [] }) {
       </nav>
 
       <h1 className="text-2xl md:text-4xl font-bold text-brand-navy-900 mb-2 font-serif">Srigovinda collections</h1>
-      <p className="text-gray-600 text-xs md:text-lg mb-6">Explore our exquisite jewellery collection in German Silver, One Gram Gold, and Panchaloha</p>
+      <p className="text-gray-600 text-xs md:text-lg mb-4">Explore our exquisite jewellery collection in German Silver, One Gram Gold, and Panchaloha</p>
 
-      {/* Search Input Bar */}
-      <div className="mb-4 relative">
-        <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
-          🔍
-        </span>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-          placeholder="Search for jewellery items (e.g. necklace, ring, earrings)..."
-          className="w-full pl-10 pr-4 py-3 md:py-3.5 border border-gray-200 rounded-2xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/5 bg-white elegant-shadow"
-        />
+      {/* Unified control bar: search, filter toggle, grid/list view — one row instead of three */}
+      <div className="mb-4 flex flex-col md:flex-row md:items-center gap-3 bg-white px-4 py-3 rounded-2xl elegant-shadow border border-gray-100">
+        <div className="relative flex-grow">
+          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+            🔍
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            placeholder="Search for jewellery items (e.g. necklace, ring, earrings)..."
+            className="w-full pl-10 pr-4 py-2.5 md:py-3 border border-gray-200 rounded-xl text-xs md:text-sm focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/5 bg-white"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border font-bold text-xs transition-all ${showFilters ? 'bg-brand-navy-900 border-brand-navy-900 text-white' : 'border-gray-200 text-brand-navy-900 hover:bg-brand-cream-100'}`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 4h18M6 10h12M10 16h4" />
+            </svg>
+            Filters
+          </button>
+
+          <div className="flex gap-1 bg-gray-50 rounded-xl p-1 border border-gray-100 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-brand-navy-900 text-white' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Grid View"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-brand-navy-900 text-white' : 'text-gray-400 hover:text-gray-600'}`}
+              title="List View"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       {didYouMean && (
-        <div className="mb-6 text-xs font-bold text-gray-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 text-left select-none">
+        <div className="mb-4 text-xs font-bold text-gray-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 text-left select-none">
           🔍 Did you mean: <button onClick={() => setSearchQuery(didYouMean)} className="text-brand-navy-900 hover:underline font-extrabold">{didYouMean}</button>?
         </div>
       )}
 
-      {/* Filters Toggle Button */}
-      <button
-        type="button"
-        onClick={() => setShowFilters(!showFilters)}
-        className="w-full flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl elegant-shadow border border-gray-100 font-bold text-xs text-brand-navy-900 mb-6 transition-all hover:bg-brand-cream-100"
-      >
-        <span className="flex items-center gap-2">🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}</span>
-        <span>{showFilters ? '▲' : '▼'}</span>
-      </button>
-
-      <div className="flex flex-col lg:flex-row gap-10">
+      <div className="flex flex-col lg:flex-row gap-8">
         <div className={`lg:w-72 flex-shrink-0 ${showFilters ? 'block animate-fade-in' : 'hidden'}`}>
           <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-6 sticky top-28 border border-gray-100 space-y-6">
 
@@ -451,34 +479,9 @@ function Products({ initialProducts = [] }) {
         </div>
 
         <div className="flex-grow">
-          {/* Header Row: Products count and Grid/List view mode toggle */}
-          <div className="flex justify-between items-center mb-6 bg-white px-5 py-4 rounded-2xl elegant-shadow border border-gray-50/50">
-            <span className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wide">
-              Showing {filteredProducts.length > 0 ? indexOfFirstItem + 1 : 0}-{Math.min(indexOfLastItem, filteredProducts.length)} of {filteredProducts.length} items
-            </span>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg border transition-all ${viewMode === 'grid' ? 'bg-brand-navy-900 border-brand-navy-900 text-white' : 'bg-gray-50 border-gray-200 text-gray-400 hover:text-gray-600'}`}
-                title="Grid View"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg border transition-all ${viewMode === 'list' ? 'bg-brand-navy-900 border-brand-navy-900 text-white' : 'bg-gray-50 border-gray-200 text-gray-400 hover:text-gray-600'}`}
-                title="List View"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-          </div>
+          <span className="block mb-3 text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-wide">
+            Showing {filteredProducts.length > 0 ? indexOfFirstItem + 1 : 0}-{Math.min(indexOfLastItem, filteredProducts.length)} of {filteredProducts.length} items
+          </span>
 
           {/* Active Filter Pills */}
           {(selectedCategory !== 'all' || selectedSubcategory !== 'all' || priceRange < 20000 || searchQuery !== '' || selectedMaterial !== 'all' || selectedOccasion !== 'all' || selectedColor !== 'all' || selectedGiftingTier !== 'all') && (
