@@ -91,7 +91,7 @@ function CartDrawer() {
                     alt={item.name}
                     width={80}
                     height={80}
-                    className="w-20 h-20 rounded-xl object-cover border border-gray-100 flex-shrink-0"
+                    className="w-20 h-20 rounded-xl object-cover object-[center_20%] border border-gray-100 flex-shrink-0"
                   />
                   <div className="flex-grow min-w-0 flex flex-col justify-between">
                     <div>

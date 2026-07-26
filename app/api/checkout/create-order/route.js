@@ -3,7 +3,8 @@ import Razorpay from 'razorpay';
 import { adminDb, adminAuth } from '@/lib/firebase/admin';
 import { sendOrderConfirmationEmail, sendAdminOrderAlertEmail } from '@/lib/notify/email';
 import { createShiprocketShipment } from '@/lib/shiprocket';
-import { isCouponValid } from '@/lib/coupon-validation';
+import { isCouponValid, isCouponUsageLimitReached } from '@/lib/coupon-validation';
+import { isCountableOrder } from '@/lib/order-math';
 
 // Best-effort: shipment creation should never block order confirmation. Failures are logged so
 // an admin can still enter tracking info manually via the Orders panel.
@@ -67,6 +68,18 @@ async function getValidCoupon(code) {
   return isCouponValid(coupon) ? coupon : null;
 }
 
+// How many of this user's own past orders already redeemed this exact coupon code — only
+// orders that actually went through (paid online, or a COD order that wasn't cancelled) count,
+// so an abandoned/cancelled attempt doesn't burn part of the user's allowance.
+async function getCouponUsageCount(userId, code) {
+  const snap = await adminDb()
+    .collection('orders')
+    .where('userId', '==', userId)
+    .where('couponCode', '==', code.toUpperCase())
+    .get();
+  return snap.docs.reduce((count, doc) => count + (isCountableOrder(doc.data()) ? 1 : 0), 0);
+}
+
 export async function POST(request) {
   const decoded = await verifyUser(request);
   if (!decoded) {
@@ -107,9 +120,15 @@ export async function POST(request) {
   const subtotal = resolvedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   let discount = 0;
+  let appliedCouponCode = null;
   const coupon = await getValidCoupon(couponCode);
   if (coupon) {
+    const usageCount = await getCouponUsageCount(decoded.uid, coupon.code);
+    if (isCouponUsageLimitReached(coupon.maxUsesPerUser, usageCount)) {
+      return NextResponse.json({ error: 'You have already used this coupon the maximum number of times allowed.' }, { status: 400 });
+    }
     discount = Number(coupon.discountPercentage) || 0;
+    appliedCouponCode = coupon.code;
   }
 
   const finalTotal = Math.round(subtotal * (1 - discount / 100) + Number(shippingCost || 0));
@@ -130,6 +149,7 @@ export async function POST(request) {
     items: resolvedItems,
     subtotal,
     discount,
+    couponCode: appliedCouponCode,
     finalTotal,
     createdAt: new Date(),
   };

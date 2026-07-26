@@ -85,7 +85,7 @@ function ProductCard({ product, ratingOverride }) {
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
           onError={() => setImgSrc("https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3")}
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover object-[center_20%] transition-transform duration-500 group-hover:scale-105"
         />
         
         {/* Discount Badge Ribbon */}

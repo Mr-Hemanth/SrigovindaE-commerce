@@ -70,7 +70,7 @@ function SearchBar() {
                 alt={prod.name}
                 width={32}
                 height={32}
-                className="w-8 h-8 rounded-lg object-cover border border-gray-100"
+                className="w-8 h-8 rounded-lg object-cover object-[center_20%] border border-gray-100"
               />
               <div className="min-w-0 flex-1 text-left">
                 <p className="text-xs font-bold text-gray-800 truncate">{prod.name}</p>

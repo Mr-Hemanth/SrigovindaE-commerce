@@ -125,7 +125,7 @@ function OrderSuccessContent() {
                                 e.target.onerror = null;
                                 e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
                               }}
-                              className="w-12 h-12 object-cover rounded-xl border border-gray-200/50 shadow-sm"
+                              className="w-12 h-12 object-cover object-[center_20%] rounded-xl border border-gray-200/50 shadow-sm"
                             />
                           )}
                           <div className="text-left">

@@ -10,7 +10,8 @@ function AdminCoupons() {
   const [form, setForm] = useState({
     code: '',
     discountPercentage: '',
-    expiryDate: ''
+    expiryDate: '',
+    maxUsesPerUser: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -46,11 +47,12 @@ function AdminCoupons() {
         code: form.code.toUpperCase(),
         discountPercentage: Number(form.discountPercentage),
         expiryDate: new Date(form.expiryDate),
+        maxUsesPerUser: form.maxUsesPerUser ? Number(form.maxUsesPerUser) : null,
         createdAt: new Date()
       });
 
       setShowModal(false);
-      setForm({ code: '', discountPercentage: '', expiryDate: '' });
+      setForm({ code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' });
       fetchCoupons();
     } catch (err) {
       console.error('Error adding coupon: ', err);
@@ -94,6 +96,7 @@ function AdminCoupons() {
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Coupon Code</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Discount</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Expires On</th>
+              <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Uses/Customer</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Status</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Actions</th>
             </tr>
@@ -110,6 +113,9 @@ function AdminCoupons() {
                 <td className="px-8 py-5 text-gray-800 font-semibold text-lg">{coupon.discountPercentage}% OFF</td>
                 <td className="px-8 py-5 text-gray-600">
                   {new Date(coupon.expiryDate.toDate ? coupon.expiryDate.toDate() : coupon.expiryDate).toLocaleDateString()}
+                </td>
+                <td className="px-8 py-5 text-gray-600">
+                  {coupon.maxUsesPerUser ? `${coupon.maxUsesPerUser}x` : 'Unlimited'}
                 </td>
                 <td className="px-8 py-5">
                   {isExpired(coupon.expiryDate) ? (
@@ -130,7 +136,7 @@ function AdminCoupons() {
             ))}
             {coupons.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-8 py-16 text-center text-gray-500">
+                <td colSpan="6" className="px-8 py-16 text-center text-gray-500">
                   No coupons yet. Create your first coupon to share on Instagram!
                 </td>
               </tr>
@@ -182,12 +188,25 @@ function AdminCoupons() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Max Uses Per Customer</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={form.maxUsesPerUser}
+                    onChange={(e) => setForm({ ...form, maxUsesPerUser: e.target.value })}
+                    placeholder="Unlimited"
+                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-base"
+                  />
+                  <p className="text-xs text-gray-400 mt-2">Leave blank for unlimited uses per customer.</p>
+                </div>
+
                 <div className="flex gap-4 pt-6">
                   <button
                     type="button"
                     onClick={() => {
                       setShowModal(false);
-                      setForm({ code: '', discountPercentage: '', expiryDate: '' });
+                      setForm({ code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' });
                     }}
                     className="flex-1 border-2 border-brand-navy-900 text-brand-navy-900 py-3 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold text-base"
                   >

@@ -499,7 +499,7 @@ function ProductDetails({ params, initialProduct = null }) {
                 e.target.onerror = null;
                 e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60";
               }}
-              className="object-cover rounded-2xl"
+              className="object-cover object-[center_20%] rounded-2xl"
             />
 
             <button
@@ -537,7 +537,7 @@ function ProductDetails({ params, initialProduct = null }) {
                     alt={`Preview ${idx + 1}`}
                     width={64}
                     height={64}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-[center_20%]"
                   />
                 </button>
               ))}

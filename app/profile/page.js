@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
@@ -265,8 +266,12 @@ function Profile() {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-3xl elegant-shadow p-5 md:p-8 border border-gray-150 sticky top-28">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-brand-navy-900/10 flex items-center justify-center font-bold text-brand-navy-900 text-lg border border-brand-navy-900/10">
-                {name ? name.charAt(0).toUpperCase() : 'C'}
+              <div className="relative w-12 h-12 rounded-full bg-brand-navy-900/10 flex items-center justify-center font-bold text-brand-navy-900 text-lg border border-brand-navy-900/10 overflow-hidden flex-shrink-0">
+                {currentUser?.photoURL ? (
+                  <Image src={currentUser.photoURL} alt={name || 'Profile'} fill sizes="48px" className="object-cover" />
+                ) : (
+                  name ? name.charAt(0).toUpperCase() : 'C'
+                )}
               </div>
               <div>
                 <h2 className="text-lg md:text-2xl font-bold text-gray-800 font-serif leading-none">Personal Info</h2>

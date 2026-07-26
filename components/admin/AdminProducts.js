@@ -275,7 +275,7 @@ function AdminProducts() {
                         e.target.onerror = null;
                         e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
                       }}
-                      className="w-20 h-20 object-cover rounded-2xl elegant-shadow"
+                      className="w-20 h-20 object-cover object-[center_20%] rounded-2xl elegant-shadow"
                     />
                     <div>
                       <p className="font-semibold text-gray-800 text-lg">{product.name}</p>
@@ -599,7 +599,7 @@ function AdminProducts() {
                     <div className="flex flex-wrap gap-3 mt-4">
                       {getImageList(form).map((url) => (
                         <div key={url} className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 group">
-                          <Image src={optimizeCloudinaryUrl(url, { width: 160 })} alt="Product preview" fill sizes="80px" className="object-cover" />
+                          <Image src={optimizeCloudinaryUrl(url, { width: 160 })} alt="Product preview" fill sizes="80px" className="object-cover object-[center_20%]" />
                           <button
                             type="button"
                             onClick={() => removeImage(url)}

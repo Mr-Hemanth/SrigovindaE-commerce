@@ -51,10 +51,22 @@ export function AuthProvider({ children }) {
       await setDoc(userRef, {
         name: user.displayName || 'Customer',
         email: user.email,
-        phone: '', // Google doesn't provide a phone number — collected immediately after via a signup-page prompt
+        photoURL: user.photoURL || null,
+        emailVerified: user.emailVerified,
+        phone: '', // Google doesn't expose a phone number or address via standard sign-in —
+                   // phone is collected right after via the complete-profile prompt, and
+                   // address is collected later in the checkout address book.
         isAdmin: false,
         createdAt: new Date()
       });
+    } else {
+      // Returning user: Google's copy of name/photo may have changed since last sign-in —
+      // keep our record in sync without touching fields the user manages themselves (phone, bio, etc).
+      await setDoc(userRef, {
+        name: user.displayName || userSnap.data().name || 'Customer',
+        photoURL: user.photoURL || null,
+        emailVerified: user.emailVerified,
+      }, { merge: true });
     }
     return { userCredential, isNewUser };
   }

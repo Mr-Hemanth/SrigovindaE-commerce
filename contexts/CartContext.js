@@ -5,7 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/lib/firebase/client';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { computeCartTotals, getItemActivePrice } from '@/lib/cart-math';
-import { isCouponValid } from '@/lib/coupon-validation';
+import { isCouponValid, isCouponUsageLimitReached } from '@/lib/coupon-validation';
+import { isCountableOrder } from '@/lib/order-math';
 import { trackAddToCart } from '@/lib/analytics';
 
 const CartContext = createContext();
@@ -157,6 +158,18 @@ export function CartProvider({ children }) {
         const couponDoc = snap.docs[0];
         const couponData = couponDoc.data();
         if (isCouponValid(couponData)) {
+          if (couponData.maxUsesPerUser && currentUser) {
+            const usageQuery = query(
+              collection(db, 'orders'),
+              where('userId', '==', currentUser.uid),
+              where('couponCode', '==', couponData.code)
+            );
+            const usageSnap = await getDocs(usageQuery);
+            const usageCount = usageSnap.docs.reduce((count, d) => count + (isCountableOrder(d.data()) ? 1 : 0), 0);
+            if (isCouponUsageLimitReached(couponData.maxUsesPerUser, usageCount)) {
+              return { success: false, message: 'You have already used this coupon the maximum number of times allowed.' };
+            }
+          }
           setCoupon(couponData);
           setDiscount(couponData.discountPercentage);
           return { success: true, message: 'Coupon applied successfully!' };

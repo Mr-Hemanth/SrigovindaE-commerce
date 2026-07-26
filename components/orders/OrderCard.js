@@ -145,7 +145,7 @@ function OrderCard({
                       e.target.onerror = null;
                       e.target.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3";
                     }}
-                    className="w-16 h-16 object-cover rounded-xl border border-gray-100 shadow-sm flex-shrink-0"
+                    className="w-16 h-16 object-cover object-[center_20%] rounded-xl border border-gray-100 shadow-sm flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}{item.variantLabel ? ` — ${item.variantLabel}` : ''}</h4>
