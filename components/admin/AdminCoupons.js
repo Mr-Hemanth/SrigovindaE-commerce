@@ -2,17 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase/client';
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+
+const EMPTY_FORM = { code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' };
+
+// Firestore Timestamp (or Date/ISO string) -> the yyyy-mm-dd string a <input type="date"> needs.
+function toDateInputValue(expiryDate) {
+  const d = expiryDate?.toDate ? expiryDate.toDate() : new Date(expiryDate);
+  return d.toISOString().slice(0, 10);
+}
 
 function AdminCoupons() {
   const [coupons, setCoupons] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({
-    code: '',
-    discountPercentage: '',
-    expiryDate: '',
-    maxUsesPerUser: ''
-  });
+  const [editingCouponId, setEditingCouponId] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
 
   const fetchCoupons = async () => {
@@ -39,23 +43,43 @@ function AdminCoupons() {
     })();
   }, []);
 
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingCouponId(null);
+    setForm(EMPTY_FORM);
+  };
+
+  const handleEdit = (coupon) => {
+    setEditingCouponId(coupon.id);
+    setForm({
+      code: coupon.code,
+      discountPercentage: String(coupon.discountPercentage),
+      expiryDate: toDateInputValue(coupon.expiryDate),
+      maxUsesPerUser: coupon.maxUsesPerUser ? String(coupon.maxUsesPerUser) : ''
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await addDoc(collection(db, 'coupons'), {
+      const payload = {
         code: form.code.toUpperCase(),
         discountPercentage: Number(form.discountPercentage),
         expiryDate: new Date(form.expiryDate),
         maxUsesPerUser: form.maxUsesPerUser ? Number(form.maxUsesPerUser) : null,
-        createdAt: new Date()
-      });
+      };
+      if (editingCouponId) {
+        await updateDoc(doc(db, 'coupons', editingCouponId), payload);
+      } else {
+        await addDoc(collection(db, 'coupons'), { ...payload, createdAt: new Date() });
+      }
 
-      setShowModal(false);
-      setForm({ code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' });
+      closeModal();
       fetchCoupons();
     } catch (err) {
-      console.error('Error adding coupon: ', err);
+      console.error('Error saving coupon: ', err);
     }
     setLoading(false);
   };
@@ -76,7 +100,11 @@ function AdminCoupons() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Coupons</h1>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEditingCouponId(null);
+            setForm(EMPTY_FORM);
+            setShowModal(true);
+          }}
           className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-6 py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
         >
           + Create Coupon
@@ -125,12 +153,20 @@ function AdminCoupons() {
                   )}
                 </td>
                 <td className="px-8 py-5">
-                  <button
-                    onClick={() => handleDelete(coupon.id)}
-                    className="text-red-600 hover:text-red-800 font-semibold transition-colors"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handleEdit(coupon)}
+                      className="text-brand-navy-900 hover:text-brand-navy-700 font-semibold transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(coupon.id)}
+                      className="text-red-600 hover:text-red-800 font-semibold transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -149,7 +185,7 @@ function AdminCoupons() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl elegant-shadow max-w-md w-full">
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-brand-navy-900 mb-8 font-serif">Create New Coupon</h2>
+              <h2 className="text-2xl font-bold text-brand-navy-900 mb-8 font-serif">{editingCouponId ? 'Edit Coupon' : 'Create New Coupon'}</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">Coupon Code</label>
@@ -204,10 +240,7 @@ function AdminCoupons() {
                 <div className="flex gap-4 pt-6">
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      setForm({ code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' });
-                    }}
+                    onClick={closeModal}
                     className="flex-1 border-2 border-brand-navy-900 text-brand-navy-900 py-3 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold text-base"
                   >
                     Cancel
@@ -217,7 +250,7 @@ function AdminCoupons() {
                     disabled={loading}
                     className="flex-1 bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold text-base shadow-lg disabled:opacity-50"
                   >
-                    {loading ? 'Creating...' : 'Create Coupon'}
+                    {loading ? 'Saving...' : editingCouponId ? 'Save Changes' : 'Create Coupon'}
                   </button>
                 </div>
               </form>
