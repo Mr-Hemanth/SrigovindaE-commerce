@@ -11,7 +11,7 @@ import { db } from '@/lib/firebase/client';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
 
-function ProductCard({ product, ratingOverride }) {
+function ProductCard({ product, ratingOverride, priority = false }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { currentUser } = useAuth();
@@ -84,6 +84,7 @@ function ProductCard({ product, ratingOverride }) {
           alt={product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
+          priority={priority}
           onError={() => setImgSrc("https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3")}
           className="object-cover object-[center_20%] transition-transform duration-500 group-hover:scale-105"
         />

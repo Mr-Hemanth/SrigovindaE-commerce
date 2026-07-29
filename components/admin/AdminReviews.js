@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { useNotification } from '@/contexts/NotificationContext';
 
 function AdminReviews() {
+  const { showNotification } = useNotification();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,8 +38,10 @@ function AdminReviews() {
     try {
       await deleteDoc(doc(db, 'reviews', reviewId));
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      showNotification('Review deleted.', 'success');
     } catch (err) {
       console.error('Error deleting review:', err);
+      showNotification('Could not delete this review. Please try again.', 'error');
     }
   };
 

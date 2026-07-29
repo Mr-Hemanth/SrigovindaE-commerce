@@ -556,8 +556,8 @@ function Products({ initialProducts = [] }) {
           {/* Catalog items display */}
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
-              {currentProducts.map(product => (
-                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} />
+              {currentProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} priority={index < 2} />
               ))}
             </div>
           ) : (

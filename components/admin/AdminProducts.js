@@ -1,14 +1,43 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { db } from '@/lib/firebase/client';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { categories } from '@/lib/data/products';
 import { useNotification } from '@/contexts/NotificationContext';
 import { uploadProductImage } from '@/lib/image-upload';
 import { deriveGiftingTier, deriveMaterialFromCategory } from '@/lib/product-classification';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
+import { rowsToCsv } from '@/lib/csv';
+
+const LOW_STOCK_THRESHOLD = 5;
+
+function downloadCsv(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function productsToCsv(products, getCategoryName) {
+  const header = ['Name', 'Category', 'Subcategory', 'Price', 'Discounted Price', 'Stock', 'Status'];
+  const rows = products.map((p) => [
+    p.name || '',
+    getCategoryName(p.category),
+    p.subcategory || '',
+    p.price ?? '',
+    p.discountedPrice ?? '',
+    p.stock ?? 0,
+    p.isActive !== false ? 'Visible' : 'Hidden',
+  ]);
+  return rowsToCsv(header, rows);
+}
 
 function AdminProducts() {
   const { showNotification } = useNotification();
@@ -35,6 +64,12 @@ function AdminProducts() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortKey, setSortKey] = useState('newest');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [bulkWorking, setBulkWorking] = useState(false);
 
   const emptyForm = {
     name: '', description: '', price: '', discountedPrice: '', category: '', subcategory: '',
@@ -180,16 +215,24 @@ function AdminProducts() {
       setEditingProduct(null);
       setForm(emptyForm);
       fetchProducts();
+      showNotification(editingProduct ? 'Product updated successfully.' : 'Product added successfully.', 'success');
     } catch (err) {
       console.error('Error adding/updating product: ', err);
+      showNotification('Could not save this product. Please try again.', 'error');
     }
     setLoading(false);
   };
 
   const handleDelete = async (productId) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    try {
       await deleteDoc(doc(db, 'products', productId));
+      setSelectedIds((prev) => prev.filter((id) => id !== productId));
       fetchProducts();
+      showNotification('Product deleted.', 'success');
+    } catch (err) {
+      console.error('Error deleting product:', err);
+      showNotification('Could not delete this product. Please try again.', 'error');
     }
   };
 
@@ -233,26 +276,226 @@ function AdminProducts() {
     return cat ? cat.name : catId;
   };
 
+  const summary = useMemo(() => ({
+    total: products.length,
+    visible: products.filter((p) => p.isActive !== false).length,
+    hidden: products.filter((p) => p.isActive === false).length,
+    lowStock: products.filter((p) => Number(p.stock) <= LOW_STOCK_THRESHOLD).length,
+  }), [products]);
+
+  const filteredProducts = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let list = products.filter((p) => {
+      if (categoryFilter !== 'all' && p.category !== categoryFilter) return false;
+      if (statusFilter === 'visible' && p.isActive === false) return false;
+      if (statusFilter === 'hidden' && p.isActive !== false) return false;
+      if (statusFilter === 'low-stock' && !(Number(p.stock) <= LOW_STOCK_THRESHOLD)) return false;
+      if (!q) return true;
+      return (p.name || '').toLowerCase().includes(q)
+        || (p.subcategory || '').toLowerCase().includes(q)
+        || getCategoryName(p.category).toLowerCase().includes(q);
+    });
+    list = [...list].sort((a, b) => {
+      if (sortKey === 'name') return (a.name || '').localeCompare(b.name || '');
+      if (sortKey === 'priceLow') return (a.discountedPrice ?? a.price ?? 0) - (b.discountedPrice ?? b.price ?? 0);
+      if (sortKey === 'priceHigh') return (b.discountedPrice ?? b.price ?? 0) - (a.discountedPrice ?? a.price ?? 0);
+      if (sortKey === 'stockLow') return Number(a.stock) - Number(b.stock);
+      if (sortKey === 'stockHigh') return Number(b.stock) - Number(a.stock);
+      return 0; // 'newest' — keep Firestore fetch order
+    });
+    return list;
+  }, [products, search, categoryFilter, statusFilter, sortKey]);
+
+  const allFilteredSelected = filteredProducts.length > 0 && filteredProducts.every((p) => selectedIds.includes(p.id));
+
+  const toggleSelectAll = () => {
+    if (allFilteredSelected) {
+      const filteredIds = new Set(filteredProducts.map((p) => p.id));
+      setSelectedIds((prev) => prev.filter((id) => !filteredIds.has(id)));
+    } else {
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...filteredProducts.map((p) => p.id)])));
+    }
+  };
+
+  const toggleSelectOne = (productId) => {
+    setSelectedIds((prev) => (prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]));
+  };
+
+  const clearSelection = () => setSelectedIds([]);
+
+  const bulkSetVisibility = async (isActive) => {
+    setBulkWorking(true);
+    try {
+      const batch = writeBatch(db);
+      selectedIds.forEach((id) => batch.update(doc(db, 'products', id), { isActive }));
+      await batch.commit();
+      setProducts((prev) => prev.map((p) => (selectedIds.includes(p.id) ? { ...p, isActive } : p)));
+      showNotification(`${selectedIds.length} product(s) ${isActive ? 'shown' : 'hidden'}.`, 'success');
+      clearSelection();
+    } catch (err) {
+      console.error('Error updating visibility in bulk:', err);
+      showNotification('Could not update products. Please try again.', 'error');
+    }
+    setBulkWorking(false);
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selectedIds.length} selected product(s)? This cannot be undone.`)) return;
+    setBulkWorking(true);
+    try {
+      const batch = writeBatch(db);
+      selectedIds.forEach((id) => batch.delete(doc(db, 'products', id)));
+      await batch.commit();
+      clearSelection();
+      await fetchProducts();
+      showNotification('Selected products deleted.', 'success');
+    } catch (err) {
+      console.error('Error deleting products in bulk:', err);
+      showNotification('Could not delete products. Please try again.', 'error');
+    }
+    setBulkWorking(false);
+  };
+
+  const exportCsv = () => {
+    downloadCsv(productsToCsv(filteredProducts, getCategoryName), `products-${new Date().toISOString().slice(0, 10)}.csv`);
+  };
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-2xl md:text-3xl font-bold text-brand-navy-900 font-serif">Products</h1>
-        <button
-          onClick={() => {
-            setEditingProduct(null);
-            setForm(emptyForm);
-            setShowModal(true);
-          }}
-          className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-8 py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
-        >
-          + Add Product
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={exportCsv}
+            className="bg-white border-2 border-brand-navy-900 text-brand-navy-900 px-6 py-3 rounded-xl hover:bg-brand-cream-100 transition-all duration-300 font-semibold text-sm"
+          >
+            ⬇️ Export CSV
+          </button>
+          <button
+            onClick={() => {
+              setEditingProduct(null);
+              setForm(emptyForm);
+              setShowModal(true);
+            }}
+            className="bg-gradient-to-r from-brand-navy-900 to-brand-navy-800 text-white px-8 py-3 rounded-xl hover:from-brand-navy-800 hover:to-brand-navy-900 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
+          >
+            + Add Product
+          </button>
+        </div>
       </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Total Products', value: summary.total },
+          { label: 'Visible', value: summary.visible },
+          { label: 'Hidden', value: summary.hidden },
+          { label: 'Low Stock', value: summary.lowStock },
+        ].map((stat) => (
+          <div key={stat.label} className="bg-white rounded-2xl elegant-shadow p-5">
+            <p className="text-xxs font-bold uppercase tracking-wider text-gray-400">{stat.label}</p>
+            <p className="text-2xl font-bold text-brand-navy-900 mt-1">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-2xl elegant-shadow p-5 flex flex-wrap gap-4 items-center">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, subcategory, or category..."
+          className="flex-1 min-w-[220px] px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-navy-900"
+        />
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          className="px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-navy-900"
+        >
+          <option value="all">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>{cat.name}</option>
+          ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-navy-900"
+        >
+          <option value="all">All Status</option>
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+          <option value="low-stock">Low Stock (≤{LOW_STOCK_THRESHOLD})</option>
+        </select>
+        <select
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value)}
+          className="px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand-navy-900"
+        >
+          <option value="newest">Sort: Newest</option>
+          <option value="name">Sort: Name</option>
+          <option value="priceLow">Sort: Price (Low to High)</option>
+          <option value="priceHigh">Sort: Price (High to Low)</option>
+          <option value="stockLow">Sort: Stock (Low to High)</option>
+          <option value="stockHigh">Sort: Stock (High to Low)</option>
+        </select>
+      </div>
+
+      {/* Bulk actions */}
+      {selectedIds.length > 0 && (
+        <div className="bg-brand-navy-900 text-white rounded-2xl px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+          <span className="font-semibold text-sm">{selectedIds.length} product(s) selected</span>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              disabled={bulkWorking}
+              onClick={() => bulkSetVisibility(true)}
+              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-semibold transition-colors disabled:opacity-50"
+            >
+              Show
+            </button>
+            <button
+              type="button"
+              disabled={bulkWorking}
+              onClick={() => bulkSetVisibility(false)}
+              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-semibold transition-colors disabled:opacity-50"
+            >
+              Hide
+            </button>
+            <button
+              type="button"
+              disabled={bulkWorking}
+              onClick={bulkDelete}
+              className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-sm font-semibold transition-colors disabled:opacity-50"
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              onClick={clearSelection}
+              className="px-4 py-2 rounded-lg border border-white/30 hover:bg-white/10 text-sm font-semibold transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-3xl elegant-shadow overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-brand-cream-100 to-brand-cream-200">
             <tr>
+              <th className="px-4 py-5 text-left">
+                <input
+                  type="checkbox"
+                  checked={allFilteredSelected}
+                  onChange={toggleSelectAll}
+                  aria-label="Select all products"
+                  className="w-5 h-5 text-brand-navy-900 focus:ring-brand-navy-900 border-gray-300 rounded"
+                />
+              </th>
+              <th className="px-4 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">S.No</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Product</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Category</th>
               <th className="px-8 py-5 text-left text-sm font-semibold text-brand-navy-900 uppercase tracking-wide">Price</th>
@@ -262,8 +505,25 @@ function AdminProducts() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {products.map((product) => (
+            {filteredProducts.length === 0 && (
+              <tr>
+                <td colSpan={8} className="px-8 py-12 text-center text-gray-400">
+                  No products match your filters.
+                </td>
+              </tr>
+            )}
+            {filteredProducts.map((product, index) => (
               <tr key={product.id} className="hover:bg-brand-cream-100 transition-colors">
+                <td className="px-4 py-5">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(product.id)}
+                    onChange={() => toggleSelectOne(product.id)}
+                    aria-label={`Select ${product.name}`}
+                    className="w-5 h-5 text-brand-navy-900 focus:ring-brand-navy-900 border-gray-300 rounded"
+                  />
+                </td>
+                <td className="px-4 py-5 text-gray-500 font-medium">{index + 1}</td>
                 <td className="px-8 py-5">
                   <div className="flex items-center gap-5">
                     <Image
@@ -295,9 +555,14 @@ function AdminProducts() {
                   )}
                 </td>
                 <td className="px-8 py-5">
-                  <span className={`px-4 py-2 rounded-full text-xs font-semibold ${product.stock > 10 ? 'bg-green-100 text-green-700' : product.stock > 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
-                    {product.stock} in stock
-                  </span>
+                  <div className="flex flex-col gap-1.5 items-start">
+                    <span className={`px-4 py-2 rounded-full text-xs font-semibold ${product.stock > 10 ? 'bg-green-100 text-green-700' : product.stock > 0 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                      {product.stock} in stock
+                    </span>
+                    {Number(product.stock) <= LOW_STOCK_THRESHOLD && (
+                      <span className="text-xxs font-bold uppercase tracking-wider text-red-600">⚠ Low Stock</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-8 py-5">
                   <button

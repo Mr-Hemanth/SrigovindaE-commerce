@@ -195,8 +195,8 @@ function Home({ initialFeaturedProducts = [] }) {
             <p className="text-center text-gray-400 text-sm py-8">New pieces are on their way — check back soon!</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-10">
-              {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} />
+              {featuredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} ratingOverride={ratingsById[product.id] || { avg: '0.0', count: 0 }} priority={index < 2} />
               ))}
             </div>
           )}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs, doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNotification } from '@/contexts/NotificationContext';
 import DashboardSidebar from '@/components/admin/dashboard/DashboardSidebar';
 import StatsGrid from '@/components/admin/dashboard/StatsGrid';
 import RevenueBreakdown from '@/components/admin/dashboard/RevenueBreakdown';
@@ -26,6 +27,7 @@ function toDateKey(value) {
 function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, coupons: 0, revenue: 0 });
   const { isAdmin } = useAuth();
+  const { showNotification } = useNotification();
 
   const [promoSettings, setPromoSettings] = useState({
     enabled: false,
@@ -172,6 +174,7 @@ function AdminDashboard() {
       setRestockNotifications(prev => prev.filter(item => item.id !== alertId));
     } catch (err) {
       console.error('Error deleting restock alert:', err);
+      showNotification('Could not update this restock alert. Please try again.', 'error');
     }
   };
 

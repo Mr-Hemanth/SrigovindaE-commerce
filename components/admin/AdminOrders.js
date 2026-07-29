@@ -5,11 +5,15 @@ import Image from 'next/image';
 import { auth, db } from '@/lib/firebase/client';
 import { collection, getDocs } from 'firebase/firestore';
 import { optimizeCloudinaryUrl } from '@/lib/cloudinary';
+import { useNotification } from '@/contexts/NotificationContext';
 
 function AdminOrders() {
+  const { showNotification } = useNotification();
   const [orders, setOrders] = useState([]);
   const [trackingDrafts, setTrackingDrafts] = useState({});
   const [savingTrackingId, setSavingTrackingId] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
+  const [decidingRequestId, setDecidingRequestId] = useState(null);
 
   const fetchOrders = async () => {
     try {
@@ -54,8 +58,16 @@ function AdminOrders() {
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
-    await callUpdateOrderStatus({ orderId, status: newStatus });
-    fetchOrders();
+    setUpdatingStatusId(orderId);
+    try {
+      await callUpdateOrderStatus({ orderId, status: newStatus });
+      await fetchOrders();
+      showNotification('Order status updated.', 'success');
+    } catch (err) {
+      console.error('Failed to update order status:', err);
+      showNotification(err.message || 'Could not update order status. Please try again.', 'error');
+    }
+    setUpdatingStatusId(null);
   };
 
   const getTrackingDraft = (order) => trackingDrafts[order.id] ?? {
@@ -77,8 +89,10 @@ function AdminOrders() {
     try {
       await callUpdateOrderStatus({ orderId, ...draft });
       await fetchOrders();
+      showNotification('Tracking info saved.', 'success');
     } catch (err) {
       console.error('Failed to save tracking info:', err);
+      showNotification(err.message || 'Could not save tracking info. Please try again.', 'error');
     }
     setSavingTrackingId(null);
   };
@@ -94,8 +108,16 @@ function AdminOrders() {
         body.paymentStatus = 'Refunded';
       }
     }
-    await callUpdateOrderStatus(body);
-    fetchOrders();
+    setDecidingRequestId(orderId);
+    try {
+      await callUpdateOrderStatus(body);
+      await fetchOrders();
+      showNotification(decision === 'approved' ? 'Request approved.' : 'Request rejected.', 'success');
+    } catch (err) {
+      console.error('Failed to record request decision:', err);
+      showNotification(err.message || 'Could not save this decision. Please try again.', 'error');
+    }
+    setDecidingRequestId(null);
   };
 
   const getStatusColor = (status) => {
@@ -170,13 +192,15 @@ function AdminOrders() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleRequestDecision(order.id, order.requestType === 'cancel' ? 'cancelled' : 'returned', 'approved')}
-                                className="bg-green-700 hover:bg-green-800 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
+                                disabled={decidingRequestId === order.id}
+                                className="bg-green-700 hover:bg-green-800 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300 disabled:opacity-50"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleRequestDecision(order.id, null, 'rejected')}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300"
+                                disabled={decidingRequestId === order.id}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-xl text-xxs font-black uppercase transition-all duration-300 disabled:opacity-50"
                               >
                                 Reject
                               </button>
@@ -199,7 +223,8 @@ function AdminOrders() {
                     <select
                       value={order.status}
                       onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                      className="px-5 py-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300"
+                      disabled={updatingStatusId === order.id}
+                      className="px-5 py-3 border-2 border-gray-200 rounded-xl text-base focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 disabled:opacity-50"
                     >
                       <option value="pending">Pending</option>
                       <option value="processing">Processing</option>

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase/client';
+import { auth, db } from '@/lib/firebase/client';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { useNotification } from '@/contexts/NotificationContext';
 
-const EMPTY_FORM = { code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '' };
+const EMPTY_FORM = { code: '', discountPercentage: '', expiryDate: '', maxUsesPerUser: '1' };
 
 // Firestore Timestamp (or Date/ISO string) -> the yyyy-mm-dd string a <input type="date"> needs.
 function toDateInputValue(expiryDate) {
@@ -13,6 +14,7 @@ function toDateInputValue(expiryDate) {
 }
 
 function AdminCoupons() {
+  const { showNotification } = useNotification();
   const [coupons, setCoupons] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCouponId, setEditingCouponId] = useState(null);
@@ -60,6 +62,21 @@ function AdminCoupons() {
     setShowModal(true);
   };
 
+  // Best-effort owner-notification email — failures here shouldn't surface as a "coupon save
+  // failed" error since the coupon itself is already written to Firestore by this point.
+  const notifyCouponCreated = async (payload) => {
+    try {
+      const idToken = await auth.currentUser.getIdToken();
+      await fetch('/api/admin/notify-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      console.warn('Coupon-created email notification failed:', err);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -74,20 +91,28 @@ function AdminCoupons() {
         await updateDoc(doc(db, 'coupons', editingCouponId), payload);
       } else {
         await addDoc(collection(db, 'coupons'), { ...payload, createdAt: new Date() });
+        notifyCouponCreated(payload);
       }
 
       closeModal();
       fetchCoupons();
+      showNotification(editingCouponId ? 'Coupon updated successfully.' : 'Coupon created successfully.', 'success');
     } catch (err) {
       console.error('Error saving coupon: ', err);
+      showNotification('Could not save this coupon. Please try again.', 'error');
     }
     setLoading(false);
   };
 
   const handleDelete = async (couponId) => {
-    if (window.confirm('Are you sure you want to delete this coupon?')) {
+    if (!window.confirm('Are you sure you want to delete this coupon?')) return;
+    try {
       await deleteDoc(doc(db, 'coupons', couponId));
       fetchCoupons();
+      showNotification('Coupon deleted.', 'success');
+    } catch (err) {
+      console.error('Error deleting coupon:', err);
+      showNotification('Could not delete this coupon. Please try again.', 'error');
     }
   };
 
@@ -231,10 +256,10 @@ function AdminCoupons() {
                     min="1"
                     value={form.maxUsesPerUser}
                     onChange={(e) => setForm({ ...form, maxUsesPerUser: e.target.value })}
-                    placeholder="Unlimited"
+                    placeholder="1"
                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy-900 focus:ring-4 focus:ring-brand-navy-900/10 transition-all duration-300 text-base"
                   />
-                  <p className="text-xs text-gray-400 mt-2">Leave blank for unlimited uses per customer.</p>
+                  <p className="text-xs text-gray-400 mt-2">Defaults to 1 use per customer. Leave blank for unlimited.</p>
                 </div>
 
                 <div className="flex gap-4 pt-6">

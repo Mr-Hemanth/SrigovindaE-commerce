@@ -573,7 +573,7 @@ function ProductDetails({ params, initialProduct = null }) {
                   src={optimizeCloudinaryUrl(activeImage || product.image, { width: 1600 })}
                   alt={product.name}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 896px) 100vw, 896px"
                   className="object-contain"
                   onError={(e) => {
                     e.target.onerror = null;

@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase/client';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { useNotification } from '@/contexts/NotificationContext';
 
 function AdminSubscribers() {
+  const { showNotification } = useNotification();
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,8 +38,10 @@ function AdminSubscribers() {
     try {
       await deleteDoc(doc(db, 'newsletter_subscribers', id));
       setSubscribers((prev) => prev.filter((s) => s.id !== id));
+      showNotification('Subscriber removed.', 'success');
     } catch (err) {
       console.error('Error deleting subscriber:', err);
+      showNotification('Could not remove this subscriber. Please try again.', 'error');
     }
   };
 
